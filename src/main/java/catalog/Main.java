@@ -7,7 +7,7 @@ import catalog.ui.Terminal;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void run(String[] args) {
         StoreSelectionScreen storeScreen = new StoreSelectionScreen();
         CatalogService service = storeScreen.run();
 

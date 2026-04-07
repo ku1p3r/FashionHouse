@@ -6,7 +6,7 @@ set -e
 
 SRC_DIR="src/main/java"
 OUT_DIR="out"
-MAIN_CLASS="catalog.Main"
+MAIN_CLASS="Main"
 
 echo "▸ Compiling..."
 mkdir -p "$OUT_DIR"

@@ -4,7 +4,7 @@
 
 set SRC_DIR=src\main\java
 set OUT_DIR=out
-set MAIN_CLASS=catalog.Main
+set MAIN_CLASS=Main
 
 echo ^ Compiling...
 if not exist "%OUT_DIR%" mkdir "%OUT_DIR%"
