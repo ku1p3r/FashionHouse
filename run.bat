@@ -1,1 +1,3 @@
-java -cp bin Main
+@echo off
+
+java -cp "%OUT_DIR%" %MAIN_CLASS%
