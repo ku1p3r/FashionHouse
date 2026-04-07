@@ -42,7 +42,7 @@ public class Main{
                 
                 break;
             case 5:
-
+                sales.Main.run(args);
                 break;
             default:
                 break;
