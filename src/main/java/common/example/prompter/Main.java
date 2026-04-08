@@ -15,9 +15,9 @@ public class Main {
         TestClass tc = new TestClass();
         Option test = new Option("test", "Action example.", tc::execute);
 
-        Selectable s = Terminal.prompt("Example", List.of(store1, store2), List.of(test));
-        if(s != null){
-            tc.pick(s);
+        Retailer store = Terminal.prompt("Example", List.of(store1, store2), List.of(test));
+        if(store != null){
+            tc.pick(store);
         }
     }
 }
