@@ -1,51 +1,43 @@
 
+import common.base.Selectable;
+import common.util.Terminal;
+import common.wrapper.Option;
+
+import java.util.List;
 import java.util.Scanner;
 
 
 public class Main{
 
+    /**
+     * Primary main call for complete program.
+     *
+     * You can call this again if you want the subprogram to exit to the main screen.
+     *
+     * @param args
+     */
     public static void main(String[] args){
+        // Catalog
+        Runnable rc = () -> catalog.Main.main(args);
+        Option catalog = new Option("1", "Product Catalog and Inventory", rc);
 
-        Scanner scn = new Scanner(System.in);
+        // Analytics
+        Runnable ra = () -> analytics.Main.main(args);
+        Option analytics = new Option("2", "DBMS and Analytics", ra);
 
-        System.out.println("Welcome to Fashion House System\n\n");
-        System.out.println("""
-        Please make a selection:
-        
-        1. Product Catalog and Inventory
-        2. Advertising and Fashion Shows
-        3. Legal/IP Manager
-        4. DBMS and Analytics
-        5. Sales
-        
-        """);
-        System.out.print("Enter Your Selection ---> ");
+        // TODO add other services once their Main file is added
 
-        int choice = scn.nextInt();
-        
-        if(choice < 1 || choice > 5){
-            System.out.println("Invalid choice. Terminating...");
-            System.exit(1);
-        }
+        Option exit = new Option("quit", "Exit program", () -> shutdown());
 
-        switch(choice){
-            case 1:
-                catalog.Main.run(args);
-                break;
-            case 2:
+        Terminal.prompt("Select Program", List.of(), List.of(
+                catalog,
+                analytics,
+                /* TODO add other programs */
+                exit
+        ));
+    }
 
-                break;
-            case 3:
-
-                break;
-            case 4:
-                
-                break;
-            case 5:
-
-                break;
-            default:
-                break;
-        }
+    public static void shutdown(){
+        System.out.println(Terminal.YELLOW + "Shutting down." + Terminal.RESET);
     }
 }

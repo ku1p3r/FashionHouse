@@ -4,6 +4,11 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Serializes and deserializes primitive wrappers to and from CSV files.
+ *
+ * Primary Author: Jase Beaubien
+ */
 public class Serializer {
     // Use constructor with "column 1 name", "column 2 name", ... as constructor for new CSVs.
     // Use constructor with the file path for existing CSvs.
@@ -35,7 +40,7 @@ public class Serializer {
         attributes = new HashMap<>();
         attributeList = new ArrayList<>();
 
-        // TS is NOT the most efficient way to do this, but it's the most readable and I can fix it later.
+        // This is NOT the most efficient way to do this, but it's the most readable and I can fix it later.
         try(BufferedReader reader = new BufferedReader(new FileReader(path))){
             String line = reader.readLine();
 

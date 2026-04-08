@@ -148,9 +148,19 @@ public class Terminal {
 
     public static int WIDTH() { return WIDTH; }
 
-    // Selectables are entities like stores and products (interface, non-invasive)
-    // Options are things like new and quit
-    // Returns whether or not the program may continue. If false, it should terminate.
+    /**
+     * Selectables are entities like stores and products (interface, non-invasive)
+     * Options are things like new and quit
+     * Returns whether or not the program may continue. If false, it should terminate.
+     *
+     * Author: Jase Beaubien
+     *
+     * @param header
+     * @param items
+     * @param options
+     * @return
+     * @param <T>
+     */
     public static <T extends Selectable> T prompt(String header, Iterable<T> items, Iterable<Option> options){
         HashMap<String, T> select = new HashMap<>();
         HashMap<String, Runnable> functions = new HashMap<>();
