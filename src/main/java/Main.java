@@ -12,8 +12,6 @@ public class Main{
     /**
      * Primary main call for complete program.
      *
-     * You can call this again if you want the subprogram to exit to the main screen.
-     *
      * @param args
      */
     public static void main(String[] args){
