@@ -1,6 +1,8 @@
 package catalog.ui;
 
 import catalog.service.CatalogService;
+import common.util.Terminal;
+
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;

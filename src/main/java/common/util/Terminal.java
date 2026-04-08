@@ -1,11 +1,17 @@
-package catalog.ui;
+package common.util;
 
+import common.wrapper.Option;
+import common.base.Selectable;
+
+import java.util.HashMap;
 import java.util.Scanner;
 
 /**
  * A simple terminal interface for user interaction.
  */
 public class Terminal {
+    private static final String EXIT_COMMAND = "quit";
+
     public static final String RESET   = "\u001B[0m";
     public static final String BOLD    = "\u001B[1m";
     public static final String DIM     = "\u001B[2m";
@@ -142,4 +148,42 @@ public class Terminal {
     }
 
     public static int WIDTH() { return WIDTH; }
+
+    // Promptables are entities like stores and products (interface, non-invasive)
+    // Options are things like new and quit
+    // Returns whether or not the program may continue. If false, it should terminate.
+    public static boolean prompt(String header, Iterable<Selectable> items, Iterable<Option> options){
+        HashMap<String, Runnable> functions = new HashMap<>();
+
+        printSubHeader(header);
+
+        for(Selectable item : items){
+            System.out.println(CYAN + "[" + item.getId() + "] " + RESET + item.getName());
+            functions.put(Integer.toString(item.getId()), item::pick);
+        }
+        for(Option option : options){
+            System.out.println(CYAN + "[" + option.getCommand() + "] " + RESET + option.getDescription());
+            functions.put(option.getCommand(), option::pick);
+        }
+        System.out.println(CYAN + "[quit]" + RESET + " Exits program.");
+
+        String input;
+        while(true){
+            System.out.print("\n" + BOLD + CYAN + "Choice > " + RESET);
+            input = scanner.nextLine();
+
+            if(functions.containsKey(input) || input.equals(EXIT_COMMAND)){
+                break;
+            }
+
+            System.out.println("Invalid input. Try again.");
+        }
+
+        if(!input.equals(EXIT_COMMAND)) {
+            functions.get(input).run();
+            return true;
+        }
+
+        return false;
+    }
 }

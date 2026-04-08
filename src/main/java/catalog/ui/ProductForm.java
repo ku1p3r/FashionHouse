@@ -1,8 +1,10 @@
 package catalog.ui;
 
-import catalog.model.Product;
+import common.model.Product;
 import catalog.model.ValidationResult;
 import catalog.service.CatalogService;
+import common.util.Terminal;
+
 import java.util.UUID;
 
 /**
