@@ -10,7 +10,6 @@ import java.util.Scanner;
  * A simple terminal interface for user interaction.
  */
 public class Terminal {
-    private static final String EXIT_COMMAND = "quit";
 
     public static final String RESET   = "\u001B[0m";
     public static final String BOLD    = "\u001B[1m";
@@ -152,38 +151,42 @@ public class Terminal {
     // Selectables are entities like stores and products (interface, non-invasive)
     // Options are things like new and quit
     // Returns whether or not the program may continue. If false, it should terminate.
-    public static boolean prompt(String header, Iterable<Selectable> items, Iterable<Option> options){
+    public static <T extends Selectable> T prompt(String header, Iterable<T> items, Iterable<Option> options){
+        HashMap<String, T> select = new HashMap<>();
         HashMap<String, Runnable> functions = new HashMap<>();
 
         printSubHeader(header);
 
-        for(Selectable item : items){
+        for(T item : items){
             System.out.println(CYAN + "[" + item.getId() + "] " + RESET + item.getName());
-            functions.put(Integer.toString(item.getId()), item::pick);
+            select.put(Integer.toString(item.getId()), item);
         }
         for(Option option : options){
             System.out.println(CYAN + "[" + option.getCommand() + "] " + RESET + option.getDescription());
             functions.put(option.getCommand(), option::pick);
         }
-        System.out.println(CYAN + "[quit]" + RESET + " Exits program.");
 
         String input;
+        boolean itemInput = false;
+        boolean functionInput = false;
         while(true){
             System.out.print("\n" + BOLD + CYAN + "Choice > " + RESET);
             input = scanner.nextLine();
 
-            if(functions.containsKey(input) || input.equals(EXIT_COMMAND)){
+            itemInput = select.containsKey(input);
+            functionInput = functions.containsKey(input);
+            if(itemInput || functionInput){
                 break;
             }
 
-            System.out.println("Invalid input. Try again.");
+            System.out.println("Invalid input.");
         }
 
-        if(!input.equals(EXIT_COMMAND)) {
+        if(functionInput) {
             functions.get(input).run();
-            return true;
+            return null;
         }
 
-        return false;
+        return select.get(input);
     }
 }
