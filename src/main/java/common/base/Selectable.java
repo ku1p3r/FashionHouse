@@ -5,5 +5,4 @@ package common.base;
 public interface Selectable {
     int getId();
     String getName();
-    void pick();
 }

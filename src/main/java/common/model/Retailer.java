@@ -21,9 +21,4 @@ public class Retailer implements Selectable {
     public String getName(){
         return name;
     }
-
-    @Override
-    public void pick() {
-        System.out.println("Store picked: " + name);
-    }
 }
