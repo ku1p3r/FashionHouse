@@ -149,7 +149,7 @@ public class Terminal {
 
     public static int WIDTH() { return WIDTH; }
 
-    // Promptables are entities like stores and products (interface, non-invasive)
+    // Selectables are entities like stores and products (interface, non-invasive)
     // Options are things like new and quit
     // Returns whether or not the program may continue. If false, it should terminate.
     public static boolean prompt(String header, Iterable<Selectable> items, Iterable<Option> options){
