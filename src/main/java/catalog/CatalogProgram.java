@@ -3,10 +3,9 @@ package catalog;
 import catalog.service.CatalogService;
 import catalog.ui.SearchScreen;
 import catalog.ui.StoreSelectionScreen;
-import common.base.Selectable;
 import common.util.Terminal;
 
-public class Main {
+public class CatalogProgram {
 
     public static void main(String[] args) {
         StoreSelectionScreen storeScreen = new StoreSelectionScreen();

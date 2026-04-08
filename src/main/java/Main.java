@@ -1,10 +1,10 @@
 
-import common.base.Selectable;
+import analytics.AnalyticsProgram;
+import catalog.CatalogProgram;
 import common.util.Terminal;
 import common.wrapper.Option;
 
 import java.util.List;
-import java.util.Scanner;
 
 
 public class Main{
@@ -17,27 +17,23 @@ public class Main{
      * @param args
      */
     public static void main(String[] args){
-        // Catalog
-        Runnable rc = () -> catalog.Main.main(args);
-        Option catalog = new Option("1", "Product Catalog and Inventory", rc);
 
-        // Analytics
-        Runnable ra = () -> analytics.Main.main(args);
-        Option analytics = new Option("2", "DBMS and Analytics", ra);
-
+        Option catalog = new Option("1", "Product Catalog and Inventory", () -> CatalogProgram.main(args));
+        Option analytics = new Option("2", "DBMS and Analytics", () -> AnalyticsProgram.main(args));
         // TODO add other services once their Main file is added
 
-        Option exit = new Option("quit", "Exit program", () -> shutdown());
+        boolean[] running = {true};
+        Option exit = new Option("quit", "Exit program", () -> running[0] = false);
 
-        Terminal.prompt("Select Program", List.of(), List.of(
-                catalog,
-                analytics,
-                /* TODO add other programs */
-                exit
-        ));
-    }
+        while(running[0]){
+            Terminal.prompt("Select Program", List.of(), List.of(
+                    catalog,
+                    analytics,
+                    /* TODO add other programs */
+                    exit
+            ));
+        }
 
-    public static void shutdown(){
         System.out.println(Terminal.YELLOW + "Shutting down." + Terminal.RESET);
     }
 }
