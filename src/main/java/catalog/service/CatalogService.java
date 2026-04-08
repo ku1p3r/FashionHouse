@@ -1,6 +1,6 @@
 package catalog.service;
 
-import catalog.model.Product;
+import common.model.Product;
 import catalog.model.ValidationResult;
 import java.io.*;
 import java.nio.file.*;

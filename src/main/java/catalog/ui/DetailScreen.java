@@ -1,7 +1,9 @@
 package catalog.ui;
 
-import catalog.model.Product;
+import common.model.Product;
 import catalog.service.CatalogService;
+import common.util.Terminal;
+
 import java.io.IOException;
 
 /**
