@@ -1,8 +1,9 @@
 package common.model;
 
+import common.base.Selectable;
 import java.util.Objects;
 
-public class Product {
+public class Product implements Selectable {
 
     private String id;
     private String name;
@@ -33,7 +34,9 @@ public class Product {
         this.supplier = other.supplier;
     }
 
+    @Override
     public String getId()          { return id; }
+    @Override
     public String getName()        { return name; }
     public String getCategory()    { return category; }
     public double getPrice()       { return price; }
@@ -58,39 +61,6 @@ public class Product {
             || description.toLowerCase().contains(q)
             || supplier.toLowerCase().contains(q);
     }
-
-    /** Serialize to a single pipe-delimited line */
-    public String toFileLine() {
-        return String.join("|",
-            escape(id),
-            escape(name),
-            escape(category),
-            String.valueOf(price),
-            String.valueOf(quantity),
-            escape(description),
-            escape(supplier)
-        );
-    }
-
-    /** Parse a pipe-delimited line into a Product */
-    public static Product fromFileLine(String line) {
-        String[] parts = line.split("\\|", -1);
-        if (parts.length != 7) {
-            throw new IllegalArgumentException("Invalid product line: " + line);
-        }
-        return new Product(
-            unescape(parts[0]),
-            unescape(parts[1]),
-            unescape(parts[2]),
-            Double.parseDouble(parts[3]),
-            Integer.parseInt(parts[4]),
-            unescape(parts[5]),
-            unescape(parts[6])
-        );
-    }
-
-    private static String escape(String s)   { return s.replace("|", "\\|"); }
-    private static String unescape(String s) { return s.replace("\\|", "|"); }
 
     @Override
     public boolean equals(Object o) {

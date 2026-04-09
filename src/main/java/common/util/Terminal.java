@@ -1,8 +1,7 @@
 package common.util;
 
-import common.wrapper.Option;
 import common.base.Selectable;
-
+import common.wrapper.Option;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -169,7 +168,7 @@ public class Terminal {
 
         for(T item : items){
             System.out.println(CYAN + "[" + item.getId() + "] " + RESET + item.getName());
-            select.put(Integer.toString(item.getId()), item);
+            select.put(item.getId(), item);
         }
         for(Option option : options){
             System.out.println(CYAN + "[" + option.getCommand() + "] " + RESET + option.getDescription());

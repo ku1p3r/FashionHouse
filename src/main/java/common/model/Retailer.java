@@ -6,15 +6,16 @@ public class Retailer implements Selectable {
     // TODO add other attributes
     private static int nextId = 0;
     private String name;
-    private int id;
+    private String id;
 
     public Retailer(String name){
         this.name = name;
-        this.id = nextId++;
+        nextId++;
+        this.id = Integer.toString(nextId);
     }
 
     @Override
-    public int getId() {
+    public String getId() {
         return id;
     }
 
