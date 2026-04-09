@@ -24,6 +24,7 @@ public class Serializer {
     private ArrayList<String> attributeList;
     private String path = "";
     private String delimiter = "|";
+    public record Criterion<T>(String key, T value) {}
 
     // Construct new file.
     public Serializer(String[] columns){
@@ -154,5 +155,51 @@ public class Serializer {
         if(type == Boolean.class) return type.cast(Boolean.valueOf(value));
 
         throw new IllegalArgumentException("Unsupported type: " + type);
+    }
+
+    public int size(){
+        if(attributeList.isEmpty()) return 0;
+        return attributes.get(attributeList.get(0)).size();
+    }
+
+    public <T> void set(String attribute, int row, T value){
+        attributes.get(attribute).set(row, value.toString());
+    }
+
+    public ArrayList<Integer> getRows(Iterable<Criterion> criteria){
+        ArrayList<Integer> matches = new ArrayList<>();
+
+        /*for(Criterion criterion : criteria){
+            String key = criterion.key();
+            String value = criterion.value().toString();
+
+            if(!attributes.containsKey(key)){
+                return matches; // No matches if key doesn't exist.
+            }
+
+            for(int i = 0; i < attributes.get(key).size(); i++){
+                if(attributes.get(key).get(i).equals(value)){
+                    matches.add(i);
+                }
+            }
+        }*/
+
+        for(int i = 0; i < size(); i++){
+            boolean match = true;
+            for(Criterion criterion : criteria){
+                String key = criterion.key();
+                String value = criterion.value().toString();
+
+                if(!attributes.containsKey(key) || !attributes.get(key).get(i).equals(value)){
+                    match = false;
+                    break;
+                }
+            }
+            if(match){
+                matches.add(i);
+            }
+        }
+
+        return matches;
     }
 }

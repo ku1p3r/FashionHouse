@@ -1,9 +1,6 @@
 package analytics.services;
 
-import analytics.AnalyticsProgram;
 import analytics.util.ReportReader;
-import common.model.Product;
-import common.model.Retailer;
 import common.util.Serializer;
 import common.util.Terminal;
 import common.wrapper.Option;
@@ -20,6 +17,9 @@ import java.util.List;
 public class AnalyticsService {
     private static final String[] RETAILER_HEADER = new String[]{"period","product","initial","stocked","sold"};
 
+    /**
+     * Terminal management for checking incoming reports and registering them to database.
+     */
     public void check(){
         String[] input;
         while(true){
@@ -70,48 +70,138 @@ public class AnalyticsService {
                         }
                     }),
                     new Option("store", "Register to database.", () -> {
-                        Serializer serializer;
                         String name = ReportReader.getName(chosenReport[0], suffix);
                         String retailerPath = "retailers/" + name + ".retailer";
-                        // TODO if exists, set serializer to existing file, else create new file
-                        try{
-                            serializer = new Serializer(retailerPath);
-                        }catch (Exception e){
-                            serializer = new Serializer(RETAILER_HEADER);
-                        }
-
-                        for(int i = 0; i < report.size(); i++){
-                            try {
-                                serializer.push(
-                                        month + "-" + year,
-                                        (String)report.keySet().toArray()[i],
-                                        0,
-                                        0,
-                                        report.get((String)report.keySet().toArray()[i])
-                                );
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-
-                        try {
-                            serializer.save(retailerPath);
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
+                        registerReport(retailerPath, report, month, year);
                     }),
                     new Option("back", "Return to analytics.", () -> running[0] = false)
             ));
         }
     }
 
+    /**
+     * Add report to retailer analytics file. If file doesn't exist, create new file.
+     *
+     * @param retailerPath
+     * @param report
+     * @param month
+     * @param year
+     */
+    public void registerReport(String retailerPath, HashMap<String, Integer> report, int month, int year){
+        Serializer serializer;
+        // If exists, set serializer to existing file, else create new file.
+        try{
+            serializer = new Serializer(retailerPath);
+        }catch (Exception e){
+            serializer = new Serializer(RETAILER_HEADER);
+        }
+
+        for(int i = 0; i < report.size(); i++){
+            try {
+                serializer.push(
+                        month + "-" + year,
+                        (String)report.keySet().toArray()[i],
+                        0,
+                        0,
+                        report.get((String)report.keySet().toArray()[i])
+                );
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        try {
+            serializer.save(retailerPath);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Terminal management for logging stock to database.
+     */
     public void log(){
-        // TODO
+        String[] input = {"0", "0"};
+        while(true) {
+            boolean[] runningC = {true};
+            while (true) {
+                String rawInput = Terminal.getInputWithExit("Select period", "month/year", runningC);
+                if (!runningC[0] || rawInput == null) {
+                    break;
+                }
+                input = rawInput.split("/");
+                if(input.length == 2) {
+                    break;
+                }
+                System.out.println(Terminal.RED + "Invalid input format. Expected 'month/year'." + Terminal.RESET);
+            }
+            if(!runningC[0]){
+                break;
+            }
+            int month = Integer.parseInt(input[0]);
+            int year = Integer.parseInt(input[1]);
+
+            while (true) {
+                boolean[] runningA = {true};
+                String storeName = Terminal.getInputWithExit("Select store", "store", runningA);
+                if (!runningA[0]) {
+                    break;
+                }
+
+                while (true) {
+                    boolean[] runningB = {true};
+                    String productName = Terminal.getInputWithExit("Select for " + storeName, "product", runningB);
+                    if (!runningB[0]) {
+                        break;
+                    }
+                    int quantity = Integer.parseInt(Terminal.getInput("Added stock quantity for " + productName));
+
+                    stock(storeName, productName, month, year, quantity);
+                }
+            }
+        }
     }
 
-    public void reportSale(Retailer retailer, Product product){
-    }
-
-    public void getMonthlySales(Retailer retailer){
+    /**
+     * Add stock and update retailer analytics file.
+     *
+     * @param storeName
+     * @param productName
+     * @param month
+     * @param year
+     * @param quantity
+     */
+    public void stock(String storeName, String productName, int month, int year, int quantity){
+        Serializer serializer;
+        String path = "retailers/" + storeName + ".retailer";
+        try{
+            serializer = new Serializer(path);
+        }catch (Exception e){
+            serializer = new Serializer(RETAILER_HEADER);
+        }
+        ArrayList<Integer> indices = serializer.getRows(List.of(
+                new Serializer.Criterion("product", productName),
+                new Serializer.Criterion("period", month + "-" + year)
+        ));
+        if(indices.isEmpty()){
+            try {
+                serializer.push(
+                        month + "-" + year,
+                        productName,
+                        0,
+                        quantity,
+                        0
+                );
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }else{
+            serializer.set("stocked", indices.get(0), quantity);
+        }
+        try {
+            serializer.save(path);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
