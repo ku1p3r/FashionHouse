@@ -49,7 +49,7 @@ public class Serializer {
             for(String s : line.split("\\" + delimiter)){
                 attributes.put(s, new ArrayList<>());
                 attributeList.add(s);
-                System.out.println("Added attribute '" + s + "'\n");
+                //System.out.println("Added attribute '" + s + "'\n");
             }
 
             while((line = reader.readLine()) != null){
@@ -58,7 +58,7 @@ public class Serializer {
                 for(String s : line.split("\\" + delimiter)){
                     String key = attributeList.get(index++);
                     attributes.get(key).add(s);
-                    System.out.println("Added value '" + s + "' under key '" + key + "'\n");
+                    //System.out.println("Added value '" + s + "' under key '" + key + "'\n");
                 }
             }
         } catch (FileNotFoundException e) {
@@ -122,7 +122,7 @@ public class Serializer {
             }
         }
 
-        System.out.println(result);
+        //System.out.println(result);
 
         FileWriter writer = new FileWriter(path);
         writer.write(result);

@@ -199,4 +199,9 @@ public class Terminal {
 
         return select.get(input);
     }
+
+    public static String getInput(String header){
+        System.out.print(BOLD + CYAN + header + " > " + RESET);
+        return scanner.nextLine();
+    }
 }
