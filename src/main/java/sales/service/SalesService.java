@@ -10,29 +10,39 @@ import java.util.List;
 /**
  * @author Mason Hart
  */
-public class SalesService{
+public class SalesService implements Service {
 
     private static final String SALES_TABLE_PATH = "res/sales.csv";
     private static final String PRODUCT_TABLE_PATH = "res/products.csv";
 
-    private Serializer dbms;
+    private Serializer saleSerializer;
     private List<Product> availableProducts;
     private Sale currSale;
 
     public SalesService(){
         currSale = new Sale();
-        dbms = new Serializer(SALES_TABLE_PATH);
+        saleSerializer = new Serializer(SALES_TABLE_PATH);
     }
 
     public void saveSale() throws Exception {
-        currSale.serialize(dbms);
+        currSale.serialize(saleSerializer);
     }
 
-    public void getSale(int id){
-
+    public Sale getSale(int id){
+        return null;
     }
 
     public void registerReturn(Receipt r){
         
+    }
+
+    @Override
+    public void saveToDB() throws Exception {
+        saveSale();
+    }
+
+    @Override
+    public Object getFromDB(int id) {
+        return getSale(id);
     }
 }

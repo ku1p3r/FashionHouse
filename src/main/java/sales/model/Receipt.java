@@ -1,9 +1,12 @@
 package sales.model;
 
+import common.util.Serializer;
+import sales.Serializable;
+
 /**
  * @author Mason Hart
  */
-public class Receipt{
+public class Receipt implements Serializable {
 
     private static long ID = 0;
 
@@ -25,4 +28,13 @@ public class Receipt{
         return "Receipt #" + id + "from " + timestamp + ":\n" + sale.toString();
     }
 
+    @Override
+    public String serialize(Serializer serializer) {
+        return "";
+    }
+
+    @Override
+    public Object deserialize(String[] line) {
+        return null;
+    }
 }

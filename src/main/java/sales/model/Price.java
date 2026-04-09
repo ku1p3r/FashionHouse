@@ -1,7 +1,5 @@
 package sales.model;
 
-import common.Serializable;
-
 /**
  * @author Mason Hart
  */

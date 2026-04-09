@@ -1,4 +1,4 @@
-package common;
+package sales;
 
 import common.util.Serializer;
 

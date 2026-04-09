@@ -1,6 +1,6 @@
 package sales.model;
 
-import common.Serializable;
+import sales.Serializable;
 import common.model.Product;
 import common.util.Serializer;
 

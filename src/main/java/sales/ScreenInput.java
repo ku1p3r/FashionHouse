@@ -1,9 +1,11 @@
 package sales;
 
 public enum ScreenInput {
-    NEXT_SCREEN,
+    NONE,
     EXIT,
-    NOTHING,
-    CONFIRM,
-    CANCEL
+    TO_CART,
+    TO_CHECKOUT,
+    TO_MAIN,
+    TO_REMOVE,
+    TO_SEARCH
 }
