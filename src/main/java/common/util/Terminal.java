@@ -199,4 +199,22 @@ public class Terminal {
 
         return select.get(input);
     }
+
+    public static String getInput(String header){
+        System.out.print(BOLD + CYAN + header + " > " + RESET);
+        return scanner.nextLine();
+    }
+
+    public static String getInputWithExit(String header, String typeName, boolean[] flag){
+        printSubHeader(header);
+        System.out.println(CYAN + "[(" + typeName + ")] " + RESET + "Name of " + typeName + ".");
+        System.out.println(CYAN + "[back] " + RESET + "Return to previous menu.");
+        System.out.print(BOLD + CYAN + "Choice > " + RESET);
+        String input = scanner.nextLine();
+        if(input.equals("back")){
+            flag[0] = false;
+            return null;
+        }
+        return input;
+    }
 }
