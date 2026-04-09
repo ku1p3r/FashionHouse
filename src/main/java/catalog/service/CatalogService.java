@@ -1,7 +1,8 @@
 package catalog.service;
 
-import common.model.Product;
 import catalog.model.ValidationResult;
+import common.model.Product;
+import common.util.Serializer;
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
@@ -20,17 +21,32 @@ public class CatalogService {
     private void load() throws IOException {
         catalog.clear();
         if (!Files.exists(filePath)) {
-            Files.writeString(filePath, "# Merchandise Catalog - pipe-delimited: id|name|category|price|quantity|description|supplier\n");
+            Serializer s = new Serializer(new String[]{"id","name","category","price","quantity","description","supplier"});
+            try { s.save(filePath.toString()); }
+            catch (Exception e) { throw new IOException(e); }
             return;
         }
-        List<String> lines = Files.readAllLines(filePath);
-        for (int i = 0; i < lines.size(); i++) {
-            String line = lines.get(i).trim();
-            if (line.isEmpty() || line.startsWith("#")) continue;
+
+        Serializer s = new Serializer(filePath.toString());
+        ArrayList<String> ids;
+        try {
+            ids = s.get("id", String.class);
+        } catch (Exception e) {
+            throw new IOException("Failed to load catalog: " + e.getMessage());
+        }
+        int rows = ids.size();
+        for (int i = 0; i < rows; i++) {
             try {
-                catalog.add(Product.fromFileLine(line));
+                String id = s.get("id", i, String.class);
+                String name = s.get("name", i, String.class);
+                String category = s.get("category", i, String.class);
+                double price = s.get("price", i, Double.class);
+                int quantity = s.get("quantity", i, Integer.class);
+                String description = s.get("description", i, String.class);
+                String supplier = s.get("supplier", i, String.class);
+                catalog.add(new Product(id, name, category, price, quantity, description, supplier));
             } catch (Exception e) {
-                throw new IOException("Parse error on line " + (i + 1) + ": " + e.getMessage());
+                throw new IOException("Parse error at row " + (i + 1) + ": " + e.getMessage());
             }
         }
     }
@@ -76,6 +92,7 @@ public class CatalogService {
 
     public void updateProduct(Product updated) throws IOException {
         for (int i = 0; i < catalog.size(); i++) {
+            System.out.println("Checking product with ID: |" + catalog.get(i).getId() + "|" + " against updated ID: |" + updated.getId() + "|");
             if (catalog.get(i).getId().equals(updated.getId())) {
                 catalog.set(i, updated);
                 save();
@@ -94,12 +111,23 @@ public class CatalogService {
     // ---------------------------------------------------------------- persistence
 
     private void save() throws IOException {
-        List<String> lines = new ArrayList<>();
-        lines.add("# Merchandise Catalog - pipe-delimited: id|name|category|price|quantity|description|supplier");
-        for (Product p : catalog) {
-            lines.add(p.toFileLine());
+        Serializer s = new Serializer(new String[]{"id","name","category","price","quantity","description","supplier"});
+        try {
+            for (Product p : catalog) {
+                s.push(
+                    p.getId(),
+                    p.getName(),
+                    p.getCategory(),
+                    String.valueOf(p.getPrice()),
+                    String.valueOf(p.getQuantity()),
+                    p.getDescription(),
+                    p.getSupplier()
+                );
+            }
+            s.save(filePath.toString());
+        } catch (Exception e) {
+            throw new IOException(e);
         }
-        Files.write(filePath, lines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
     public int size() { return catalog.size(); }
