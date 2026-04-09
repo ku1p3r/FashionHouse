@@ -1,9 +1,15 @@
 package sales.model;
 
+import common.model.Product;
+
 public class Sale{
 
-    int price;
-    int timestamp;
+    List<Product> cart;
+    Price subTotal;
 
-    // etc
+    public Sale(){
+        this.car = new ArrayList<>();
+        this.subTotal = new Price(0,0);
+    }
+
 }

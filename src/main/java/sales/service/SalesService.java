@@ -2,7 +2,7 @@ package sales.service;
 
 import sales.model.Sale;
 import sales.model.Receipt;
-import util.Serializer;
+import common.util.Serializer;
 
 public class SalesService{
 
