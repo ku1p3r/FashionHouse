@@ -101,4 +101,8 @@ public class Product {
 
     @Override
     public int hashCode() { return Objects.hash(id); }
+
+    public String toString() {
+        return toFileLine();
+    }
 }

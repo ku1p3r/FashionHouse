@@ -1,39 +1,55 @@
 package sales.model;
 
+import common.Serializable;
+
+/**
+ * @author Mason Hart
+ */
 public class Price {
 
-    public int dollars;
-    public int cents;
+    private int dollars;
+    private int cents;
 
     public Price(int dollars, int cents){
         if(cents >= 100){
             dollars += cents / 100;
             cents /= 100;
+        } else if(cents < 0){
+            dollars -= 1;
+            cents += 100;
         }
         this.dollars = dollars;
         this.cents = cents;
     }
 
-    public void add(Price other){
-        this.dollars += other.dollars;
-        this.cents += other.cents;
-        if(cents >= 100){
-            this.dollars += cents / 100;
-            cents /= 100;
-        }
+    public Price(Price other){
+        this.dollars = other.getDollars();
+        this.cents = other.getCents();
     }
 
-    public void subtract(Price other){
-        this.dollars -= other.dollars;
-        this.cents -= other.cents;
-        if(cents < 0){
-            dollars -= 1;
-            cents += 100;
-        }
+    public int getDollars(){
+        return this.dollars;
+    }
+    public int getCents(){
+        return this.cents;
+    }
+
+    public Price add(Price other){
+        return new Price(
+                this.dollars + other.getDollars(),
+                this.cents + other.getCents()
+        );
+    }
+
+    public Price subtract(Price other){
+        return new Price(
+                this.dollars - other.getDollars(),
+                this.cents - other.getCents()
+        );
     }
 
     public int compareTo(Price other){
-        return this.dollars == other.dollars ? this.dollars - other.dollars : this.cents - other.cents
+        return this.dollars == other.getDollars() ? this.dollars - other.getDollars() : this.cents - other.getCents();
     }
 
     public String toString(){

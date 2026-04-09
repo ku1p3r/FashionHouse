@@ -4,7 +4,7 @@ REM Requires: Java 17+
 
 set SRC_DIR=src\main\java
 set OUT_DIR=out
-set MAIN_CLASS=sales.Main
+set MAIN_CLASS=Main
 
 echo ▸ Compiling...
 
