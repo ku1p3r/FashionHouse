@@ -1,11 +1,16 @@
-package catalog.ui;
+package common.util;
 
+import common.wrapper.Option;
+import common.base.Selectable;
+
+import java.util.HashMap;
 import java.util.Scanner;
 
 /**
  * A simple terminal interface for user interaction.
  */
 public class Terminal {
+
     public static final String RESET   = "\u001B[0m";
     public static final String BOLD    = "\u001B[1m";
     public static final String DIM     = "\u001B[2m";
@@ -142,4 +147,56 @@ public class Terminal {
     }
 
     public static int WIDTH() { return WIDTH; }
+
+    /**
+     * Selectables are entities like stores and products (interface, non-invasive)
+     * Options are things like new and quit
+     * Returns whether or not the program may continue. If false, it should terminate.
+     *
+     * Author: Jase Beaubien
+     *
+     * @param header
+     * @param items
+     * @param options
+     * @return
+     * @param <T>
+     */
+    public static <T extends Selectable> T prompt(String header, Iterable<T> items, Iterable<Option> options){
+        HashMap<String, T> select = new HashMap<>();
+        HashMap<String, Runnable> functions = new HashMap<>();
+
+        printSubHeader(header);
+
+        for(T item : items){
+            System.out.println(CYAN + "[" + item.getId() + "] " + RESET + item.getName());
+            select.put(Integer.toString(item.getId()), item);
+        }
+        for(Option option : options){
+            System.out.println(CYAN + "[" + option.getCommand() + "] " + RESET + option.getDescription());
+            functions.put(option.getCommand(), option::pick);
+        }
+
+        String input;
+        boolean itemInput = false;
+        boolean functionInput = false;
+        while(true){
+            System.out.print("\n" + BOLD + CYAN + "Choice > " + RESET);
+            input = scanner.nextLine();
+
+            itemInput = select.containsKey(input);
+            functionInput = functions.containsKey(input);
+            if(itemInput || functionInput){
+                break;
+            }
+
+            System.out.println("Invalid input.");
+        }
+
+        if(functionInput) {
+            functions.get(input).run();
+            return null;
+        }
+
+        return select.get(input);
+    }
 }

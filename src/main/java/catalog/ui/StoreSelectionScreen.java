@@ -1,6 +1,7 @@
 package catalog.ui;
 
 import catalog.service.CatalogService;
+import common.util.Terminal;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
@@ -39,12 +40,12 @@ public class StoreSelectionScreen {
             Terminal.printLine();
             Terminal.printMenuOption("(1-" + stores.size() + ")",    "Open an existing store");
             Terminal.printMenuOption("new",  "Create a new store");
-            Terminal.printMenuOption("quit", "Exit");
+            Terminal.printMenuOption("back", "Leave Catalog");
             Terminal.println();
 
             String input = Terminal.prompt("Choice >");
 
-            if (input.equalsIgnoreCase("quit") || input.equalsIgnoreCase("q")) return null;
+            if (input.equalsIgnoreCase("back")) return null;
 
             if (input.equalsIgnoreCase("new")) {
                 CatalogService svc = createStore(dataDir);

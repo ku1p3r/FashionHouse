@@ -1,7 +1,8 @@
 package catalog.ui;
 
-import catalog.model.Product;
 import catalog.service.CatalogService;
+import common.model.Product;
+import common.util.Terminal;
 import java.io.IOException;
 import java.util.List;
 
@@ -12,8 +13,8 @@ import java.util.List;
 public class SearchScreen {
 
     private CatalogService service;
-    private final ProductForm    form;
-    private final DetailScreen   detail;
+    private ProductForm    form;
+    private DetailScreen   detail;
 
     public SearchScreen(CatalogService service) {
         this.service = service;
@@ -50,16 +51,19 @@ public class SearchScreen {
         Terminal.println();
         Terminal.printMenuOption("new",  "Create a new product");
         Terminal.printMenuOption("store", "Change store");
-        Terminal.printMenuOption("quit", "Exit the application");
+        Terminal.printMenuOption("back", "Leave Catalog");
         Terminal.println();
         Terminal.printLine();
         String query = Terminal.prompt("Search (ID / keyword) >");
-        if (query.equalsIgnoreCase("quit") || query.equalsIgnoreCase("q")) return null;
+        if (query.equalsIgnoreCase("back")) return null;
         if (query.equalsIgnoreCase("store")) {
             StoreSelectionScreen storeScreen = new StoreSelectionScreen();
             CatalogService newService = storeScreen.run();
             if (newService != null) {
                 this.service = newService;
+                // recreate dependent UI components so they reference the new service
+                this.form = new ProductForm(service);
+                this.detail = new DetailScreen(service);
             }
             return "";
         }

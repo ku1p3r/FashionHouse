@@ -3,11 +3,11 @@ package catalog;
 import catalog.service.CatalogService;
 import catalog.ui.SearchScreen;
 import catalog.ui.StoreSelectionScreen;
-import catalog.ui.Terminal;
+import common.util.Terminal;
 
-public class Main {
+public class CatalogProgram {
 
-    public static void run(String[] args) {
+    public static void main(String[] args) {
         StoreSelectionScreen storeScreen = new StoreSelectionScreen();
         CatalogService service = storeScreen.run();
 

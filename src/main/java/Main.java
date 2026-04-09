@@ -1,51 +1,37 @@
 
-import java.util.Scanner;
+import analytics.AnalyticsProgram;
+import catalog.CatalogProgram;
+import common.util.Terminal;
+import common.wrapper.Option;
+
+import java.util.List;
 
 
 public class Main{
 
+    /**
+     * Primary main call for complete program.
+     *
+     * @param args
+     */
     public static void main(String[] args){
 
-        Scanner scn = new Scanner(System.in);
+        Option catalog = new Option("1", "Product Catalog and Inventory", () -> CatalogProgram.main(args));
+        Option analytics = new Option("2", "DBMS and Analytics", () -> AnalyticsProgram.main(args));
+        // TODO add other services once their Main file is added
 
-        System.out.println("Welcome to Fashion House System\n\n");
-        System.out.println("""
-        Please make a selection:
-        
-        1. Product Catalog and Inventory
-        2. Advertising and Fashion Shows
-        3. Legal/IP Manager
-        4. DBMS and Analytics
-        5. Sales
-        
-        """);
-        System.out.print("Enter Your Selection ---> ");
+        boolean[] running = {true};
+        Option exit = new Option("quit", "Exit program", () -> running[0] = false);
 
-        int choice = scn.nextInt();
-        
-        if(choice < 1 || choice > 5){
-            System.out.println("Invalid choice. Terminating...");
-            System.exit(1);
+        while(running[0]){
+            Terminal.prompt("Select Program", List.of(), List.of(
+                    catalog,
+                    analytics,
+                    /* TODO add other programs */
+                    exit
+            ));
         }
 
-        switch(choice){
-            case 1:
-                catalog.Main.run(args);
-                break;
-            case 2:
-
-                break;
-            case 3:
-
-                break;
-            case 4:
-                
-                break;
-            case 5:
-                sales.Main.run(args);
-                break;
-            default:
-                break;
-        }
+        System.out.println(Terminal.YELLOW + "Shutting down." + Terminal.RESET);
     }
 }
