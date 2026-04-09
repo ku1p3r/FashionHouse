@@ -1,5 +1,12 @@
 package advertising;
-
+/*
+ * 
+ * Advertising Module - Iteration 1
+ * Use Case: Register New Advertisement
+ *
+ * Represents the marketing manager who creates advertisements.
+ * Author: Gilbert
+ */
 public class MarketingManager {
     private final int managerId;
     private final String name;

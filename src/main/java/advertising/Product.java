@@ -1,5 +1,11 @@
 package advertising;
-
+/*
+ * 
+ * Advertising Module - Iteration 1
+ *
+ *  Product promoted in an advertisement.
+ * Author: Gilbert
+ */
 public class Product {
     private final int productId;
     private final String name;

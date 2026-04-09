@@ -1,5 +1,11 @@
 package advertising;
-
+/*
+ * 
+ * Advertising Module - Iteration 1
+ *
+ * Represents a clothing collection promoted in advertisements.
+ * Author: Gilbert
+ */
 public class Collection {
     private final int collectionId;
     private final String name;

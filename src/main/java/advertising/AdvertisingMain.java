@@ -1,5 +1,12 @@
 package advertising;
-
+/*
+ * 
+ * Advertising Module - Iteration 1
+ * Test Runner for Register New Advertisement
+ *
+ * Runs and demonstrates the advertising use case.
+ * Author: Gilbert
+ */
 public class AdvertisingMain {
     public static void main(String[] args) {
         AdvertisingSystem system = new AdvertisingSystem();

@@ -1,5 +1,12 @@
 package advertising;
-
+/*
+ * Fashion House Project
+ * Advertising Module - Iteration 1
+ * Use Case: Register New Advertisement
+ *
+ * Represents an advertisement record containing campaign details.
+ * Author: Gilbert
+ */
 public class Advertisement {
     private final int advertisementId;
     private final String title;

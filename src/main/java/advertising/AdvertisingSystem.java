@@ -1,5 +1,11 @@
 package advertising;
-
+/*
+ * Advertising Module - Iteration 1
+ * Use Case: Register New Advertisement
+ *
+ * Handles advertisement validation, creation, and storage.
+ * Author: Gilbert
+ */
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
