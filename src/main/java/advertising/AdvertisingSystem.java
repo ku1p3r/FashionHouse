@@ -1,20 +1,28 @@
 package advertising;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 /*
+ * Fashion House Project
  * Advertising Module - Iteration 1
  * Use Case: Register New Advertisement
  *
- * Handles advertisement validation, creation, and storage.
+ * Handles advertisement validation, creation, loading, and file storage.
  * Author: Gilbert
  */
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public class AdvertisingSystem {
-    private final List<Product> products;
-    private final List<Collection> collections;
-    private final List<Platform> platforms;
-    private final List<Advertisement> advertisements;
+    private static final String FILE_NAME = "src/main/java/advertisements.txt";
+
+    private List<Product> products;
+    private List<Collection> collections;
+    private List<Platform> platforms;
+    private List<Advertisement> advertisements;
     private int nextAdvertisementId;
 
     public AdvertisingSystem() {
@@ -23,6 +31,8 @@ public class AdvertisingSystem {
         platforms = new ArrayList<>();
         advertisements = new ArrayList<>();
         nextAdvertisementId = 1;
+
+        loadAdvertisementsFromFile();
     }
 
     public void addProduct(Product product) {
@@ -55,13 +65,16 @@ public class AdvertisingSystem {
         if (platformName == null || platformName.isBlank()) return false;
 
         boolean itemExists = false;
+
         if (promotedItemType.equalsIgnoreCase("Product")) {
             itemExists = checkProduct(promotedItemName);
         } else if (promotedItemType.equalsIgnoreCase("Collection")) {
             itemExists = checkCollection(promotedItemName);
         }
 
-        return itemExists && checkPlatform(platformName);
+        boolean platformExists = checkPlatform(platformName);
+
+        return itemExists && platformExists;
     }
 
     public boolean checkProduct(String productName) {
@@ -111,22 +124,24 @@ public class AdvertisingSystem {
     }
 
     public boolean storeAdvertisement(Advertisement advertisement) {
-        return advertisements.add(advertisement);
+        advertisements.add(advertisement);
+        saveAdvertisementsToFile();
+        return true;
     }
 
-    public boolean registerAdvertisement(String title,
-                          String description,
-                                         String targetAudience,
-                               int duration,
-                                         String promotedItemName,
-                                  String promotedItemType,
-                                         String platformName) {
+    public void registerAdvertisement(String title,
+                                      String description,
+                                      String targetAudience,
+                                      int duration,
+                                      String promotedItemName,
+                                      String promotedItemType,
+                                      String platformName) {
         displayAdForm();
 
         if (!validateInformation(title, description, targetAudience, duration,
                 promotedItemName, promotedItemType, platformName)) {
             System.out.println("Advertisement registration failed: invalid information.");
-            return false;
+            return;
         }
 
         Advertisement advertisement = createAdvertisement(
@@ -142,11 +157,75 @@ public class AdvertisingSystem {
         } else {
             System.out.println("Advertisement registration failed: could not save advertisement.");
         }
-
-        return saved;
     }
 
     public List<Advertisement> getAdvertisements() {
-        return Collections.unmodifiableList(advertisements);
+        return advertisements;
+    }
+
+    private void saveAdvertisementsToFile() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME))) {
+            for (Advertisement ad : advertisements) {
+                writer.write(
+                        ad.getAdvertisementId() + "|" +
+                        ad.getTitle() + "|" +
+                        ad.getDescription() + "|" +
+                        ad.getTargetAudience() + "|" +
+                        ad.getDuration() + "|" +
+                        ad.getPlatformName() + "|" +
+                        ad.getPromotedItemName() + "|" +
+                        ad.getPromotedItemType()
+                );
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error saving advertisements to file.");
+        }
+    }
+
+    private void loadAdvertisementsFromFile() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME))) {
+            String line;
+            int maxId = 0;
+
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+
+                if (parts.length == 8) {
+                    int id = Integer.parseInt(parts[0]);
+                    String title = parts[1];
+                    String description = parts[2];
+                    String targetAudience = parts[3];
+                    int duration = Integer.parseInt(parts[4]);
+                    String platformName = parts[5];
+                    String promotedItemName = parts[6];
+                    String promotedItemType = parts[7];
+
+                    Advertisement ad = new Advertisement(
+                            id,
+                            title,
+                            description,
+                            targetAudience,
+                            duration,
+                            platformName,
+                            promotedItemName,
+                            promotedItemType
+                    );
+
+                    advertisements.add(ad);
+
+                    if (id > maxId) {
+                        maxId = id;
+                    }
+                }
+            }
+
+            nextAdvertisementId = maxId + 1;
+
+        } catch (IOException e) {
+            // File may not exist yet on first run, which is okay.
+        } catch (NumberFormatException e) {
+            System.out.println("Error reading advertisement data from file.");
+        }
     }
 }
