@@ -1,8 +1,7 @@
 package common.util;
 
-import common.wrapper.Option;
 import common.base.Selectable;
-
+import common.wrapper.Option;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -169,7 +168,7 @@ public class Terminal {
 
         for(T item : items){
             System.out.println(CYAN + "[" + item.getId() + "] " + RESET + item.getName());
-            select.put(Integer.toString(item.getId()), item);
+            select.put(item.getId(), item);
         }
         for(Option option : options){
             System.out.println(CYAN + "[" + option.getCommand() + "] " + RESET + option.getDescription());
@@ -198,5 +197,23 @@ public class Terminal {
         }
 
         return select.get(input);
+    }
+
+    public static String getInput(String header){
+        System.out.print(BOLD + CYAN + header + " > " + RESET);
+        return scanner.nextLine();
+    }
+
+    public static String getInputWithExit(String header, String typeName, boolean[] flag){
+        printSubHeader(header);
+        System.out.println(CYAN + "[(" + typeName + ")] " + RESET + "Name of " + typeName + ".");
+        System.out.println(CYAN + "[back] " + RESET + "Return to previous menu.");
+        System.out.print(BOLD + CYAN + "Choice > " + RESET);
+        String input = scanner.nextLine();
+        if(input.equals("back")){
+            flag[0] = false;
+            return null;
+        }
+        return input;
     }
 }
