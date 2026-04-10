@@ -11,11 +11,11 @@ public class Receipt implements Serializable {
 
     long id;
     Sale sale;
-    int timestamp;
+    Timestamp timestamp;
 
-    public Receipt(Sale s, int timestamp){
+    public Receipt(Sale s){
         this.sale = s;
-        this.timestamp = timestamp;
+        this.timestamp = s.getTimestamp();
         this.id = ID++;
     }
 
@@ -28,12 +28,20 @@ public class Receipt implements Serializable {
     }
 
     @Override
-    public String serialize(Serializer serializer) {
-        return "";
+    public String serialize() {
+        return ""+id+"|"+sale.getId();
     }
 
     @Override
     public Object deserialize(String[] line) {
         return null;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public long getSaleId(){
+        return sale.getId();
     }
 }

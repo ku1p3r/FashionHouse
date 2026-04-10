@@ -14,7 +14,7 @@ public class SalesSystem {
     private static SalesService service = new SalesService();
 
     static Screen cartScreen = new CartScreen(service);
-    static Screen checkoutScreen = new CheckoutScreen();
+    static Screen checkoutScreen = new CheckoutScreen(service);
     static Screen mainScreen = new MainScreen();
     static Screen productRemoveScreen = new ProductRemoveScreen(service);
     static Screen productSearchScreen = new ProductSearchScreen(service);

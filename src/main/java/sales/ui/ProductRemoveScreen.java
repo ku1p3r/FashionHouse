@@ -31,7 +31,7 @@ public class ProductRemoveScreen  implements Screen {
             }
         } else {
             System.out.println("You selected the following product to remove:\n");
-            System.out.println(service.getCartProduct(selected));
+            System.out.println(service.getCartProduct(selected-1));
             System.out.print("\n\n1: confirm\n2: cancel\n\nYour selection ---> ");
         }
     }
@@ -46,13 +46,14 @@ public class ProductRemoveScreen  implements Screen {
                 return ScreenInput.TO_CART;
             } else if(choice >= 1 && choice <= service.numItemsInCart()){
                 selected = choice;
+                productSelected = true;
                 return ScreenInput.NONE;
             } else {
                 return ScreenInput.NONE;
             }
         } else {
             if(choice == 1){
-                service.removeFromCart(service.getCartProduct(selected));
+                service.removeFromCart(service.getCartProduct(selected-1));
                 productSelected = false;
                 return ScreenInput.NONE;
             } else if(choice == 2) {

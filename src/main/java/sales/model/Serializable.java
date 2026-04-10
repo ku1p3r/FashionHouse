@@ -11,7 +11,7 @@ public interface Serializable {
      * Convert itself into a csv line
      * @return a pipe-delimited String to be stored in a csv file
      */
-    public String serialize(Serializer serializer);
+    public String serialize();
 
     /**
      * Convert a String back into the object

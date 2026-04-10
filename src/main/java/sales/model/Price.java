@@ -20,6 +20,14 @@ public class Price {
         this.cents = cents;
     }
 
+    public Price(double d){
+        int c = (int)(d * 100);
+        c %= 100;
+        int dol = (int)d;
+        this.cents = c;
+        this.dollars = dol;
+    }
+
     public Price(Price other){
         this.dollars = other.getDollars();
         this.cents = other.getCents();

@@ -4,7 +4,7 @@ import sales.ScreenInput;
 
 import java.util.Scanner;
 
-public class MainScreen  implements Screen {
+public class MainScreen implements Screen {
     @Override
     public void show() {
         System.out.print("""
@@ -12,8 +12,8 @@ public class MainScreen  implements Screen {
                 
                 1: new sale
                 2: exit
-                
-                select an option ---> """);
+                """);
+        System.out.print("Your selection ---> ");
     }
 
     @Override

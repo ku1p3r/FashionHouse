@@ -25,7 +25,8 @@ public class CartScreen implements Screen {
                 3: go to checkout
                 4: cancel
                 
-                select an option ---> """);
+                """);
+        System.out.print("Your selection ---> ");
     }
 
     @Override

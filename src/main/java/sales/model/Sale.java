@@ -22,8 +22,12 @@ public class Sale implements Serializable {
     public Sale(List<Product> items){
         this.id = ID++;
         this.cart = new ArrayList<>();
-        this.subTotal = new Price(0,0);
         this.timestamp = new Timestamp();
+
+        this.subTotal = new Price(0,0);
+        for(Product p : items){
+            subTotal = subTotal.add(new Price(p.getPrice()));
+        }
     }
 
     public Price getSubTotal() { return subTotal; }
@@ -34,6 +38,12 @@ public class Sale implements Serializable {
 
     private Price getTaxes() {
         return new Price(0, 0); //TODO
+    }
+
+    public long getId(){ return this.id; }
+
+    public Timestamp getTimestamp(){
+        return this.timestamp;
     }
 
     public String toString(){
@@ -47,8 +57,8 @@ public class Sale implements Serializable {
     }
 
     @Override
-    public String serialize(Serializer serializer) {
-        return "";
+    public String serialize() {
+        return ""+id+"|"+timestamp.toString()+"|"+getTotal().toString();
     }
 
     @Override

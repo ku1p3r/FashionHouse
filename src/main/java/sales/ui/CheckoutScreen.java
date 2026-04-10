@@ -1,33 +1,38 @@
 package sales.ui;
 
 import sales.ScreenInput;
+import sales.service.SalesService;
 
 import java.util.Scanner;
 
 public class CheckoutScreen  implements Screen {
+
+    private SalesService service;
+    private boolean saleConfirmed;
+
+    public CheckoutScreen(SalesService s){
+        this.saleConfirmed = false;
+        this.service = s;
+    }
+
     @Override
     public void show() {
-        System.out.print("""
-                Checkout
-                
-                1: confirm
-                2: return to cart
-                
-                select an option ---> """);
+        System.out.println("Checkout ($"+service.getTotal().toString()+")\n\n");
+        service.printCart();
+        System.out.println("\n\nEnter payment info, or 0 to exit\n\n");
+        System.out.print("Your selection ---> ");
     }
 
     @Override
     public ScreenInput processInput() {
         Scanner scn = new Scanner(System.in);
-        int choice = scn.nextInt();
+        String choice = scn.nextLine().trim();
 
-        if(choice == 1){
-            // TODO tell the service to save to csv
-            return ScreenInput.TO_MAIN;
-        } else if(choice == 2){
+        if(choice.equals("0")){
             return ScreenInput.TO_CART;
         } else {
-            return ScreenInput.EXIT;
+            service.saveSale();
+            return ScreenInput.TO_MAIN;
         }
     }
 
