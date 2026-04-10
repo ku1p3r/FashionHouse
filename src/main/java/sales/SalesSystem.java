@@ -11,13 +11,13 @@ import sales.ui.*;
 public class SalesSystem {
 
 
-    private static Service service = new SalesService();
+    private static SalesService service = new SalesService();
 
     static Screen cartScreen = new CartScreen(service);
     static Screen checkoutScreen = new CheckoutScreen();
     static Screen mainScreen = new MainScreen();
-    static Screen productRemoveScreen = new ProductRemoveScreen();
-    static Screen productSearchScreen = new ProductSearchScreen();
+    static Screen productRemoveScreen = new ProductRemoveScreen(service);
+    static Screen productSearchScreen = new ProductSearchScreen(service);
 
     static Screen currScreen;
 

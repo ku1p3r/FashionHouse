@@ -30,8 +30,4 @@ public class MainScreen  implements Screen {
         }
     }
 
-    @Override
-    public Screen next() {
-        return null;
-    }
 }

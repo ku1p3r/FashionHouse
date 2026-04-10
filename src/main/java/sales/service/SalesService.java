@@ -5,44 +5,84 @@ import sales.model.Sale;
 import sales.model.Receipt;
 import common.util.Serializer;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Mason Hart
  */
-public class SalesService implements Service {
+public class SalesService /* implements Service */ {
 
     private static final String SALES_TABLE_PATH = "res/sales.csv";
-    private static final String PRODUCT_TABLE_PATH = "res/products.csv";
+    private static final String PRODUCT_TABLE_PATH = "stores/fashionstore1.catalog";
 
     private Serializer saleSerializer;
+    private Serializer productSerializer;
     private List<Product> availableProducts;
-    private Sale currSale;
+    private List<Product> cart;
 
     public SalesService(){
-        currSale = new Sale();
-        saleSerializer = new Serializer(SALES_TABLE_PATH);
+        this.saleSerializer = new Serializer(SALES_TABLE_PATH);
+        this.productSerializer = new Serializer(PRODUCT_TABLE_PATH);
+
+        this.cart = new ArrayList<>();
+
+        // load available products
+        this.availableProducts = new ArrayList<>();
+        ArrayList<String> ids = productSerializer.get("id", String.class);
+        int rows = ids.size();
+        for (int i = 0; i < rows; i++) {
+           String id = productSerializer.get("id", i, String.class);
+           String name = productSerializer.get("name", i, String.class);
+           String category = productSerializer.get("category", i, String.class);
+           double price = productSerializer.get("price", i, Double.class);
+           int quantity = productSerializer.get("quantity", i, Integer.class);
+           String description = productSerializer.get("description", i, String.class);
+           String supplier = productSerializer.get("supplier", i, String.class);
+           availableProducts.add(new Product(id, name, category, price, quantity, description, supplier));
+        }
     }
 
-    public void saveSale() throws Exception {
-        currSale.serialize(saleSerializer);
+    public void newCart(){
+        this.cart = new ArrayList<>();
     }
 
-    public Sale getSale(int id){
-        return null;
+    public int numItemsInCart(){
+        return cart.size();
     }
 
-    public void registerReturn(Receipt r){
-        
+    public void printAvailableProducts(){
+        for(Product p : availableProducts){
+            System.out.println(p.toString());
+        }
     }
 
-    @Override
-    public void saveToDB() throws Exception {
-        saveSale();
+    public void printCart() {
+        for(Product p : cart){
+            System.out.println(p.toString());
+        }
     }
 
-    @Override
-    public Object getFromDB(int id) {
-        return getSale(id);
+    public void addToCart(String productID){
+        for(Product p : availableProducts){
+            if(p.getId().equals(productID)){
+                cart.add(p);
+                return;
+            }
+        }
+    }
+
+    public void removeFromCart(String productID){
+        for(int i = 0; i < cart.size(); i++){
+            if(cart.get(i).getId().equals(productID)){
+                cart.remove(i);
+                return;
+            }
+        }
+    }
+
+    public String getCartProduct(int selected) {
+        return cart.get(selected).getName();
     }
 }

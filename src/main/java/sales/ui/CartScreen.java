@@ -9,19 +9,21 @@ import java.util.Scanner;
 
 public class CartScreen implements Screen {
 
-    private Service service;
+    private SalesService service;
 
-    public CartScreen(Service service){
+    public CartScreen(SalesService service){
         this.service = service;
     }
 
     public void show(){
+        System.out.println("Your Cart\n");
+        service.printCart();
         System.out.print("""
-                Your Cart
                 
                 1: add items
                 2: remove items
-                3: cancel
+                3: go to checkout
+                4: cancel
                 
                 select an option ---> """);
     }
@@ -36,15 +38,12 @@ public class CartScreen implements Screen {
         } else if(choice == 2){
             return ScreenInput.TO_REMOVE;
         } else if(choice == 3){
+            return ScreenInput.TO_CHECKOUT;
+        } else if(choice == 4) {
             return ScreenInput.TO_MAIN;
-        } else {
+        } else{
             return ScreenInput.NONE;
         }
-    }
-
-    @Override
-    public Screen next() {
-        return null;
     }
 
 }

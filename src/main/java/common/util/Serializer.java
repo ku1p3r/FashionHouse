@@ -155,4 +155,8 @@ public class Serializer {
 
         throw new IllegalArgumentException("Unsupported type: " + type);
     }
+
+    public int numCols(){
+        return attributeList.size();
+    }
 }

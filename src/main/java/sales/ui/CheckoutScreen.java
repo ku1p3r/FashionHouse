@@ -31,9 +31,4 @@ public class CheckoutScreen  implements Screen {
         }
     }
 
-    @Override
-    public Screen next() {
-        return null;
-    }
-
 }

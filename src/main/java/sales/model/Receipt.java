@@ -1,7 +1,6 @@
 package sales.model;
 
 import common.util.Serializer;
-import sales.Serializable;
 
 /**
  * @author Mason Hart

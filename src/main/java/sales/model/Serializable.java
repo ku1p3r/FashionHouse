@@ -1,4 +1,4 @@
-package sales;
+package sales.model;
 
 import common.util.Serializer;
 

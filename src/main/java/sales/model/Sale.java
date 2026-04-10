@@ -1,6 +1,5 @@
 package sales.model;
 
-import sales.Serializable;
 import common.model.Product;
 import common.util.Serializer;
 
@@ -18,26 +17,16 @@ public class Sale implements Serializable {
     private long id;
     private List<Product> cart;
     private Price subTotal;
+    private Timestamp timestamp;
 
-    public Sale(){
+    public Sale(List<Product> items){
         this.id = ID++;
         this.cart = new ArrayList<>();
         this.subTotal = new Price(0,0);
+        this.timestamp = new Timestamp();
     }
 
-    public int addProduct(Product p){
-        cart.add(p);
-        return cart.size();
-    }
-
-    public List<Product> getProducts(){
-        return new ArrayList<>(cart);
-    }
-
-    public int removeProduct(int index){
-        cart.remove(index);
-        return cart.size();
-    }
+    public Price getSubTotal() { return subTotal; }
 
     public Price getTotal(){
         return subTotal.add(getTaxes());

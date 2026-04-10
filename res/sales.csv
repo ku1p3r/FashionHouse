@@ -1,4 +1,1 @@
-sale_id|timestamp
-1|1
-1|2
-1|3
+sale_id|timestamp|total

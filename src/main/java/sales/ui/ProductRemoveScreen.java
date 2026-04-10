@@ -1,19 +1,39 @@
 package sales.ui;
 
 import sales.ScreenInput;
+import sales.service.SalesService;
 
 import java.util.Scanner;
 
 public class ProductRemoveScreen  implements Screen {
+
+    private SalesService service;
+    private boolean productSelected;
+    private int selected;
+
+    public ProductRemoveScreen(SalesService s){
+        this.selected = -1;
+        this.productSelected = false;
+        this.service = s;
+    }
+
     @Override
     public void show() {
-        System.out.print("""
-                Remove a product
-                
-                0: return to cart
-                [1-x]: remove
-                
-                select an option ---> """);
+        if(!productSelected){
+            int numItems = service.numItemsInCart();
+
+            System.out.println("Remove Product From Cart\n");
+            if(numItems <= 0){
+                System.out.print("No items\n\n0: back to cart\n\nYour selection ---> ");
+            } else {
+                service.printCart();
+                System.out.printf("\n0: return to cart\n[1-%d]: select item\n\nYour selection ---> ", service.numItemsInCart());
+            }
+        } else {
+            System.out.println("You selected the following product to remove:\n");
+            System.out.println(service.getCartProduct(selected));
+            System.out.print("\n\n1: confirm\n2: cancel\n\nYour selection ---> ");
+        }
     }
 
     @Override
@@ -21,15 +41,27 @@ public class ProductRemoveScreen  implements Screen {
         Scanner scn = new Scanner(System.in);
         int choice = scn.nextInt();
 
-        if(choice == 0){
-            return ScreenInput.TO_CART;
+        if(!productSelected){
+            if(choice == 0){
+                return ScreenInput.TO_CART;
+            } else if(choice >= 1 && choice <= service.numItemsInCart()){
+                selected = choice;
+                return ScreenInput.NONE;
+            } else {
+                return ScreenInput.NONE;
+            }
         } else {
-            return ScreenInput.NONE;
+            if(choice == 1){
+                service.removeFromCart(service.getCartProduct(selected));
+                productSelected = false;
+                return ScreenInput.NONE;
+            } else if(choice == 2) {
+                productSelected = false;
+                return ScreenInput.NONE;
+            } else {
+                return ScreenInput.NONE;
+            }
         }
     }
 
-    @Override
-    public Screen next() {
-        return null;
-    }
 }
