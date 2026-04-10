@@ -2,7 +2,7 @@ package advertising;
 /*
  * Advertising Module - Iteration 1
  *
- *  Advertising platform such as Instagram or Vogue.
+ *  Advertising platforms.
  * Author: Gilbert
  */
 public class Platform {

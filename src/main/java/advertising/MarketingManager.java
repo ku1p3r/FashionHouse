@@ -31,7 +31,7 @@ public class MarketingManager {
                                       int duration,
                                       String promotedItemName,
                                       String promotedItemType,
-                                      String platformName) {
+                                  String platformName) {
         system.registerAdvertisement(title, description, targetAudience, duration,
                 promotedItemName, promotedItemType, platformName);
     }

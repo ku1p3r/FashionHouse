@@ -115,11 +115,11 @@ public class AdvertisingSystem {
     }
 
     public boolean registerAdvertisement(String title,
-                                         String description,
+                          String description,
                                          String targetAudience,
-                                         int duration,
+                               int duration,
                                          String promotedItemName,
-                                         String promotedItemType,
+                                  String promotedItemType,
                                          String platformName) {
         displayAdForm();
 
