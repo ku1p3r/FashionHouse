@@ -53,7 +53,7 @@ public class ProductRemoveScreen  implements Screen {
             }
         } else {
             if(choice == 1){
-                service.removeFromCart(service.getCartProduct(selected-1));
+                service.removeFromCart(selected-1);
                 productSelected = false;
                 return ScreenInput.NONE;
             } else if(choice == 2) {

@@ -76,17 +76,12 @@ public class SalesService /* implements Service */ {
         }
     }
 
-    public void removeFromCart(String productID){
-        for(int i = 0; i < cart.size(); i++){
-            if(cart.get(i).getId().equals(productID)){
-                cart.remove(i);
-                return;
-            }
-        }
+    public void removeFromCart(int i){
+        cart.remove(i);
     }
 
     public String getCartProduct(int selected) {
-        return cart.get(selected).getName();
+        return cart.get(selected).getId();
     }
 
     public Price getTotal(){

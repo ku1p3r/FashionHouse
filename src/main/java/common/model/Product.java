@@ -73,6 +73,7 @@ public class Product implements Selectable {
     public int hashCode() { return Objects.hash(id); }
 
     public String toString() {
-        return toFileLine();
+        return String.format("%s|%s|%s|%f|%d|%s|%s\n",
+                id, name, category, price, quantity, description, supplier);
     }
 }
