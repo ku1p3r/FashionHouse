@@ -18,6 +18,7 @@ public class SalesSystem {
     static Screen mainScreen = new MainScreen();
     static Screen productRemoveScreen = new ProductRemoveScreen(service);
     static Screen productSearchScreen = new ProductSearchScreen(service);
+    static Screen viewSalesScreen = new ViewSalesScreen(service);
 
     static Screen currScreen;
 
@@ -47,6 +48,9 @@ public class SalesSystem {
                 }
                 case TO_SEARCH -> {
                     currScreen = productSearchScreen;
+                }
+                case TO_SALES  -> {
+                    currScreen = viewSalesScreen;
                 }
             }
 

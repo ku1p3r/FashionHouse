@@ -24,6 +24,7 @@ public class SalesService /* implements Service */ {
     private Serializer receiptSerializer;
     private List<Product> availableProducts;
     private List<Product> cart;
+    private List<String> pastSales;
 
     public SalesService(){
 
@@ -49,6 +50,22 @@ public class SalesService /* implements Service */ {
            String supplier = productSerializer.get("supplier", i, String.class);
            availableProducts.add(new Product(id, name, category, price, quantity, description, supplier));
         }
+
+        loadPastSales();
+    }
+
+    public void loadPastSales(){
+        this.pastSales = new ArrayList<>();
+        ArrayList<String> ids = saleSerializer.get("sale_id", String.class);
+        int rows = ids.size();
+        for (int i = 0; i < rows; i++) {
+            String id = saleSerializer.get("sale_id", i, String.class);
+            String name = saleSerializer.get("timestamp", i, String.class);
+            String category = saleSerializer.get("total", i, String.class);
+            String saleString = String.format("%s|%s|%s", id, name, category);
+            pastSales.add(saleString);
+            System.out.println(saleString);
+        }
     }
 
     public int numItemsInCart(){
@@ -67,6 +84,12 @@ public class SalesService /* implements Service */ {
         }
     }
 
+    public void printSales(){
+        for(String s : pastSales){
+            System.out.println(s);
+        }
+    }
+
     public void addToCart(String productID){
         for(Product p : availableProducts){
             if(p.getId().equals(productID)){
@@ -78,6 +101,10 @@ public class SalesService /* implements Service */ {
 
     public void removeFromCart(int i){
         cart.remove(i);
+    }
+
+    public void emptyCart(){
+        cart = new ArrayList<>();
     }
 
     public String getCartProduct(int selected) {
@@ -116,5 +143,7 @@ public class SalesService /* implements Service */ {
             System.out.println("Fatal Error: Exception while saving sale");
             System.err.println(e);
         }
+
+        loadPastSales();
     }
 }

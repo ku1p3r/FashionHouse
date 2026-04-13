@@ -7,5 +7,6 @@ public enum ScreenInput {
     TO_CHECKOUT,
     TO_MAIN,
     TO_REMOVE,
-    TO_SEARCH
+    TO_SEARCH,
+    TO_SALES
 }

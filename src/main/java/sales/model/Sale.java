@@ -5,13 +5,14 @@ import common.util.Serializer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author Mason Hart
  */
 public class Sale implements Serializable {
 
-    private static long ID = 0;
+    private static long ID = new Random().nextLong(0, 2_000_000_000); // this is a hack :/
     private static final double taxRate = 0.12;
 
     private long id;

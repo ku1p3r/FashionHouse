@@ -12,6 +12,7 @@ public class MainScreen implements Screen {
                 
                 1: new sale
                 2: exit
+                3: past sales
                 """);
         System.out.print("Your selection ---> ");
     }
@@ -25,6 +26,8 @@ public class MainScreen implements Screen {
             return ScreenInput.TO_CART;
         } else if(choice == 2){
             return ScreenInput.EXIT;
+        } else if(choice == 3){
+            return ScreenInput.TO_SALES;
         } else {
             return ScreenInput.NONE;
         }

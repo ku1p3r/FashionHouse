@@ -32,6 +32,7 @@ public class CheckoutScreen  implements Screen {
             return ScreenInput.TO_CART;
         } else {
             service.saveSale();
+            service.emptyCart();
             return ScreenInput.TO_MAIN;
         }
     }
