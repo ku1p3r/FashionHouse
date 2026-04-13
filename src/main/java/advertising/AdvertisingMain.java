@@ -35,7 +35,7 @@ public class AdvertisingMain {
             System.out.println("\n=== Advertising Module ===");
             System.out.println("1. Register New Advertisement");
             System.out.println("2. View All Advertisements");
-            ystem.out.println("3. Exit");
+            System.out.println("3. Exit");
             System.out.print("Choose an option: ");
 
             String choice = scanner.nextLine();
