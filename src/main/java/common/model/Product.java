@@ -71,4 +71,9 @@ public class Product implements Selectable {
 
     @Override
     public int hashCode() { return Objects.hash(id); }
+
+    public String toString() {
+        return String.format("%s|%s|%s|%f|%d|%s|%s\n",
+                id, name, category, price, quantity, description, supplier);
+    }
 }

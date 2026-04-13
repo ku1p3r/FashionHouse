@@ -1,2 +1,5 @@
 src/*.class
 out/*
+.idea/
+.idea/*
+*.iml
