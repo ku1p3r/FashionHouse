@@ -62,8 +62,8 @@ public class StoreSelectionScreen {
                     Terminal.pressEnterToContinue();
                 }
             } catch (NumberFormatException e) {
-                Path direct = dataDir.resolve(input.endsWith(".catalog") ? input : input + ".catalog");
-                return loadStore(direct);
+                    Terminal.printError("Invalid selection.");
+                    Terminal.pressEnterToContinue();
             }
         }
     }

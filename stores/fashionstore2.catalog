@@ -1,3 +1,11 @@
-id|name|category|price|quantity|description|supplier
-P-E34A08|testitem|testcategory|100.0|13|test description amazing awesome super cool|testsupplier
-P-CB0B91|testing|testing|10.0|32|wo|testing
+id|name|category|price|quantity|description|supplier|materials
+P-3E7A91|Velvet Evening Gown|Womenswear|310.00|9|Luxurious velvet gown with fitted bodice and slit detail|21|M-006:2.0
+P-8C2D56|Linen Summer Shirt|Menswear|58.99|48|Breathable linen shirt perfect for warm weather|18|M-001:1.5
+P-1B9F73|Quilted Crossbody Bag|Accessories|175.50|26|Compact quilted bag with chain strap|25|M-006:1.2
+P-6A4E22|High-Waist Trousers|Womenswear|95.00|34|Tailored trousers with a flattering high-rise fit|21|M-001:2.0
+P-9D5C88|Bomber Jacket|Outerwear|135.75|19|Lightweight bomber jacket with ribbed trim|14|M-001:2.5
+P-2F8B30|Graphic Tee|Casualwear|35.00|80|Cotton t-shirt with minimalist graphic print|13|M-001:1.0
+P-7A1E64|Suede Ankle Boots|Footwear|210.00|16|Soft suede boots with block heel|16|M-003:1.0
+P-5C3D99|Wrap Dress|Womenswear|120.00|27|Classic wrap dress with adjustable waist tie|21|M-001:1.8
+P-4E6B12|Wool Scarf|Accessories|65.00|50|Warm wool scarf with subtle pattern|25|M-004:1.0
+P-8F9A45|Tailored Vest|Menswear|85.25|22|Structured vest designed for formal layering|18|M-004:2.0

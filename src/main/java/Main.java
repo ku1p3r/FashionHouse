@@ -3,9 +3,8 @@ import analytics.AnalyticsProgram;
 import catalog.CatalogProgram;
 import common.util.Terminal;
 import common.wrapper.Option;
-import sales.SalesSystem;
-
 import java.util.List;
+import sales.SalesSystem;
 
 
 public class Main{

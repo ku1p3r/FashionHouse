@@ -1,10 +1,10 @@
 package catalog.ui;
 
-import common.model.Product;
 import catalog.service.CatalogService;
+import common.model.Product;
 import common.util.Terminal;
-
 import java.io.IOException;
+import production.ProductionSelectionScreen;
 
 /**
  * Full product detail view with edit / delete actions.
@@ -40,16 +40,22 @@ public class DetailScreen {
             // Pricing & Stock block
             Terminal.printSubHeader("Pricing & Stock");
             Terminal.printField("Price",    String.format("$%.2f", product.getPrice()));
-            Terminal.printField("Quantity", String.valueOf(product.getQuantity()));
+            if (product.getQuantity() < 5) {
+                Terminal.printFieldWithError("Quantity", String.valueOf(product.getQuantity()), "(low on stock)");
+            } else {
+                Terminal.printField("Quantity", String.valueOf(product.getQuantity()));
+            }
 
             // Details block
             Terminal.printSubHeader("Details");
             Terminal.printField("Description", product.getDescription());
+            Terminal.printField("Materials", product.getMaterials() == null ? "" : product.getMaterials());
 
             // Actions
             Terminal.println();
             Terminal.printLine();
             Terminal.printMenuOption("edit", "Edit this product");
+            Terminal.printMenuOption("restock", "Restock this product");
             Terminal.printMenuOption("delete", "Delete this product");
             Terminal.printMenuOption("back", "Back to search");
             Terminal.println();
@@ -92,6 +98,10 @@ public class DetailScreen {
                     }
                 }
                 case "back" -> { return Result.BACK; }
+                case "restock" -> {
+                    ProductionSelectionScreen prodScreen = new ProductionSelectionScreen(service);
+                    prodScreen.run();
+                }
                 default  -> { /* ignore unknown */ }
             }
         }

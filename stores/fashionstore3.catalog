@@ -1,2 +1,6 @@
-id|name|category|price|quantity|description|supplier
-P-6CEA22|1|2|4.0|5|6|3
+id|name|category|price|quantity|description|supplier|materials
+P-1C7E52|Satin Slip Dress|Womenswear|140.00|24|Smooth satin slip dress with minimalist silhouette|21|M-006:1.2
+P-9A4D83|Double-Breasted Suit|Menswear|320.00|11|Classic double-breasted suit with modern tailoring|18|M-004:3.5
+P-6B2F17|Leather Tote Bag|Accessories|260.00|18|Spacious leather tote with reinforced handles|25|M-006:2.0
+P-3D8A60|Cropped Hoodie|Activewear|68.50|45|Soft cropped hoodie with relaxed fit|13|M-001:1.3
+P-7E5C29|Platform Loafers|Footwear|155.00|20|Chunky platform loafers with polished finish|16|M-003:1.0

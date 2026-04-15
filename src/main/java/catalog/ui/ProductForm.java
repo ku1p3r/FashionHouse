@@ -1,10 +1,9 @@
 package catalog.ui;
 
-import common.model.Product;
 import catalog.model.ValidationResult;
 import catalog.service.CatalogService;
+import common.model.Product;
 import common.util.Terminal;
-
 import java.util.UUID;
 
 /**
@@ -76,6 +75,10 @@ public class ProductForm {
                     "Description :", draft.getDescription(), lastValidation.getError("description"));
             if (isCancelSignal(descInput)) return null;
 
+                String materialsInput = Terminal.promptWithDefault(
+                    "Materials (format: M-001:2.0,M-002:0.5)", draft.getMaterials() == null ? "" : draft.getMaterials());
+                if (isCancelSignal(materialsInput)) return null;
+
             // ── Parse numerics ─────────────────────────────────────────────
             double price = draft.getPrice();
             int quantity = draft.getQuantity();
@@ -104,6 +107,7 @@ public class ProductForm {
             draft.setPrice(price);
             draft.setQuantity(quantity);
             draft.setDescription(descInput);
+            draft.setMaterials(materialsInput);
 
             // ── Validate business rules ────────────────────────────────────
             lastValidation = service.validate(draft, mode == Mode.CREATE);
@@ -140,11 +144,12 @@ public class ProductForm {
         Terminal.printField("Price",       String.format("$%.2f", p.getPrice()));
         Terminal.printField("Quantity",    String.valueOf(p.getQuantity()));
         Terminal.printField("Description", p.getDescription());
+        Terminal.printField("Materials",   p.getMaterials() == null ? "" : p.getMaterials());
     }
 
     private Product blankProduct(String prefillName) {
         return new Product(
-            generateId(), prefillName != null ? prefillName : "", "", 0.0, 0, "", ""
+            generateId(), prefillName != null ? prefillName : "", "", 0.0, 0, "", "", ""
         );
     }
 

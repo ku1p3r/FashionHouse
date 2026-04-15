@@ -74,10 +74,12 @@ public class Terminal {
     }
 
     public static void printFieldWithError(String label, String value, String error) {
-        printField(label, value);
+        String paddedLabel = String.format("%-14s", label);
+        System.out.print("  " + RED + paddedLabel  + " " + value + RESET);
         if (error != null) {
-            System.out.println("  " + " ".repeat(15) + RED + "  -> " + error + RESET);
+            System.out.print("  " + " ".repeat(15) + RED + "  -> " + error + RESET);
         }
+        System.out.println();
     }
 
     public static void printMenuOption(String key, String description) {
@@ -124,7 +126,7 @@ public class Terminal {
     public static void printTableHeader(String... cols) {
         StringBuilder sb = new StringBuilder("  ");
         for (String col : cols) {
-            sb.append(BOLD).append(String.format("%-22s", col)).append(RESET);
+            sb.append(BOLD).append(String.format("%-25s", col)).append(RESET);
         }
         System.out.println(sb);
         printLine();
@@ -134,10 +136,28 @@ public class Terminal {
         String indexStr = DIM + String.format("%2d.", index) + RESET + "  ";
         StringBuilder sb = new StringBuilder("  " + indexStr);
         for (int i = 0; i < cols.length; i++) {
-            sb.append(String.format("%-20s", truncate(cols[i], 19)));
+            sb.append(String.format("%-25s", truncate(cols[i], 22)));
             if (i < cols.length - 1) sb.append("  ");
         }
         System.out.println(sb);
+    }
+
+    /**
+     * Print a table row and optionally color the entire line (useful when ANSI
+     * color codes would otherwise break column width calculations if embedded
+     * inside individual column strings).
+     */
+    public static void printTableRowColored(String colorRow, int index, String... cols) {
+        String indexStr = String.format("%2d.", index) + "  ";
+        StringBuilder sb = new StringBuilder("  " + indexStr);
+        for (int i = 0; i < cols.length; i++) {
+            int max = (i == cols.length - 1) ? 40 : 22;
+            sb.append(String.format("%-25s", truncate(cols[i], max)));
+            if (i < cols.length - 1) sb.append("  ");
+        }
+        String out = sb.toString();
+        if (colorRow != null && !colorRow.isBlank() && !colorRow.equals(RESET)) System.out.println(colorRow + out + RESET);
+        else System.out.println(out);
     }
 
     private static String truncate(String s, int max) {
