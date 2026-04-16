@@ -1,9 +1,8 @@
 package sales.ui;
 
-import sales.SalesSystem;
+import common.base.Screen;
 import sales.ScreenInput;
 import sales.service.SalesService;
-import sales.service.Service;
 
 import java.util.Scanner;
 

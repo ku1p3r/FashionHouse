@@ -1,5 +1,6 @@
 package sales.ui;
 
+import common.base.Screen;
 import sales.ScreenInput;
 import sales.service.SalesService;
 

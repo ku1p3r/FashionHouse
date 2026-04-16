@@ -1,7 +1,7 @@
 package sales;
 
+import common.base.Screen;
 import sales.service.SalesService;
-import sales.service.Service;
 import sales.ui.*;
 
 
