@@ -1,11 +1,8 @@
 package hr.ui;
 
-import common.base.Screen;
-import sales.ScreenInput;
+import hr.ScreenInput;
 
-public class MainScreen implements Screen {
-
-
+public class ListApplicationsScreen implements Screen {
     @Override
     public void show() {
 

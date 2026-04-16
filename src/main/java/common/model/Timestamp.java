@@ -6,6 +6,9 @@ import java.time.LocalDateTime;
  * @author Mason Hart
  */
 public class Timestamp {
+
+    public enum Weekday { MON, TUE, WED, THU, FRI, SAT, SUN }
+
     private int year;
     private int month;
     private int day;
@@ -14,6 +17,10 @@ public class Timestamp {
     private int second;
                                             /* J   F   Mar A   May Jun Jul Aug Sep O   N  D */
     private final static int[] daysPerMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    private final static Weekday[] monthStartDay = {
+            Weekday.THU, Weekday.SUN, Weekday.SUN, Weekday.WED, Weekday.FRI, Weekday.MON, Weekday.WED, Weekday.SAT,
+            Weekday.TUE, Weekday.THU, Weekday.SUN, Weekday.TUE};
+    public final static int CURR_YEAR = 2026;
 
     public Timestamp(){
         LocalDateTime date = LocalDateTime.now();
@@ -26,7 +33,7 @@ public class Timestamp {
     }
 
     public Timestamp(int y, int m, int d, int h, int min){
-        if (y < 0 || y > 3000) {
+        if (y != CURR_YEAR) {
             throw new IllegalArgumentException("Invalid Year");
         } else if (m < 1 || m > 12){
             throw new IllegalArgumentException("Invalid Month");
@@ -95,9 +102,23 @@ public class Timestamp {
         return this.isAfter(l) && this.isBefore(r);
     }
 
-    public Timestamp round(){
+    public Timestamp roundToNextMinute(){
         return this.second < 30
                 ? new Timestamp(year,month,day,hour,minute)
                 : new Timestamp(year,month,day,hour,minute + 1);
+    }
+
+    public Timestamp roundToNextHour() {
+        return this.minute < 30
+                ? new Timestamp(year,month,day,hour,0)
+                : new Timestamp(year,month,day,hour + 1, 0);
+    }
+
+    public Weekday getWeekday(){
+        return null; // TODO
+    }
+
+    public Weekday next(Weekday query){
+        return null; // TODO
     }
 }

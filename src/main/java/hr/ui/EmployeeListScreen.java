@@ -3,9 +3,7 @@ package hr.ui;
 import common.base.Screen;
 import sales.ScreenInput;
 
-public class MainScreen implements Screen {
-
-
+public class EmployeeListScreen implements Screen {
     @Override
     public void show() {
 

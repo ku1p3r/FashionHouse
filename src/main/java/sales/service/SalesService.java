@@ -15,9 +15,9 @@ import java.util.List;
  */
 public class SalesService /* implements Service */ {
 
-    private static final String SALES_TABLE_PATH = "res/sales.csv";
+    private static final String SALES_TABLE_PATH = "res/sales/sales.csv";
     private static final String PRODUCT_TABLE_PATH = "stores/fashionstore1.catalog";
-    private static final String RECEIPT_TABLE_PATH = "res/receipt.csv";
+    private static final String RECEIPT_TABLE_PATH = "res/sales/receipt.csv";
 
     private Serializer saleSerializer;
     private Serializer productSerializer;
