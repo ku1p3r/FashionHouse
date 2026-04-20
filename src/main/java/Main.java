@@ -4,7 +4,7 @@ import catalog.CatalogProgram;
 import common.util.Terminal;
 import common.wrapper.Option;
 import sales.SalesSystem;
-
+import advertising.AdvertisingMain;
 import java.util.List;
 
 
@@ -20,6 +20,7 @@ public class Main{
          Option catalog = new Option("1", "Product Catalog and Inventory", () -> CatalogProgram.main(args));
          Option analytics = new Option("2", "DBMS and Analytics", () -> AnalyticsProgram.main(args));
          Option sales = new Option("3", "Sales & Retailer Console", () -> SalesSystem.main(args));
+         Option advertising = new Option("4", "Advertising", () -> AdvertisingMain.main(args));
          // TODO add other services once their Main file is added
 
          boolean[] running = {true};
@@ -30,6 +31,7 @@ public class Main{
                      catalog,
                      analytics,
                      sales,
+                     advertising,
                      /* TODO add other programs */
                      exit
              ));
