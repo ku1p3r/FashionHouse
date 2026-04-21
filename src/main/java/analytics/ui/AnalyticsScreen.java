@@ -1,4 +1,4 @@
-package analytics.util;
+package analytics.ui;
 
 import analytics.services.AnalyticsService;
 import common.model.Product;

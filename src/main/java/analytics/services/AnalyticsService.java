@@ -18,6 +18,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Service for managing and storing analytics.
+ *
+ * Author: Jase Beaubien
+ */
 public class AnalyticsService {
     private static final String[] RETAILER_HEADER = new String[]{"period","product","initial","stocked","sold"};
 
