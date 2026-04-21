@@ -1,0 +1,2 @@
+1|Main Headquarters|New York|2
+2|Warehouse Facility|New Jersey|1
