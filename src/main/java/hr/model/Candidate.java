@@ -1,5 +1,8 @@
 package hr.model;
 
+/**
+ * @author Mason Hart
+ */
 public class Candidate implements Comparable<Candidate>{
 
     private long id;

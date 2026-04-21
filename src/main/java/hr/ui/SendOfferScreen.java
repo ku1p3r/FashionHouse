@@ -52,7 +52,7 @@ public class SendOfferScreen implements Screen {
             return ScreenInput.TO_CANDIDATE;
         } else if(choice == 1){
 
-            // TODO - set the application as closed and add the candidate as an employee
+            service.acceptCandidate();
             // OPT - send a notification to the relevant department
 
             return ScreenInput.TO_VIEW_APPLICATIONS;
