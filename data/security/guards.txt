@@ -1,0 +1,5 @@
+1,Alice,9,VIP|Crowd,true
+2,Bob,4,Basic,true
+3,Charlie,7,Crowd|Surveillance,false
+4,Diana,6,Crowd|AccessControl,true
+5,Ethan,3,Basic|Patrol,true
