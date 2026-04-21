@@ -1,9 +1,8 @@
 package security;
 
+import advertising.AdvertisingSystem;
+import advertising.Event;
 import java.util.*;
-
-import events.*;
-
 public class SecurityProgram {
 
     private static Scanner scanner = new Scanner(System.in);
