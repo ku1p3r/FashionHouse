@@ -20,7 +20,7 @@ public class AnalyticsProgram {
                     new Option("view", "Analytics summaries.", () -> {
                         new AnalyticsScreen(analyticsService);
                     }),
-                    new Option("trend", "Observe trends.", () -> {
+                    new Option("stats", "View and manage statistics.", () -> {
                         new TrendService();
                     }),
                     new Option("back", "Quit to main screen.", () -> running[0] = false)

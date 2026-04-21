@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -63,10 +64,9 @@ public class Retailer implements Selectable {
                         }
                         String[] parts = line.split("\\|");
                         if (parts.length == 2) {
-                            String productId = parts[0].trim();
+                            String productKey = parts[0].trim();
                             int sold = Integer.parseInt(parts[1].trim());
-                            // Create a minimal Product with the id from the report
-                            Product product = new Product(productId, productId, "", 0, 0, "", "");
+                            Product product = new Product(productKey, productKey, "", 0, 0, "", "");
                             productSet.add(product);
                             sales.put(product, sold);
                         }
@@ -92,9 +92,46 @@ public class Retailer implements Selectable {
         }
         int totalSales = 0;
         for (Product product : products) {
-            totalSales += report.sales().getOrDefault(product, 0);
+            totalSales += getReportedSales(product, report);
         }
         return totalSales;
+    }
+
+    public int getSales(Product product, Period period) {
+        SalesReport report = salesReports.get(period);
+        if (report == null) {
+            return 0;
+        }
+        return getReportedSales(product, report);
+    }
+
+    private int getReportedSales(Product requestedProduct, SalesReport report) {
+        for(Map.Entry<Product, Integer> saleEntry : report.sales().entrySet()){
+            if(productsMatch(requestedProduct, saleEntry.getKey())){
+                return saleEntry.getValue();
+            }
+        }
+        return 0;
+    }
+
+    private boolean productsMatch(Product requestedProduct, Product reportedProduct) {
+        if(requestedProduct.equals(reportedProduct)){
+            return true;
+        }
+
+        String requestedId = requestedProduct.getId();
+        String requestedName = requestedProduct.getName();
+        String reportedId = reportedProduct.getId();
+        String reportedName = reportedProduct.getName();
+
+        return matchesValue(requestedId, reportedId)
+                || matchesValue(requestedId, reportedName)
+                || matchesValue(requestedName, reportedId)
+                || matchesValue(requestedName, reportedName);
+    }
+
+    private boolean matchesValue(String left, String right) {
+        return left != null && left.equalsIgnoreCase(right);
     }
 
     @Override
