@@ -60,12 +60,14 @@ public class Serializer {
             }
 
             while((line = reader.readLine()) != null){
-                // For body lines.
-                int index = 0;
-                for(String s : line.split("\\" + delimiter)){
-                    String key = attributeList.get(index++);
-                    attributes.get(key).add(s);
-                    //System.out.println("Added value '" + s + "' under key '" + key + "'\n");
+                if(line.isBlank()) continue;
+                String[] tokens = line.split("\\" + delimiter, -1);
+                int numColumns = attributeList.size();
+                for(int index = 0; index < numColumns; index++){
+                    String value = index < tokens.length ? tokens[index].trim() : "";
+                    String key = attributeList.get(index);
+                    attributes.get(key).add(value);
+                    //System.out.println("Added value '" + value + "' under key '" + key + "'\n");
                 }
             }
         } catch (FileNotFoundException e) {

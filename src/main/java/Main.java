@@ -21,7 +21,7 @@ public class Main{
          Option analytics = new Option("2", "DBMS and Analytics", () -> AnalyticsProgram.main(args));
          Option sales = new Option("3", "Sales & Retailer Console", () -> SalesSystem.main(args));
          Option production = new Option("4", "Production Management", () -> ProductionProgram.main(args));
-         // TODO add other services once their Main file is added
+         // TODO add other services once their Main file is added4
 
          boolean[] running = {true};
          Option exit = new Option("quit", "Exit program", () -> running[0] = false);
