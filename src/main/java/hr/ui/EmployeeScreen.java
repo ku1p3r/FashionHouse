@@ -6,6 +6,9 @@ import hr.service.HRService;
 
 import java.util.Scanner;
 
+/**
+ * @author Mason Hart
+ */
 public class EmployeeScreen implements Screen {
 
     private HRService service;
