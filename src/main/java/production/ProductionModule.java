@@ -1,13 +1,12 @@
 package production;
 
+import common.base.iScreen;
 import common.util.Terminal;
-import analytics.services.AnalyticsService;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import production.ProductionBatch.Status;
-import common.base.iScreen;
 
 public class ProductionModule implements iScreen {
 
@@ -529,21 +528,6 @@ public class ProductionModule implements iScreen {
         Terminal.printSuccess("Production COMPLETED for batch " + batch.getId() + "!");
         Terminal.printSuccess("Added " + batch.getBatchSize() + " unit(s) of '"
                 + batch.getProductName() + "' to product catalog.");
-
-        // Offer to log stocked units to retailer analytics (uses AnalyticsService.stock)
-        try {
-            AnalyticsService analyticsService = new AnalyticsService();
-            if (Terminal.confirm("Log stocked units to retailer analytics?")) {
-                String storeName = Terminal.prompt("Store name (e.g. fashionstore1):");
-                LocalDate now = LocalDate.now();
-                int month = now.getMonthValue();
-                int year = now.getYear();
-                analyticsService.stock(storeName, batch.getProductName(), month, year, batch.getBatchSize());
-                Terminal.printSuccess("Logged " + batch.getBatchSize() + " units to analytics for store " + storeName + ".");
-            }
-        } catch (Exception e) {
-            Terminal.printError("Failed to log analytics: " + e.getMessage());
-        }
 
         // Alt Flow 14a: Check for newly low stock after material deduction
         List<Material> lowStock = matRepo.getLowStock();

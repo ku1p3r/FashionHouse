@@ -2,7 +2,6 @@ package common.util;
 
 import common.model.Product;
 import common.model.Retailer;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +33,8 @@ public class EntityLoader {
                             serializer.get("price", i, Double.class),
                             serializer.get("quantity", i, Integer.class),
                             serializer.get("description", i, String.class),
-                            serializer.get("supplier", i, String.class)
+                            serializer.get("supplier", i, String.class),
+                            serializer.get("materials", i, String.class)
                     ));
 
                     nameToProduct.put(serializer.get("name", i, String.class), allProducts.get(allProducts.size() - 1));

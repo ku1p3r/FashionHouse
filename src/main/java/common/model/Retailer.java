@@ -3,7 +3,6 @@ package common.model;
 import common.base.Selectable;
 import common.wrapper.Period;
 import common.wrapper.SalesReport;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -71,7 +70,7 @@ public class Retailer implements Selectable {
                         if(parts.length == 2){
                             String productKey = parts[0].trim();
                             int sold = Integer.parseInt(parts[1].trim());
-                            Product product = new Product(productKey, productKey, "", 0, 0, "", "");
+                            Product product = new Product(productKey, productKey, "", 0, 0, "", "", "");
                             productSet.add(product);
                             sales.put(product, sold);
                         }
