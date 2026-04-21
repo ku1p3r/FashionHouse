@@ -1,4 +1,4 @@
-package sales.ui;
+package common.base;
 
 import sales.ScreenInput;
 

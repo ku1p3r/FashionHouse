@@ -1,7 +1,9 @@
 package production;
 
+import common.model.Timestamp;
 import common.util.Serializer;
 import common.util.Terminal;
+import hr.model.Employee;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,10 +20,14 @@ public class AuthService {
             Serializer s = new Serializer(DataPaths.EMPLOYEES);
             for (int i = 0; i < s.size(); i++) {
                 employees.add(new Employee(
-                        s.get("id",   i, String.class),
+                        s.get("id",   i, Long.class),
                         s.get("name", i, String.class),
-                        s.get("pin",  i, String.class),
-                        s.get("role", i, String.class)
+                        s.get("position",  i, String.class),
+                        s.get("dept", i, String.class),
+                        s.get("salary", i, Integer.class),
+                        new Timestamp(s.get("start", i, String.class)),
+                        s.get("active", i, Boolean.class),
+                        s.get("pin", i, String.class)
                 ));
             }
         } catch (Exception e) {
@@ -55,9 +61,10 @@ public class AuthService {
                 continue;
             }
 
-            if (requiredRole != null && !emp.getRole().equalsIgnoreCase(requiredRole)) {
+            if (requiredRole != null && !emp.getTitle().equalsIgnoreCase(requiredRole)) {
                 Terminal.printError("Access denied. Required role: " + requiredRole);
-                Terminal.printInfo("Your role: " + emp.getRole());
+                Terminal.printInfo("Your role: " + emp.getTitle());
+                Terminal.pressEnterToContinue();
                 return null;
             }
 
@@ -71,7 +78,11 @@ public class AuthService {
 
     private Employee findById(String id) {
         for (Employee e : employees) {
-            if (e.getId().equalsIgnoreCase(id)) return e;
+            try {
+                if (e.getId() == Long.parseLong(id)) return e;
+            } catch (NumberFormatException ex) {
+                break;
+            }
         }
         return null;
     }
