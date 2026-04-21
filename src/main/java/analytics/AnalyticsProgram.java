@@ -1,8 +1,8 @@
 package analytics;
 
 import analytics.services.AnalyticsService;
-import analytics.services.TrendService;
-import analytics.util.AnalyticsScreen;
+import analytics.ui.AnalyticsScreen;
+import analytics.ui.TrendScreen;
 import common.util.Terminal;
 import common.wrapper.Option;
 
@@ -21,7 +21,7 @@ public class AnalyticsProgram {
                         new AnalyticsScreen(analyticsService);
                     }),
                     new Option("stats", "View and manage statistics.", () -> {
-                        new TrendService();
+                        new TrendScreen();
                     }),
                     new Option("back", "Quit to main screen.", () -> running[0] = false)
             ));
