@@ -35,64 +35,26 @@ public class TrendService {
             ));
         }
     }
-    
-    /*public static int getSales(Iterable<Retailer> retailers, Iterable<Product> products, Period start, Period end){
-        // Build set of valid product names
-        Set<String> productNames = new HashSet<>();
-        for (Product p : products) {
-            productNames.add(p.getName());
-        }
-
-        // Build ordered list of periods from start to end
-        List<Period> periods = new ArrayList<>();
-        int month = start.getMonth();
-        int year = start.getYear();
-        while (year < end.getYear() || (year == end.getYear() && month <= end.getMonth())) {
-            periods.add(new Period(month, year));
-            month++;
-            if (month > 12) {
-                month = 1;
-                year++;
-            }
-        }
-
-        // Collect total sales across all periods and retailers, filtered by products
-        int total = 0;
-        for (Period period : periods) {
-            for (Retailer retailer : retailers) {
-                String path = "retailers/reports/" + retailer.getName() + "(" + period.getFileString() + ").report";
-                File file = new File(path);
-                if (!file.exists()) continue;
-                HashMap<String, Integer> report = ReportReader.read(path);
-                for (Map.Entry<String, Integer> entry : report.entrySet()) {
-                    if (productNames.contains(entry.getKey())) {
-                        total += entry.getValue();
-                    }
-                }
-            }
-        }
-        return total;
-    }*/
 
     public static TrendResult getTrend(String metricName, Iterable<Retailer> retailers, Iterable<Product> products, Period start, Period end) {
         List<Period> periods = new ArrayList<>();
         int month = start.getMonth();
         int year = start.getYear();
-        while (year < end.getYear() || (year == end.getYear() && month <= end.getMonth())) {
+        while(year < end.getYear() || (year == end.getYear() && month <= end.getMonth())){
             periods.add(new Period(month, year));
             month++;
-            if (month > 12) {
+            if(month > 12){
                 month = 1;
                 year++;
             }
         }
 
-        if (periods.isEmpty()) {
+        if(periods.isEmpty()){
             return new TrendResult(metricName, TrendDirection.STABLE, 0.0);
         }
 
         List<Integer> periodTotals = new ArrayList<>();
-        for (Period period : periods) {
+        for(Period period : periods){
             int total = 0;
             for(Retailer retailer : retailers){
                 total += retailer.getSales(products, period);
@@ -101,13 +63,13 @@ public class TrendService {
         }
 
         List<Integer> nonZeroPeriods = new ArrayList<>();
-        for (Integer total : periodTotals) {
+        for(Integer total : periodTotals){
             if (total > 0) {
                 nonZeroPeriods.add(total);
             }
         }
 
-        if (nonZeroPeriods.isEmpty()) {
+        if(nonZeroPeriods.isEmpty()){
             return new TrendResult(metricName, TrendDirection.STABLE, 0.0);
         }
 
@@ -117,9 +79,13 @@ public class TrendService {
         percentageChange = Math.round(percentageChange * 100.0) / 100.0;
 
         TrendDirection direction;
-        if (percentageChange > 0) direction = TrendDirection.RISING;
-        else if (percentageChange < 0) direction = TrendDirection.FALLING;
-        else direction = TrendDirection.STABLE;
+        if(percentageChange > 0){
+            direction = TrendDirection.RISING;
+        }else if(percentageChange < 0){
+            direction = TrendDirection.FALLING;
+        }else{
+            direction = TrendDirection.STABLE;
+        }
 
         return new TrendResult(metricName, direction, percentageChange);
     }
@@ -128,7 +94,6 @@ public class TrendService {
         HashMap<Product, Integer> result = new HashMap<>();
         int month = period.getMonth();
         int year = period.getYear() - 1;
-        int sum = 0;
         for(int i = 0; i < 12; i++){
             month += 1;
             if(month > 12){

@@ -23,10 +23,10 @@ public class EntityLoader {
         File storesDir = new File("stores");
         File[] catalogFiles = storesDir.listFiles((dir, name) -> name.endsWith(".catalog"));
 
-        if (catalogFiles != null) {
-            for (File file : catalogFiles) {
+        if(catalogFiles != null){
+            for(File file : catalogFiles){
                 Serializer serializer = new Serializer(file.getPath());
-                for (int i = 0; i < serializer.size(); i++) {
+                for(int i = 0; i < serializer.size(); i++){
                     allProducts.add(new Product(
                             serializer.get("id", i, String.class),
                             serializer.get("name", i, String.class),
@@ -52,8 +52,8 @@ public class EntityLoader {
         File retailerDir = new File("retailers");
         File[] retailerFiles = retailerDir.listFiles((dir, name) -> name.endsWith(".retailer"));
 
-        if (retailerFiles != null) {
-            for (File file : retailerFiles) {
+        if(retailerFiles != null){
+            for(File file : retailerFiles){
                 Serializer serializer = new Serializer(file.getPath());
                 String retailerName = file.getName().replace(".retailer", "");
                 Retailer retailer = new Retailer(retailerName);

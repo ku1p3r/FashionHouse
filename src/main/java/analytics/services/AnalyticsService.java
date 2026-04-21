@@ -1,6 +1,9 @@
 package analytics.services;
 
 import analytics.util.ReportReader;
+import common.model.Product;
+import common.model.Retailer;
+import common.util.EntityLoader;
 import common.util.Serializer;
 import common.util.Terminal;
 import common.wrapper.Option;
@@ -58,7 +61,7 @@ public class AnalyticsService {
         }
         Terminal.prompt("Select Report", List.of(), options);
 
-        HashMap<String, Integer> report = ReportReader.read(chosenReport[0].toString());
+        HashMap<Product, Integer> report = ReportReader.read(chosenReport[0].toString());
 
         boolean[] running = {true};
         while(running[0]){
@@ -87,7 +90,7 @@ public class AnalyticsService {
      * @param report
      * @param period
      */
-    public void registerReport(String retailerPath, HashMap<String, Integer> report, Period period){
+    public void registerReport(String retailerPath, HashMap<Product, Integer> report, Period period){
         Serializer serializer;
         // If exists, set serializer to existing file, else create new file.
         try{
@@ -103,7 +106,7 @@ public class AnalyticsService {
                         (String)report.keySet().toArray()[i],
                         0,
                         0,
-                        report.get((String)report.keySet().toArray()[i])
+                        report.get(report.keySet().toArray()[i])
                 );
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -156,7 +159,8 @@ public class AnalyticsService {
                     }
                     int quantity = Integer.parseInt(Terminal.getInput("Added stock quantity for " + productName));
 
-                    stock(storeName, productName, new Period(month, year), quantity);
+                    EntityLoader el = new EntityLoader();
+                    stock(el.getRetailerByName(storeName), el.getProductByName(productName), new Period(month, year), quantity);
                 }
             }
         }
@@ -165,28 +169,28 @@ public class AnalyticsService {
     /**
      * Add stock and update retailer analytics file.
      *
-     * @param storeName
-     * @param productName
+     * @param retailer
+     * @param product
      * @param period
      * @param quantity
      */
-    public void stock(String storeName, String productName, Period period, int quantity){
+    public void stock(Retailer retailer, Product product, Period period, int quantity){
         Serializer serializer;
-        String path = "retailers/" + storeName + ".retailer";
+        String path = "retailers/" + retailer.getName() + ".retailer";
         try{
             serializer = new Serializer(path);
         }catch (Exception e){
             serializer = new Serializer(RETAILER_HEADER);
         }
         ArrayList<Integer> indices = serializer.getRows(List.of(
-                new Serializer.Criterion("product", productName),
+                new Serializer.Criterion("product", product.getName()),
                 new Serializer.Criterion("period", period.getFileString())
         ));
         if(indices.isEmpty()){
             try {
                 serializer.push(
                         period.getMonth() + "-" + period.getYear(),
-                        productName,
+                        product.getName(),
                         0,
                         quantity,
                         0
