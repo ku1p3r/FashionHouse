@@ -39,7 +39,7 @@ public class SendOfferScreen implements Screen {
                 Best regards,
                 Fashion House Team
                 
-        """, candidate.getName(), app.getTitle(), app.getTitle(), app.getDept(), app.getCloseDate());
+        """, candidate.getName(), app.getTitle(), app.getTitle(), app.getDept(), app.getCloseDate(), app.getCloseDate());
         System.out.print("Send Offer\n\n0:back to candidate\n1:send offer\n\n---> ");
     }
 
