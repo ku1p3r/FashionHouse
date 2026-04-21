@@ -1,14 +1,12 @@
 package sales.service;
 
 import common.model.Product;
-import sales.model.Price;
-import sales.model.Sale;
-import sales.model.Receipt;
 import common.util.Serializer;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import sales.model.Price;
+import sales.model.Receipt;
+import sales.model.Sale;
 
 /**
  * @author Mason Hart
@@ -48,7 +46,9 @@ public class SalesService /* implements Service */ {
            int quantity = productSerializer.get("quantity", i, Integer.class);
            String description = productSerializer.get("description", i, String.class);
            String supplier = productSerializer.get("supplier", i, String.class);
-           availableProducts.add(new Product(id, name, category, price, quantity, description, supplier));
+           String materials = "";
+           try { materials = productSerializer.get("materials", i, String.class); } catch (Exception ignored) {}
+           availableProducts.add(new Product(id, name, category, price, quantity, description, supplier, materials));
         }
 
         loadPastSales();

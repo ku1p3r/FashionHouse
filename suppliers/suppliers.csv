@@ -1,0 +1,6 @@
+id|name|contactEmail|phone|active
+S-001|TextileCo|contact@textileco.com|555-1001|true
+S-003|SoleTech|supply@soletech.com|555-1003|true
+S-004|ThreadMart|sales@threadmart.com|555-1004|false
+S-005|FabricPlus|info@fabricplus.com|555-1005|true
+S-006|CarbonInfinity|cfiber@gmail.com|608-1234|true

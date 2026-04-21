@@ -1,8 +1,11 @@
 package analytics.util;
 
 import analytics.services.AnalyticsService;
+import common.model.Product;
+import common.util.EntityLoader;
 import common.util.Serializer;
 import common.util.Terminal;
+import common.wrapper.Period;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -38,13 +41,23 @@ public class AnalyticsScreen {
             }
             System.out.println(Terminal.RED + "Invalid input format. Expected 'month/year'." + Terminal.RESET);
         }
+
         int endMonth = Integer.parseInt(input[0]);
         int endYear = Integer.parseInt(input[1]);
 
-        HashMap<String, Integer> productSales = new HashMap<>();
+        EntityLoader pl = new EntityLoader();
+        HashMap<Product, Integer> productSales = getProductSales(new Period(startMonth, startYear), new Period(endMonth, endYear));
 
-        for(int year = startYear; year <= endYear; year++){
-            for(int month = (year == startYear ? startMonth : 1); month <= (year == endYear ? endMonth : 12); month++){
+        for(Product product : productSales.keySet()){
+            System.out.println(Terminal.MAGENTA + product.getName() + Terminal.RESET + ": " + productSales.get(product));
+        }
+    }
+
+    public HashMap<Product, Integer> getProductSales(Period start, Period end){
+        HashMap<Product, Integer> productSales = new HashMap<>();
+
+        for(int year = start.getYear(); year <= end.getYear(); year++){
+            for(int month = (year == start.getYear() ? start.getMonth() : 1); month <= (year == end.getYear() ? end.getMonth() : 12); month++){
                 ArrayList<Path> retailerPaths = new ArrayList<>();
                 try(DirectoryStream<Path> stream = Files.newDirectoryStream(
                         Path.of("retailers"),
@@ -64,17 +77,16 @@ public class AnalyticsScreen {
                             new Serializer.Criterion("period", month + "-" + year)
                     ));
 
+                    EntityLoader pl = new EntityLoader();
                     for(int index : indices){
-                        String product = serializer.get("product", index, String.class);
+                        String productName = serializer.get("product", index, String.class);
                         int quantity = serializer.get("sold", index, Integer.class);
-                        productSales.put(product, productSales.getOrDefault(product, 0) + quantity);
+                        productSales.put(pl.getProductByName(productName), productSales.getOrDefault(pl.getProductByName(productName), 0) + quantity);
                     }
                 }
             }
         }
 
-        for(String product : productSales.keySet()){
-            System.out.println(Terminal.MAGENTA + product + Terminal.RESET + ": " + productSales.get(product));
-        }
+        return productSales;
     }
 }

@@ -1,7 +1,10 @@
 package analytics.util;
 
+import common.model.Product;
+import common.util.EntityLoader;
 import common.util.Serializer;
 
+import javax.xml.stream.events.EndElement;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,15 +16,16 @@ public class ReportReader {
      * @param path
      * @return
      */
-    public static HashMap<String, Integer> read(String path){
-        HashMap<String, Integer> result = new HashMap<>();
+    public static HashMap<Product, Integer> read(String path){
+        HashMap<Product, Integer> result = new HashMap<>();
 
         Serializer serializer = new Serializer(path);
         ArrayList<String> products = serializer.get("product", String.class);
         ArrayList<Integer> sold = serializer.get("sold", Integer.class);
 
+        EntityLoader loader = new EntityLoader();
         for(int i = 0; i < products.size(); i++){
-            result.put(products.get(i), sold.get(i));
+            result.put(loader.getProductByName(products.get(i)), sold.get(i));
         }
 
         return result;
