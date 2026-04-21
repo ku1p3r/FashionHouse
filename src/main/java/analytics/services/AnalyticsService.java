@@ -73,11 +73,6 @@ public class AnalyticsService {
                             System.out.println(Terminal.GREEN + product + ": " + quantity + Terminal.RESET);
                         }
                     }),
-                    new Option("store", "Register to database.", () -> {
-                        String name = ReportReader.getName(chosenReport[0], suffix);
-                        String retailerPath = "retailers/" + name + ".retailer";
-                        registerReport(retailerPath, report, new Period(month, year));
-                    }),
                     new Option("back", "Return to analytics.", () -> running[0] = false)
             ));
         }
@@ -168,6 +163,7 @@ public class AnalyticsService {
 
     /**
      * Add stock and update retailer analytics file.
+     * Depreciated. Use store/*.catalog instead.
      *
      * @param retailer
      * @param product

@@ -18,6 +18,9 @@ public class EntityLoader {
         ArrayList<Product> allProducts = new ArrayList<>();
         nameToProduct = new HashMap<>();
         idToProduct = new HashMap<>();
+        ArrayList<Retailer> allRetailers = new ArrayList<>();
+        nameToRetailer = new HashMap<>();
+        idToRetailer = new HashMap<>();
 
         File storesDir = new File("stores");
         File[] catalogFiles = storesDir.listFiles((dir, name) -> name.endsWith(".catalog"));
@@ -25,6 +28,10 @@ public class EntityLoader {
         if(catalogFiles != null){
             for(File file : catalogFiles){
                 Serializer serializer = new Serializer(file.getPath());
+                String rn = file.getName().substring(0, file.getName().length() - ".catalog".length());
+                //System.out.println("Loading retailer: " + rn);
+                Retailer retailer = new Retailer(rn);
+
                 for(int i = 0; i < serializer.size(); i++){
                     allProducts.add(new Product(
                             serializer.get("id", i, String.class),
@@ -40,43 +47,14 @@ public class EntityLoader {
                     nameToProduct.put(serializer.get("name", i, String.class), allProducts.get(allProducts.size() - 1));
                     idToProduct.put(serializer.get("id", i, String.class), allProducts.get(allProducts.size() - 1));
                 }
-            }
-        }
 
-        products = allProducts;
-
-        ArrayList<Retailer> allRetailers = new ArrayList<>();
-        nameToRetailer = new HashMap<>();
-        idToRetailer = new HashMap<>();
-
-        File retailerDir = new File("retailers");
-        File[] retailerFiles = retailerDir.listFiles((dir, name) -> name.endsWith(".retailer"));
-
-        if(retailerFiles != null){
-            for(File file : retailerFiles){
-                Serializer serializer = new Serializer(file.getPath());
-                String retailerName = file.getName().replace(".retailer", "");
-                Retailer retailer = new Retailer(retailerName);
-                for (int i = 0; i < serializer.size(); i++) {
-                    // TODO
-                    /*allProducts.add(new Product(
-                            serializer.get("id", i, String.class),
-                            serializer.get("name", i, String.class),
-                            serializer.get("category", i, String.class),
-                            serializer.get("price", i, Double.class),
-                            serializer.get("quantity", i, Integer.class),
-                            serializer.get("description", i, String.class),
-                            serializer.get("supplier", i, String.class)
-                    ));*/
-
-                    //nameToProduct.put(serializer.get("name", i, String.class), allProducts.get(allProducts.size() - 1));
-                    //idToProduct.put(serializer.get("id", i, String.class), allProducts.get(allProducts.size() - 1));
-                }
                 nameToRetailer.put(retailer.getName(), retailer);
                 idToRetailer.put(retailer.getId(), retailer);
                 allRetailers.add(retailer);
             }
         }
+
+        products = allProducts;
         retailers = allRetailers;
     }
 

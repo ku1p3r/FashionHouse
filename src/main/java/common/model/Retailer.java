@@ -3,10 +3,8 @@ package common.model;
 import common.base.Selectable;
 import common.wrapper.Period;
 import common.wrapper.SalesReport;
-import java.io.BufferedReader;
+import common.util.Serializer;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -58,24 +56,16 @@ public class Retailer implements Selectable {
                 Period period = new Period(month, year);
 
                 HashMap<Product, Integer> sales = new HashMap<>();
-                try(BufferedReader reader = new BufferedReader(new FileReader(file))){
-                    String line;
-                    boolean isHeader = true;
-                    while((line = reader.readLine()) != null){
-                        if (isHeader) {
-                            isHeader = false;
-                            continue;
-                        }
-                        String[] parts = line.split("\\|");
-                        if(parts.length == 2){
-                            String productKey = parts[0].trim();
-                            int sold = Integer.parseInt(parts[1].trim());
-                            Product product = new Product(productKey, productKey, "", 0, 0, "", "", "");
-                            productSet.add(product);
-                            sales.put(product, sold);
-                        }
+                try {
+                    Serializer serializer = new Serializer(file.getPath());
+                    for(int i = 0; i < serializer.size(); i++){
+                        String productKey = serializer.get("product", i, String.class);
+                        int sold = serializer.get("sold", i, Integer.class);
+                        Product product = new Product(productKey, productKey, "", 0, 0, "", "", "");
+                        productSet.add(product);
+                        sales.put(product, sold);
                     }
-                }catch(IOException e){
+                } catch(RuntimeException e){
                     System.err.println("Error reading report file: " + file.getName());
                 }
 

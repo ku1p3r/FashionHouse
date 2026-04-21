@@ -19,7 +19,7 @@ public class TrendService {
     public TrendService() {
         boolean[] running = {true};
         while(running[0]){
-            Terminal.prompt("Report Usage", List.of(), List.of(
+            Terminal.prompt("Statistics", List.of(), List.of(
                     new Option("trend", "Observe trends.", () -> {
                         EntityLoader el = new EntityLoader();
                         TrendResult result = getTrend("test", el.getAllRetailers(), el.getAllProducts(), new Period(1, 2023), new Period(6, 2029));
@@ -51,7 +51,8 @@ public class TrendService {
                     }),
                     new Option("season", "Observe seasonal indexes.", () -> {
                         EntityLoader el = new EntityLoader();
-                        HashMap<Integer, Float> result = getSeasonalIndexes(el.getAllRetailers().iterator().next(), el.getAllProducts(), 2023, 2029);
+                        Retailer retailer = el.getAllRetailers().iterator().next();
+                        HashMap<Integer, Float> result = getSeasonalIndexes(retailer, retailer.getProducts(), 2023, 2029);
                         for (int month = 1; month <= 12; month++) {
                             System.out.printf("Month %2d: %.4f%n", month, result.get(month));
                         }
