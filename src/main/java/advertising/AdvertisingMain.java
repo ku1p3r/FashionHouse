@@ -1,5 +1,8 @@
 package advertising;
-
+import catalog.service.CatalogService;
+import catalog.ui.StoreSelectionScreen;
+// import common.model.Product;
+import java.util.Optional;
 import java.util.List;
 import java.util.Scanner;
 
@@ -15,6 +18,11 @@ public class AdvertisingMain {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         AdvertisingSystem system = new AdvertisingSystem();
+
+//imp
+StoreSelectionScreen storeSelectionScreen = new StoreSelectionScreen();
+
+
 
         // Sample data
         system.addProduct(new Product(1, "Leather Jacket"));
@@ -197,8 +205,17 @@ case "4":
         System.out.println("No events found.");
     } else {
         for (Event event : events) {
-            System.out.println(event);
-        }
+    System.out.println("Event ID: " + event.getEventId());
+    System.out.println("Name: " + event.getName());
+    System.out.println("Date: " + event.getDate());
+    System.out.println("Description: " + event.getDescription());
+    System.out.println("Event Type: " + event.getEventTypeName());
+    System.out.println("Venue: " + event.getVenueName());
+    System.out.println("Partner: " + event.getPartnerName());
+    System.out.println("Image Path: " + event.getImagePath());
+    System.out.println("Security Level: " + event.getSecurityLevel());
+    System.out.println("----------------------------------------");
+}
     }
     break;
 
@@ -220,17 +237,32 @@ case "5":
         System.out.println("Invalid event ID. Please enter a number.");
         break;
     }
+/// added 
+if (!system.eventExists(eventId)) {
+    System.out.println("Event not found.");
+    break;
+}
 
-    System.out.print("Enter featured item name: ");
-    String featuredItemName = scanner.nextLine();
 
-    System.out.print("Enter featured item type (Product or Collection): ");
-    String featuredItemType = scanner.nextLine();
 
-    if (!system.validateEventRegistration(eventId, featuredItemName, featuredItemType)) {
-        System.out.println("Registration failed: invalid event or featured item.");
-        break;
-    }
+
+CatalogService catalogService = storeSelectionScreen.run();
+
+System.out.print("Enter Product ID: ");
+String productId = scanner.nextLine();
+
+Optional<common.model.Product> productOpt = catalogService.findById(productId);
+
+if (productOpt.isEmpty()) {
+    System.out.println("Product not found.");
+    break;
+}
+
+common.model.Product selectedProduct = productOpt.get();
+String featuredItemName = selectedProduct.getName();
+String featuredItemType = "Product";
+////////////// need to remove
+ 
 
     EventRegistration registration = system.registerProductInEvent(
             eventId,
@@ -259,23 +291,49 @@ case "6":
         System.out.println("Invalid event ID. Please enter a number.");
         break;
     }
-
+//
+if (!system.eventExists(registrationEventId)) {
+    System.out.println("Event not found.");
+    break;
+}
+/// updated 
     List<EventRegistration> eventRegistrations = system.viewEventRegistrations(registrationEventId);
 
-    if (eventRegistrations.isEmpty()) {
-        System.out.println("No registrations found for this event.");
-    } else {
-        for (EventRegistration eventRegistration : eventRegistrations) {
-            System.out.println(eventRegistration);
-        }
-    }
+if (eventRegistrations.isEmpty()) {
+    System.out.println("No registrations found for this event.");}
+
+else {
+    Event event = system.getEventById(registrationEventId);
+
+
+
+  System.out.println("\n========== EVENT REGISTRATIONS ==========");
+
+if (event != null) {
+    System.out.println("Event Name        : " + event.getName());
+} else {
+    System.out.println("Event Name        : Unknown");
+}
+
+System.out.println("Event ID          : " + registrationEventId);
+System.out.println("Total Registrations: " + eventRegistrations.size());
+System.out.println("========================================");
+
+
+
+    int count = 1;
+for (EventRegistration eventRegistration : eventRegistrations) {
+    System.out.println("\n------------------------------------");
+    System.out.println(" Registration #" + count++);
+    System.out.println("------------------------------------");
+    System.out.println(" Event ID      : " + eventRegistration.getEventId());
+    System.out.println(" Product Name  : " + eventRegistration.getFeaturedItemName());
+    System.out.println(" Type          : " + eventRegistration.getFeaturedItemType());
+    System.out.println("------------------------------------");
+}
+}
+
     break;
-
-
-
-
-
-
                 default:
                     System.out.println("Invalid option. Please choose 1 through 7.");
 

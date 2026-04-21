@@ -19,7 +19,7 @@ import java.util.List;
 public class AdvertisingSystem {
     private static final String FILE_NAME = "advertisements.txt";
 private static final String EVENTS_FILE_NAME = "events.txt";
-private static final String REGISTRATIONS_FILE_NAME = "7event_registrations.txt";
+private static final String REGISTRATIONS_FILE_NAME = "event_registrations.txt";
 
 
 
@@ -85,23 +85,6 @@ public void addPartner(Partner partner) {
 ///
 
 //added
-// public AdvertisingSystem() {
-//     products = new ArrayList<>();
-//     collections = new ArrayList<>();
-//     platforms = new ArrayList<>();
-//     advertisements = new ArrayList<>();
-
-//     events = new ArrayList<>();
-//     registrations = new ArrayList<>();
-//     venues = new ArrayList<>();
-//     eventTypes = new ArrayList<>();
-//     partners = new ArrayList<>();
-
-//     nextAdvertisementId = 1;
-
-//     loadAdvertisementsFromFile();
-// }
-//
 
     public void displayAdForm() {
         System.out.println("Displaying advertisement registration form...");
@@ -196,40 +179,6 @@ public boolean checkPartner(String partnerName) {
 }
 
 ///
-//
-//event name is presentevent name is present
-// event type is present and valid
-// venue is present and valid
-// date is present
-// description is present
-// image path is present
-// partner is valid if one is entered
-// //
-
-// public boolean validateEventInformation(String name,
-//                                         String typeName,
-//                                         String venueName,
-//                                         String date,
-//                                         String description,
-//                                         String imagePath,
-//                                         String partnerName) {
-//     if (name == null || name.isBlank()) return false;
-//     if (typeName == null || typeName.isBlank()) return false;
-//     if (venueName == null || venueName.isBlank()) return false;
-//     if (date == null || date.isBlank()) return false;
-//     if (description == null || description.isBlank()) return false;
-//     if (imagePath == null || imagePath.isBlank()) return false;
-
-//     boolean validType = checkEventType(typeName);
-//     boolean validVenue = checkVenue(venueName);
-
-//     boolean validPartner = true;
-//     if (partnerName != null && !partnerName.isBlank()) {
-//         validPartner = checkPartner(partnerName);
-//     }
-
-//     return validType && validVenue && validPartner;
-// }
 
 
 public boolean validateEventInformation(String name,
@@ -560,7 +509,7 @@ public void saveEventsToFile() {
         while ((line = reader.readLine()) != null) {
             String[] parts = line.split("\\|");
 
-            if (parts.length == 8) {
+            if (parts.length >= 9) {
                 int eventId = Integer.parseInt(parts[0]);
                 String name = parts[1];
                 String date = parts[2];
@@ -589,6 +538,27 @@ public void saveEventsToFile() {
     } catch (IOException e) {
         System.out.println("No existing events file found.");
     }
+}
+
+///added
+public boolean eventExists(int eventId) {
+    for (Event event : events) {
+        if (event.getEventId() == eventId) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// return event name 
+
+public Event getEventById(int eventId) {
+    for (Event event : events) {
+        if (event.getEventId() == eventId) {
+            return event;
+        }
+    }
+    return null;
 }
 
 // reads from event_registrations.txt
