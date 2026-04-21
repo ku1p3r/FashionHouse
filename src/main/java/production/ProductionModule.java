@@ -1,6 +1,7 @@
 package production;
 
 import common.util.Terminal;
+import analytics.services.AnalyticsService;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -43,7 +44,7 @@ public class ProductionModule {
             String choice = Terminal.prompt("Choice:");
             switch (choice) {
                 case "1"    -> viewAllBatches();
-                case "2"    -> createBatch();
+                case "2"    -> createBatch("");
                 case "3"    -> updateBatchStatus();
                 case "back" -> running = false;
                 default     -> { Terminal.printError("Invalid option."); Terminal.pressEnterToContinue(); }
@@ -142,7 +143,7 @@ public class ProductionModule {
 
     // Create new production batch
 
-    private void createBatch() {
+    public void createBatch(String productId) {
         Terminal.clearScreen();
         Terminal.printHeader("CREATE PRODUCTION BATCH");
 
@@ -155,13 +156,17 @@ public class ProductionModule {
             return;
         }
 
-        Terminal.printTableHeader("ID", "Name", "Current Qty");
-        int i = 1;
-        for (String[] p : products) Terminal.printTableRow(i++, p[0], p[1], p[2]);
-        Terminal.println();
-
-        String productId = Terminal.prompt("Enter Product ID (or 'back'):");
-        if (productId.equalsIgnoreCase("back")) return;
+        if (productId.isEmpty()) {
+            Terminal.printTableHeader("ID", "Name", "Current Qty");
+            int i = 1;
+            for (String[] p : products) Terminal.printTableRow(i++, p[0], p[1], p[2]);
+            Terminal.println();
+            productId = Terminal.prompt("Enter Product ID to produce (or 'back'):");
+            if (productId.equalsIgnoreCase("back")) return;
+        } else {
+            Terminal.printInfo("Restocking product: " + productId);
+            Terminal.println();
+        }
 
         String[] selectedProduct = null;
         for (String[] p : products) {
@@ -210,7 +215,25 @@ public class ProductionModule {
                     } catch (NumberFormatException ignored) {}
                 }
             }
-            Terminal.printInfo("Using material requirements defined on the product.");
+            Terminal.printSubHeader("Materials required for " + batchSize + " units (calculated from product definition)");
+            Terminal.printTableHeader("Material ID", "Name", "Required", "Available", "Unit");
+            int k = 1;
+            for (Map.Entry<String, Double> e2 : materialUsage.entrySet()) {
+                Material mat = matRepo.findById(e2.getKey());
+                String matName = mat != null ? mat.getName() : "(unknown)";
+                String requiredStr = String.format("%.2f", e2.getValue());
+                String availableStr = mat != null ? String.format("%.2f", mat.getQuantity()) : "N/A";
+                String unit = mat != null ? mat.getUnit() : "";
+                Terminal.printTableRow(k++, e2.getKey(), matName,
+                        requiredStr + " " + unit,
+                        availableStr + (unit.isEmpty() ? "" : " " + unit));
+            }
+            Terminal.println();
+            if (!Terminal.confirm("Use these material requirements?")) {
+                Terminal.printInfo("Batch creation cancelled.");
+                Terminal.pressEnterToContinue();
+                return;
+            }
         } else {
             // fallback to manual entry if product has no materials defined
             Terminal.printInfo("No materials defined for this product. Please specify materials manually.");
@@ -505,6 +528,21 @@ public class ProductionModule {
         Terminal.printSuccess("Production COMPLETED for batch " + batch.getId() + "!");
         Terminal.printSuccess("Added " + batch.getBatchSize() + " unit(s) of '"
                 + batch.getProductName() + "' to product catalog.");
+
+        // Offer to log stocked units to retailer analytics (uses AnalyticsService.stock)
+        try {
+            AnalyticsService analyticsService = new AnalyticsService();
+            if (Terminal.confirm("Log stocked units to retailer analytics?")) {
+                String storeName = Terminal.prompt("Store name (e.g. fashionstore1):");
+                LocalDate now = LocalDate.now();
+                int month = now.getMonthValue();
+                int year = now.getYear();
+                analyticsService.stock(storeName, batch.getProductName(), month, year, batch.getBatchSize());
+                Terminal.printSuccess("Logged " + batch.getBatchSize() + " units to analytics for store " + storeName + ".");
+            }
+        } catch (Exception e) {
+            Terminal.printError("Failed to log analytics: " + e.getMessage());
+        }
 
         // Alt Flow 14a: Check for newly low stock after material deduction
         List<Material> lowStock = matRepo.getLowStock();

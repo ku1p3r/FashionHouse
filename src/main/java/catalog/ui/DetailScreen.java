@@ -4,14 +4,18 @@ import catalog.service.CatalogService;
 import common.model.Product;
 import common.util.Terminal;
 import java.io.IOException;
-import production.ProductionSelectionScreen;
+import production.AuthService;
+import production.Employee;
+import production.MaterialRepository;
+import production.ProductionModule;
+import production.ProductionRepository;
 
 /**
  * Full product detail view with edit / delete actions.
  * Returns an action signal so the caller (SearchScreen) knows what happened.
  */
 public class DetailScreen {
-
+    private static final String REQUIRED_ROLE = "MERCHANDISE_MANAGER";
     public enum Result { BACK, DELETED, UPDATED }
 
     private final CatalogService service;
@@ -99,8 +103,16 @@ public class DetailScreen {
                 }
                 case "back" -> { return Result.BACK; }
                 case "restock" -> {
-                    ProductionSelectionScreen prodScreen = new ProductionSelectionScreen(service);
-                    prodScreen.run();
+                    ProductionRepository prodRepo = new ProductionRepository(service);
+                    MaterialRepository matRepo = new MaterialRepository();
+                    AuthService auth = new AuthService();
+                    Employee user = auth.authenticate(REQUIRED_ROLE);
+                    if (user == null) {
+                        Terminal.printError("Authentication failed. Exiting.");
+                        continue;
+                    }
+                    ProductionModule prodModule = new ProductionModule(prodRepo, matRepo, user);
+                    prodModule.createBatch(product.getId());
                 }
                 default  -> { /* ignore unknown */ }
             }

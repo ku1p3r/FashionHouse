@@ -180,7 +180,7 @@ public class MaterialModule {
 
             String choice = Terminal.prompt("Choice:");
             switch (choice) {
-                case "1" -> restockMaterial(m);
+                case "1" -> new RestockManager(repo).restock(m);
                 case "2" -> changeSupplier(m);
                 case "3" -> editMaterialDetails(m);
                 case "4" -> toggleActive(m);
@@ -190,75 +190,7 @@ public class MaterialModule {
         }
     }
 
-    // Restock
-
-    private void restockMaterial(Material m) {
-        Terminal.printSubHeader("Restock: " + m.getName());
-
-        // Validate supplier is active (Use Case step 11)
-        Supplier supplier = repo.findSupplierById(m.getSupplierId());
-        if (supplier == null || !supplier.isActive()) {
-            // Alternate Flow 11a–11d
-            Terminal.printError("Current supplier '" + m.getSupplierName() + "' is inactive or unavailable!");
-            Terminal.printInfo("Please select an alternative supplier before restocking.");
-            boolean changed = changeSupplier(m);
-            if (!changed) return;
-        }
-
-        String qtyInput = Terminal.prompt("Quantity to order (current: " + m.getQuantity() + " " + m.getUnit() + "):");
-
-        // Validation (Use Case step 10)
-        double qty;
-        try {
-            qty = Double.parseDouble(qtyInput);
-        } catch (NumberFormatException e) {
-            Terminal.printError("Invalid quantity. Must be a number.");
-            Terminal.pressEnterToContinue();
-            return;
-        }
-
-        if (qty <= 0) {
-            Terminal.printError("Quantity must be greater than zero.");
-            Terminal.pressEnterToContinue();
-            return;
-        }
-        if (qty < m.getReorderThreshold()) {
-            Terminal.printError("Quantity must be greater than the reorder threshold.");
-            Terminal.pressEnterToContinue();
-            return;
-        }
-
-        double newQty = m.getQuantity() + qty;
-        double totalCost = qty * m.getPricePerUnit();
-
-        Terminal.println();
-        Terminal.printInfo("Order Summary:");
-        Terminal.printField("Material",   m.getName());
-        Terminal.printField("Supplier",   m.getSupplierName());
-        Terminal.printField("Order Qty",  qty + " " + m.getUnit());
-        Terminal.printField("Unit Price", "$" + String.format("%.2f", m.getPricePerUnit()));
-        Terminal.printField("Total Cost", "$" + String.format("%.2f", totalCost));
-        Terminal.printField("New Stock",  newQty + " " + m.getUnit());
-        Terminal.println();
-
-        if (!Terminal.confirm("Confirm restock order?")) {
-            Terminal.printInfo("Restock cancelled.");
-            Terminal.pressEnterToContinue();
-            return;
-        }
-
-        m.setQuantity(newQty);
-        repo.saveMaterials();
-
-        Terminal.printSuccess("Restock recorded. New stock level: " + newQty + " " + m.getUnit());
-
-        // Alternate Flow 14a: check if still low after restock
-        if (m.isLowStock()) {
-            Terminal.printWarning("Stock is still below reorder threshold after restocking!");
-        }
-
-        Terminal.pressEnterToContinue();
-    }
+    // Restock moved to RestockManager
 
     // Change Supplier
 
@@ -413,22 +345,8 @@ public class MaterialModule {
     }
 
     // Supplier Directory
-
     private void viewSuppliers() {
-        Terminal.clearScreen();
-        Terminal.printHeader("SUPPLIER DIRECTORY");
-        List<Supplier> all = repo.getAllSuppliers();
-        Terminal.printTableHeader("ID", "Name", "Email", "Phone", "Status");
-        int i = 1;
-        for (Supplier s : all) {
-            String status = s.isActive()
-                    ? Terminal.GREEN + "Active"   + Terminal.RESET
-                    : Terminal.RED   + "Inactive" + Terminal.RESET;
-            Terminal.printTableRow(i++, s.getId(),
-                    s.getName().replace(" [INACTIVE]",""),
-                    s.getContactEmail(), s.getPhone(), status);
-        }
-        Terminal.println();
-        Terminal.pressEnterToContinue();
+        SupplierManager mgr = new SupplierManager(repo);
+        mgr.manage();
     }
 }

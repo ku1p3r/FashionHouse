@@ -2,6 +2,7 @@ id|name|unit|quantity|reorderThreshold|pricePerUnit|supplierId|supplierName|acti
 M-001|Cotton Fabric|meters|140.0|25.0|3.5|S-005|FabricPlus|true
 M-002|Denim Fabric|meters|50.0|30.0|7.2|S-002|DenimWorld|true
 M-003|Rubber Sole|pairs|200.0|60.0|2.1|S-003|SoleTech|true
-M-004|Wool Yarn|kg|34.0|20.0|12.0|S-001|TextileCo|true
+M-004|Wool Yarn|kg|25.5|20.0|12.0|S-001|TextileCo|true
 M-005|Polyester Thread|spools|300.0|100.0|0.8|S-004|ThreadMart|false
 M-006|Microfiber cloth|sqft|100.0|10.0|40.0|S-001|TextileCo|true
+M-007|Carbon Fiber|sqft|1000.0|25.0|100.0|S-003|SoleTech|true

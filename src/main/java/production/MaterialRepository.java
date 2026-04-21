@@ -130,6 +130,40 @@ public class MaterialRepository {
 
     public void addMaterial(Material m) { materials.add(m); }
 
+    // Supplier mutations
+    public void addSupplier(Supplier s) {
+        suppliers.add(s);
+        saveSuppliers();
+    }
+
+    public void updateSupplier(Supplier updated) {
+        for (int i = 0; i < suppliers.size(); i++) {
+            if (suppliers.get(i).getId().equalsIgnoreCase(updated.getId())) {
+                // replace with new object
+                suppliers.set(i, updated);
+                saveSuppliers();
+                return;
+            }
+        }
+    }
+
+    public void removeSupplier(String id) {
+        boolean removed = suppliers.removeIf(s -> s.getId().equalsIgnoreCase(id));
+        if (removed) saveSuppliers();
+    }
+
+    /** Generate a new unique supplier ID */
+    public String generateSupplierId() {
+        int max = 0;
+        for (Supplier s : suppliers) {
+            try {
+                int n = Integer.parseInt(s.getId().replace("S-", ""));
+                if (n > max) max = n;
+            } catch (NumberFormatException ignored) {}
+        }
+        return String.format("S-%03d", max + 1);
+    }
+
     /** Generate a new unique material ID */
     public String generateMaterialId() {
         int max = 0;
