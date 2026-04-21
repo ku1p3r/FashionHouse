@@ -2,6 +2,7 @@ package production;
 
 import common.base.iScreen;
 import common.util.Terminal;
+import hr.model.Employee;
 import java.util.List;
 
 public class MaterialModule implements iScreen {

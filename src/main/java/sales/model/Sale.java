@@ -1,7 +1,7 @@
 package sales.model;
 
 import common.model.Product;
-import common.util.Serializer;
+import common.model.Timestamp;
 
 import java.util.ArrayList;
 import java.util.List;

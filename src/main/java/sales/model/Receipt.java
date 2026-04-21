@@ -1,6 +1,6 @@
 package sales.model;
 
-import common.util.Serializer;
+import common.model.Timestamp;
 
 /**
  * @author Mason Hart

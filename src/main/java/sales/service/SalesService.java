@@ -13,9 +13,9 @@ import sales.model.Sale;
  */
 public class SalesService /* implements Service */ {
 
-    private static final String SALES_TABLE_PATH = "res/sales.csv";
+    private static final String SALES_TABLE_PATH = "res/sales/sales.csv";
     private static final String PRODUCT_TABLE_PATH = "stores/fashionstore1.catalog";
-    private static final String RECEIPT_TABLE_PATH = "res/receipt.csv";
+    private static final String RECEIPT_TABLE_PATH = "res/sales/receipt.csv";
 
     private Serializer saleSerializer;
     private Serializer productSerializer;
@@ -64,7 +64,6 @@ public class SalesService /* implements Service */ {
             String category = saleSerializer.get("total", i, String.class);
             String saleString = String.format("%s|%s|%s", id, name, category);
             pastSales.add(saleString);
-            System.out.println(saleString);
         }
     }
 
