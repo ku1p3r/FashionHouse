@@ -1,9 +1,13 @@
 package analytics.services;
 
 import analytics.util.ReportReader;
+import common.model.Product;
+import common.model.Retailer;
+import common.util.EntityLoader;
 import common.util.Serializer;
 import common.util.Terminal;
 import common.wrapper.Option;
+import common.wrapper.Period;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -57,7 +61,7 @@ public class AnalyticsService {
         }
         Terminal.prompt("Select Report", List.of(), options);
 
-        HashMap<String, Integer> report = ReportReader.read(chosenReport[0].toString());
+        HashMap<Product, Integer> report = ReportReader.read(chosenReport[0].toString());
 
         boolean[] running = {true};
         while(running[0]){
@@ -72,7 +76,7 @@ public class AnalyticsService {
                     new Option("store", "Register to database.", () -> {
                         String name = ReportReader.getName(chosenReport[0], suffix);
                         String retailerPath = "retailers/" + name + ".retailer";
-                        registerReport(retailerPath, report, month, year);
+                        registerReport(retailerPath, report, new Period(month, year));
                     }),
                     new Option("back", "Return to analytics.", () -> running[0] = false)
             ));
@@ -84,10 +88,9 @@ public class AnalyticsService {
      *
      * @param retailerPath
      * @param report
-     * @param month
-     * @param year
+     * @param period
      */
-    public void registerReport(String retailerPath, HashMap<String, Integer> report, int month, int year){
+    public void registerReport(String retailerPath, HashMap<Product, Integer> report, Period period){
         Serializer serializer;
         // If exists, set serializer to existing file, else create new file.
         try{
@@ -99,11 +102,11 @@ public class AnalyticsService {
         for(int i = 0; i < report.size(); i++){
             try {
                 serializer.push(
-                        month + "-" + year,
+                        period.getMonth() + "-" + period.getYear(),
                         (String)report.keySet().toArray()[i],
                         0,
                         0,
-                        report.get((String)report.keySet().toArray()[i])
+                        report.get(report.keySet().toArray()[i])
                 );
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -156,7 +159,8 @@ public class AnalyticsService {
                     }
                     int quantity = Integer.parseInt(Terminal.getInput("Added stock quantity for " + productName));
 
-                    stock(storeName, productName, month, year, quantity);
+                    EntityLoader el = new EntityLoader();
+                    stock(el.getRetailerByName(storeName), el.getProductByName(productName), new Period(month, year), quantity);
                 }
             }
         }
@@ -165,29 +169,28 @@ public class AnalyticsService {
     /**
      * Add stock and update retailer analytics file.
      *
-     * @param storeName
-     * @param productName
-     * @param month
-     * @param year
+     * @param retailer
+     * @param product
+     * @param period
      * @param quantity
      */
-    public void stock(String storeName, String productName, int month, int year, int quantity){
+    public void stock(Retailer retailer, Product product, Period period, int quantity){
         Serializer serializer;
-        String path = "retailers/" + storeName + ".retailer";
+        String path = "retailers/" + retailer.getName() + ".retailer";
         try{
             serializer = new Serializer(path);
         }catch (Exception e){
             serializer = new Serializer(RETAILER_HEADER);
         }
         ArrayList<Integer> indices = serializer.getRows(List.of(
-                new Serializer.Criterion("product", productName),
-                new Serializer.Criterion("period", month + "-" + year)
+                new Serializer.Criterion("product", product.getName()),
+                new Serializer.Criterion("period", period.getFileString())
         ));
         if(indices.isEmpty()){
             try {
                 serializer.push(
-                        month + "-" + year,
-                        productName,
+                        period.getMonth() + "-" + period.getYear(),
+                        product.getName(),
                         0,
                         quantity,
                         0

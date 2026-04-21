@@ -125,10 +125,11 @@ public class Serializer {
 
         //System.out.println(result);
 
-        FileWriter writer = new FileWriter(path);
-        writer.write(result);
-        writer.flush();
-        writer.close();
+        try (FileOutputStream fos = new FileOutputStream(path)) {
+            fos.write(result.getBytes());
+            fos.flush();
+            fos.getFD().sync();
+        }
     }
 
     public <T> ArrayList<T> get(String attribute, Class<T> type){
