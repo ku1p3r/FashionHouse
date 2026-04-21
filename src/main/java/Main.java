@@ -3,6 +3,7 @@ import analytics.AnalyticsProgram;
 import catalog.CatalogProgram;
 import common.util.Terminal;
 import common.wrapper.Option;
+import hr.HumanResourcesProgram;
 import java.util.List;
 import production.ProductionProgram;
 import sales.SalesSystem;
@@ -22,7 +23,7 @@ public class Main{
          Option sales = new Option("3", "Sales & Retailer Console", () -> SalesSystem.main(args));
          Option production = new Option("4", "Production Management", () -> ProductionProgram.main(args));
          Option security = new Option("5", "Security", () -> SecurityProgram.main(args));
-         // TODO add other services once their Main file is added4
+         Option hr = new Option("6", "Human Resources Console", () -> HumanResourcesProgram.main(args));
 
          boolean[] running = {true};
          Option exit = new Option("quit", "Exit program", () -> running[0] = false);
@@ -35,7 +36,8 @@ public class Main{
                      analytics,
                      sales,
                      production,
-                     security,                     /* TODO add other programs */
+                     security,
+                     hr,
                      exit
              ));
          }

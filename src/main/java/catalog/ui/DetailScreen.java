@@ -3,9 +3,9 @@ package catalog.ui;
 import catalog.service.CatalogService;
 import common.model.Product;
 import common.util.Terminal;
+import hr.model.Employee;
 import java.io.IOException;
 import production.AuthService;
-import production.Employee;
 import production.MaterialRepository;
 import production.ProductionModule;
 import production.ProductionRepository;
@@ -15,7 +15,7 @@ import production.ProductionRepository;
  * Returns an action signal so the caller (SearchScreen) knows what happened.
  */
 public class DetailScreen {
-    private static final String REQUIRED_ROLE = "MERCHANDISE_MANAGER";
+    private static final String REQUIRED_ROLE = "Production Manager";
     public enum Result { BACK, DELETED, UPDATED }
 
     private final CatalogService service;

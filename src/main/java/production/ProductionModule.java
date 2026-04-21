@@ -2,6 +2,7 @@ package production;
 
 import common.base.iScreen;
 import common.util.Terminal;
+import hr.model.Employee;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -332,7 +333,7 @@ public class ProductionModule implements iScreen {
         String today = LocalDate.now().toString();
         ProductionBatch batch = new ProductionBatch(
                 id, productId, selectedProduct[1],
-                currentUser.getId(), batchSize,
+                String.valueOf(currentUser.getId()), batchSize,
                 Status.PENDING, usageStr.toString(), today);
 
         prodRepo.addBatch(batch);
