@@ -3,11 +3,12 @@ package production;
 import catalog.service.CatalogService;
 import common.base.iScreen;
 import common.util.Terminal;
+import hr.model.Employee;
 
 public class ProductionSelectionScreen implements iScreen {
 
     private final CatalogService service;
-    private static final String REQUIRED_ROLE = "MERCHANDISE_MANAGER";
+    private static final String REQUIRED_ROLE = "Production Manager";
 
     public ProductionSelectionScreen(CatalogService service) {
         this.service = service;

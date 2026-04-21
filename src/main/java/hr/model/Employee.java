@@ -17,9 +17,10 @@ public class Employee {
     private int salary;
     private Timestamp startDate;
     private boolean isActive;
+    private String pin;
 
     public Employee(
-            long id, String name, String title, String dept, int salary, Timestamp startDate, boolean isActive
+            long id, String name, String title, String dept, int salary, Timestamp startDate, boolean isActive, String pin
     ) {
         this.id = id;
         this.name = name;
@@ -28,6 +29,8 @@ public class Employee {
         this.salary = salary;
         this.startDate = startDate;
         this.isActive = isActive;
+        this.pin = pin;
+
     }
 
     public long getId() {
@@ -58,9 +61,13 @@ public class Employee {
         return isActive;
     }
 
+    public boolean checkPin(String pin) {
+        return pin.equals(this.pin);
+    }
+
     public String toString(){
-        return String.format("%d | %s | %s @ %s Dept | Salary: $%d,000 | start: %s | active: %b",
-                id, name, title, dept, salary, startDate.toString(), isActive());
+        return String.format("%d | %s | %s @ %s Dept | Salary: $%d,000 | start: %s | active: %b | pin: %s",
+                id, name, title, dept, salary, startDate.toString(), isActive(), pin);
     }
 
 }

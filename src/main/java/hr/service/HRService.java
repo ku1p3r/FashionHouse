@@ -6,7 +6,6 @@ import hr.model.Application;
 import hr.model.Candidate;
 import hr.model.CandidateAppRelation;
 import hr.model.Employee;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -72,7 +71,8 @@ public class HRService {
                     empSerializer.get("dept", i, String.class),
                     empSerializer.get("salary", i, Integer.class),
                     new Timestamp(empSerializer.get("start", i, String.class)),
-                    empSerializer.get("active", i, Integer.class) > 0
+                    empSerializer.get("active", i, Integer.class) > 0,
+                    empSerializer.get("pin", i, String.class)
             );
             employeeList.add(e);
         }

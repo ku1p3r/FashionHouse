@@ -29,15 +29,16 @@ public class Main{
          Option exit = new Option("quit", "Exit program", () -> running[0] = false);
 
          while(running[0]){
-             Terminal.prompt("Select Program", List.of(), List.of(
-                     catalog,
-                     analytics,
-                     sales,
-                     production,
-                     /* TODO add other programs */
-                     hr,
-                     exit
-             ));
+            Terminal.clearScreen();
+            Terminal.printHeader("Fashion House");
+            Terminal.prompt("Select Program", List.of(), List.of(
+                    catalog,
+                    analytics,
+                    sales,
+                    production,
+                    hr,
+                    exit
+            ));
          }
 
          System.out.println(Terminal.YELLOW + "Shutting down." + Terminal.RESET);
