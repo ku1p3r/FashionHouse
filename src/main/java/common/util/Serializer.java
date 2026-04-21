@@ -26,7 +26,10 @@ public class Serializer {
     private String delimiter = "|";
     public record Criterion<T>(String key, T value) {}
 
-    // Construct new file.
+    /**
+     * Construct new file.
+     * @param columns
+     */
     public Serializer(String[] columns){
         attributes = new HashMap<>();
         attributeList = new ArrayList<>();
@@ -36,7 +39,10 @@ public class Serializer {
         }
     }
 
-    // Construct from path.
+    /**
+     * Construct from path.
+     * @param path
+     */
     public Serializer(String path){
         this.path = path;
         attributes = new HashMap<>();
@@ -69,6 +75,11 @@ public class Serializer {
         }
     }
 
+    /**
+     * Push a new row.
+     * @param args
+     * @throws Exception
+     */
     public void push(Object... args) throws Exception {
         int col = attributeList.size();
         if(args.length > col){
@@ -86,6 +97,10 @@ public class Serializer {
         }
     }
 
+    /**
+     * Serialize to file based on the one it was loaded from.
+     * @throws Exception
+     */
     public void save() throws Exception {
         if(path.isEmpty()){
             throw new Exception("Cannot implicitly save new files without having path as an argument.");
@@ -93,6 +108,11 @@ public class Serializer {
         save(path);
     }
 
+    /**
+     * Serialize to file.
+     * @param path
+     * @throws Exception
+     */
     public void save(String path) throws Exception {
         int columnCount = attributeList.size();
 
@@ -132,6 +152,13 @@ public class Serializer {
         }
     }
 
+    /**
+     * Get all values by attribute name.
+     * @param attribute
+     * @param type
+     * @return
+     * @param <T>
+     */
     public <T> ArrayList<T> get(String attribute, Class<T> type){
         ArrayList<String> att = attributes.get(attribute);
         ArrayList<T> arr = new ArrayList<>();
@@ -143,10 +170,25 @@ public class Serializer {
         return arr;
     }
 
+    /**
+     * Get attibute by column name and row index.
+     * @param attribute
+     * @param row
+     * @param type
+     * @return
+     * @param <T>
+     */
     public <T> T get(String attribute, int row, Class<T> type){
         return convert(attributes.get(attribute).get(row), type);
     }
 
+    /**
+     * Converts the string to the type.
+     * @param value
+     * @param type
+     * @return casted value
+     * @param <T>
+     */
     private <T> T convert(String value, Class<T> type){
         if(type == String.class) return type.cast(value);
         if(type == Integer.class) return type.cast(Integer.valueOf(value));
@@ -158,32 +200,33 @@ public class Serializer {
         throw new IllegalArgumentException("Unsupported type: " + type);
     }
 
+    /**
+     * Gets the number of rows.
+     * @return
+     */
     public int size(){
         if(attributeList.isEmpty()) return 0;
         return attributes.get(attributeList.get(0)).size();
     }
 
+    /**
+     * Overrides existing data.
+     * @param attribute
+     * @param row
+     * @param value
+     * @param <T>
+     */
     public <T> void set(String attribute, int row, T value){
         attributes.get(attribute).set(row, value.toString());
     }
 
+    /**
+     * Gets rows that match the given criteria.
+     * @param criteria
+     * @return matches
+     */
     public ArrayList<Integer> getRows(Iterable<Criterion> criteria){
         ArrayList<Integer> matches = new ArrayList<>();
-
-        /*for(Criterion criterion : criteria){
-            String key = criterion.key();
-            String value = criterion.value().toString();
-
-            if(!attributes.containsKey(key)){
-                return matches; // No matches if key doesn't exist.
-            }
-
-            for(int i = 0; i < attributes.get(key).size(); i++){
-                if(attributes.get(key).get(i).equals(value)){
-                    matches.add(i);
-                }
-            }
-        }*/
 
         for(int i = 0; i < size(); i++){
             boolean match = true;

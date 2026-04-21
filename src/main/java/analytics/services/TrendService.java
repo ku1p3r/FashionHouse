@@ -11,6 +11,11 @@ import common.wrapper.Period;
 
 import java.util.*;
 
+/**
+ * Service for analyzing trends and data.
+ *
+ * Author: Jase Beaubien
+ */
 public class TrendService {
     public TrendService() {
         boolean[] running = {true};

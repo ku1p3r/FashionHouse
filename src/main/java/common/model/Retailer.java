@@ -16,7 +16,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Retailer implements Selectable {
-    // TODO add other attributes
     private static int nextId = 0;
     private String name;
     private String id;
@@ -24,6 +23,10 @@ public class Retailer implements Selectable {
     private HashMap<Period, SalesReport> salesReports = new HashMap<>();
     private Set<Product> productSet = new HashSet<>();
 
+    /**
+     * Constructor for Retailer.
+     * @param name
+     */
     public Retailer(String name){
         this.name = name;
         nextId++;
@@ -32,38 +35,40 @@ public class Retailer implements Selectable {
         loadSalesReports();
     }
 
+    /**
+     * Loads sales reports.
+     */
     private void loadSalesReports() {
         File reportsDir = new File("retailers/reports");
-        if (!reportsDir.exists() || !reportsDir.isDirectory()) {
+        if(!reportsDir.exists() || !reportsDir.isDirectory()){
             return;
         }
 
-        // Pattern to match files like: retailerName(month-year).report
         Pattern pattern = Pattern.compile(Pattern.quote(name) + "\\((\\d+)-(\\d+)\\)\\.report");
 
         File[] reportFiles = reportsDir.listFiles();
-        if (reportFiles == null) {
+        if(reportFiles == null){
             return;
         }
 
-        for (File file : reportFiles) {
+        for(File file : reportFiles){
             Matcher matcher = pattern.matcher(file.getName());
-            if (matcher.matches()) {
+            if(matcher.matches()){
                 int month = Integer.parseInt(matcher.group(1));
                 int year = Integer.parseInt(matcher.group(2));
                 Period period = new Period(month, year);
 
                 HashMap<Product, Integer> sales = new HashMap<>();
-                try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                try(BufferedReader reader = new BufferedReader(new FileReader(file))){
                     String line;
                     boolean isHeader = true;
-                    while ((line = reader.readLine()) != null) {
+                    while((line = reader.readLine()) != null){
                         if (isHeader) {
                             isHeader = false;
                             continue;
                         }
                         String[] parts = line.split("\\|");
-                        if (parts.length == 2) {
+                        if(parts.length == 2){
                             String productKey = parts[0].trim();
                             int sold = Integer.parseInt(parts[1].trim());
                             Product product = new Product(productKey, productKey, "", 0, 0, "", "");
@@ -71,7 +76,7 @@ public class Retailer implements Selectable {
                             sales.put(product, sold);
                         }
                     }
-                } catch (IOException e) {
+                }catch(IOException e){
                     System.err.println("Error reading report file: " + file.getName());
                 }
 
@@ -81,10 +86,20 @@ public class Retailer implements Selectable {
         }
     }
 
+    /**
+     * Gets the set of products that this retailer has sales data for.
+     * @return productSet
+     */
     public Set<Product> getProducts() {
         return productSet;
     }
 
+    /**
+     * Gets the total sales for the given products and period.
+     * @param products
+     * @param period
+     * @return
+     */
     public int getSales(Iterable<Product> products, Period period) {
         SalesReport report = salesReports.get(period);
         if (report == null) {
@@ -97,6 +112,12 @@ public class Retailer implements Selectable {
         return totalSales;
     }
 
+    /**
+     * Gets the total sales for the given product and period.
+     * @param product
+     * @param period
+     * @return
+     */
     public int getSales(Product product, Period period) {
         SalesReport report = salesReports.get(period);
         if (report == null) {
@@ -105,6 +126,12 @@ public class Retailer implements Selectable {
         return getReportedSales(product, report);
     }
 
+    /**
+     * Helper method to get the sales for a single product from a report.
+     * @param requestedProduct
+     * @param report
+     * @return
+     */
     private int getReportedSales(Product requestedProduct, SalesReport report) {
         for(Map.Entry<Product, Integer> saleEntry : report.sales().entrySet()){
             if(productsMatch(requestedProduct, saleEntry.getKey())){
@@ -114,6 +141,12 @@ public class Retailer implements Selectable {
         return 0;
     }
 
+    /**
+     * Helper method to determine if a requested product matches a product in the report.
+     * @param requestedProduct
+     * @param reportedProduct
+     * @return
+     */
     private boolean productsMatch(Product requestedProduct, Product reportedProduct) {
         if(requestedProduct.equals(reportedProduct)){
             return true;
@@ -130,15 +163,29 @@ public class Retailer implements Selectable {
                 || matchesValue(requestedName, reportedName);
     }
 
+    /**
+     * Helper method to compare two strings for a match.
+     * @param left
+     * @param right
+     * @return
+     */
     private boolean matchesValue(String left, String right) {
         return left != null && left.equalsIgnoreCase(right);
     }
 
+    /**
+     * Gets the retailer's ID.
+     * @return id
+     */
     @Override
     public String getId() {
         return id;
     }
 
+    /**
+     * Gets the retailer's name.
+     * @return name
+     */
     @Override
     public String getName(){
         return name;
