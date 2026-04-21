@@ -1,9 +1,10 @@
 package production;
 
 import catalog.service.CatalogService;
+import common.base.Screen;
 import common.util.Terminal;
 
-public class ProductionSelectionScreen {
+public class ProductionSelectionScreen implements Screen {
 
     private final CatalogService service;
     private static final String REQUIRED_ROLE = "MERCHANDISE_MANAGER";
@@ -11,7 +12,7 @@ public class ProductionSelectionScreen {
     public ProductionSelectionScreen(CatalogService service) {
         this.service = service;
     }
-
+    @Override
     public void run() {
         Terminal.clearScreen();
         printBanner();

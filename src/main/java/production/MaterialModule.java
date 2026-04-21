@@ -1,9 +1,10 @@
 package production;
 
+import common.base.Screen;
 import common.util.Terminal;
 import java.util.List;
 
-public class MaterialModule {
+public class MaterialModule implements Screen {
 
     private final MaterialRepository repo;
     private final Employee currentUser;
@@ -14,7 +15,7 @@ public class MaterialModule {
     }
 
     // Entry point: Dashboard
-
+    @Override
     public void run() {
         boolean running = true;
         while (running) {

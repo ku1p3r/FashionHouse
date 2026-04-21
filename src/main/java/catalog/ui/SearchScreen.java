@@ -1,6 +1,7 @@
 package catalog.ui;
 
 import catalog.service.CatalogService;
+import common.base.Screen;
 import common.model.Product;
 import common.util.Terminal;
 import java.io.IOException;
@@ -10,7 +11,7 @@ import java.util.List;
  * Main search screen with a search bar and results list.
  * Also handles the "no results" flow and the "create new product" flow.
  */
-public class SearchScreen {
+public class SearchScreen implements Screen {
 
     private CatalogService service;
     private ProductForm    form;
@@ -23,6 +24,7 @@ public class SearchScreen {
     }
 
     /** Entry point — loops until the user quits. */
+    @Override
     public void run() {
         String query = "";
         while (true) {

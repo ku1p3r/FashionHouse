@@ -7,8 +7,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import production.ProductionBatch.Status;
+import common.base.Screen;
 
-public class ProductionModule {
+public class ProductionModule implements Screen {
 
     private final ProductionRepository prodRepo;
     private final MaterialRepository   matRepo;
@@ -23,7 +24,7 @@ public class ProductionModule {
     }
 
     // Entry point
-
+    @Override
     public void run() {
         boolean running = true;
         while (running) {
