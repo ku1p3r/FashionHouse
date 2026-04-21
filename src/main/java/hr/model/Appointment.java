@@ -5,10 +5,10 @@ import common.model.Timestamp;
 public class Appointment {
 
     private Timestamp start;
-    private int minutesDuration;
+    private Timestamp end;
 
-    public Appointment(Timestamp start, int dur){
+    public Appointment(Timestamp start, Timestamp end){
         this.start = start;
-        this.minutesDuration = dur;
+        this.end = end;
     }
 }

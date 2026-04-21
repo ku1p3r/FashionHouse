@@ -33,9 +33,7 @@ public class Timestamp {
     }
 
     public Timestamp(int y, int m, int d, int h, int min){
-        if (y != CURR_YEAR) {
-            throw new IllegalArgumentException("Invalid Year");
-        } else if (m < 1 || m > 12){
+        if (m < 1 || m > 12){
             throw new IllegalArgumentException("Invalid Month");
         } else if (d < 1 || d > daysPerMonth[m-1]){
             throw new IllegalArgumentException("Invalid Day");
@@ -64,7 +62,20 @@ public class Timestamp {
         h = Integer.parseInt(time[0]);
         min = Integer.parseInt(time[1]);
         sec = Integer.parseInt(time[2]);
-        this(y,m,d,h,min);
+        if (m < 1 || m > 12){
+            throw new IllegalArgumentException("Invalid Month");
+        } else if (d < 1 || d > daysPerMonth[m-1]){
+            throw new IllegalArgumentException("Invalid Day");
+        } else if (h < 0 || h > 23){
+            throw new IllegalArgumentException("Invalid Hour");
+        } else if (min < 0 || min > 59){
+            throw new IllegalArgumentException("Invalid Minute");
+        }
+        this.year = y;
+        this.month = m;
+        this.day = d;
+        this.hour = h;
+        this.minute = min;
         this.second = sec;
     }
 

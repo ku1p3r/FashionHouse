@@ -64,7 +64,6 @@ public class SalesService /* implements Service */ {
             String category = saleSerializer.get("total", i, String.class);
             String saleString = String.format("%s|%s|%s", id, name, category);
             pastSales.add(saleString);
-            System.out.println(saleString);
         }
     }
 

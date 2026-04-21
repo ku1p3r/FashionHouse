@@ -1,1 +1,3 @@
-id|name|dob|bio|application_id
+id|title|desc|dept|close_date|openings
+7787|Fashion Designer|Create and design high-quality fashion items that customers will buy.|PRODUCTION|2026-05-30T00:00:00|1
+698|Quality Assurance|Ensure the quality of fashion products in our production lines.|PRODUCTION|2026-05-10T00:00:00|2
