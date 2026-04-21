@@ -2,8 +2,6 @@ package security;
 
 import java.util.*;
 
-import org.w3c.dom.events.Event;
-
 import events.*;
 
 public class SecurityProgram {
@@ -18,7 +16,6 @@ public class SecurityProgram {
         AdvertisingSystem advertisingSystem = new AdvertisingSystem();
         advertisingSystem.loadEventsFromFile();
         List<Event> events = advertisingSystem.viewEvents();
-
 
         SecurityService service = new SecurityService();
 
@@ -40,11 +37,11 @@ public class SecurityProgram {
                     System.out.println("Saved. Exiting...");
                     running = false;
                 }
-                default -> System.out.print("Invalid option");
-             }
+                default -> System.out.println("Invalid option");
+            }
         }
     }
-}
+
     // ================= MENU =================
 
     private static void printMainMenu() {
@@ -69,10 +66,10 @@ public class SecurityProgram {
     }
 
     private static void viewCampuses(List<Campus> campuses) {
-    System.out.println("\n--- CAMPUSES ---");
-    for (int i = 0; i < campuses.size(); i++) {
-        System.out.println(i + ": " + campuses.get(i));
-    }
+        System.out.println("\n--- CAMPUSES ---");
+        for (int i = 0; i < campuses.size(); i++) {
+            System.out.println(i + ": " + campuses.get(i));
+        }
     }
 
     private static void viewGuards(List<SecurityGuard> guards) {
@@ -113,9 +110,7 @@ public class SecurityProgram {
             return;
         }
 
-        boolean assigning = true;
-
-        while (assigning && assignment.needsMoreGuards()) {
+        while (assignment.needsMoreGuards()) {
 
             System.out.println("\nQualified Guards:");
             for (int i = 0; i < qualified.size(); i++) {
@@ -149,38 +144,38 @@ public class SecurityProgram {
     }
 
     private static void assignGuardsToCampus(List<Campus> campuses,
-                                         List<SecurityGuard> guards,
-                                         SecurityService service) {
+                                             List<SecurityGuard> guards,
+                                             SecurityService service) {
 
-    viewCampuses(campuses);
-    System.out.print("Select campus index: ");
-    int index = getIntInput();
+        viewCampuses(campuses);
+        System.out.print("Select campus index: ");
+        int index = getIntInput();
 
-    if (index < 0 || index >= campuses.size()) {
-        System.out.println("Invalid campus.");
-        return;
-    }
+        if (index < 0 || index >= campuses.size()) {
+            System.out.println("Invalid campus.");
+            return;
+        }
 
-    Campus selected = campuses.get(index);
+        Campus selected = campuses.get(index);
 
-    SecurityAssignment assignment = convertCampusToAssignment(selected);
+        SecurityAssignment assignment = convertCampusToAssignment(selected);
 
-    System.out.println("\nAssigning guards to: " + selected.getName());
+        System.out.println("\nAssigning guards to: " + selected.getName());
 
-    List<SecurityGuard> qualified =
-            service.getQualifiedGuards(assignment, guards);
+        List<SecurityGuard> qualified =
+                service.getQualifiedGuards(assignment, guards);
 
-    if (qualified.isEmpty()) {
-        System.out.println("No qualified guards.");
-        return;
-    }
+        if (qualified.isEmpty()) {
+            System.out.println("No qualified guards.");
+            return;
+        }
 
-    for (SecurityGuard g : qualified) {
-        service.assignGuard(assignment, g);
-        if (!assignment.needsMoreGuards()) break;
-    }
+        for (SecurityGuard g : qualified) {
+            service.assignGuard(assignment, g);
+            if (!assignment.needsMoreGuards()) break;
+        }
 
-    service.finalizeAssignment(assignment);
+        service.finalizeAssignment(assignment);
     }
 
     // ================= HELPERS =================
@@ -214,19 +209,20 @@ public class SecurityProgram {
 
     public static SecurityAssignment convertCampusToAssignment(Campus campus) {
 
-    int requiredPrestige = campus.getSecurityLevel();
+        int requiredPrestige = campus.getSecurityLevel();
 
-    int requiredGuards = switch (requiredPrestige) {
-        case 3 -> 5;
-        case 2 -> 3;
-        default -> 1;
-    };
+        int requiredGuards = switch (requiredPrestige) {
+            case 3 -> 5;
+            case 2 -> 3;
+            default -> 1;
+        };
 
-    return new SecurityAssignment(
-            String.valueOf(campus.getCampusId()),
-            campus.getName(),
-            requiredPrestige,
-            new HashSet<>(),
-            requiredGuards
-    );
+        return new SecurityAssignment(
+                String.valueOf(campus.getCampusId()),
+                campus.getName(),
+                requiredPrestige,
+                new HashSet<>(),
+                requiredGuards
+        );
+    }
 }

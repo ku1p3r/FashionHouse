@@ -48,7 +48,7 @@ public class GuardFileManager {
             String skills = String.join("|", g.getSkills());
 
             String line = String.join(",",
-                    g.getId(),
+                    String.valueOf(g.getId()),
                     g.getName(),
                     String.valueOf(g.getPrestigeLevel()),
                     skills,

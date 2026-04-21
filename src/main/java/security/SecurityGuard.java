@@ -1,16 +1,26 @@
 package security;
 
+import common.model.Timestamp;
+import hr.model.Employee;
+import java.util.Random;
 import java.util.Set;
 
-import production.Employee;
-
-public class SecurityGuard extends Employee{
+public class SecurityGuard extends Employee {
     private int prestigeLevel;
     private Set<String> skills;
     private boolean available;
 
     public SecurityGuard(long id, String name, int prestigeLevel, Set<String> skills) {
-        super(id, name, "Security Guard", "SECURITY", 40000, null, true);
+        super(
+            id,
+            name,
+            "Security Guard",
+            "SECURITY",
+            40000,
+            new Timestamp(),
+            true,
+            String.valueOf(new Random().nextInt(0, 10000))
+        );
         this.prestigeLevel = prestigeLevel;
         this.skills = skills;
         this.available = true;
