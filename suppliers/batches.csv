@@ -1,0 +1,6 @@
+id|productId|productName|requestedBy|batchSize|status|materialUsage|createdDate
+B-001|P-5E8D02|Denim Jacket|EMP-001|2|COMPLETED|M-001:20.0,M-002:30.0|2026-04-15
+B-002|P-7F3B88|Tailored Wool Blazer|EMP-001|2|COMPLETED|M-004:6.0|2026-04-15
+B-003|P-9B1A77|Cashmere Sweater|EMP-001|1|COMPLETED|M-004:2.5|2026-04-20
+B-004|P-7F3B88|Tailored Wool Blazer|EMP-001|3|PENDING|M-004:9.0|2026-04-20
+B-005|P-7F3B88|Tailored Wool Blazer|EMP-001|2|COMPLETED|M-004:6.0|2026-04-21

@@ -21,7 +21,7 @@ public class CatalogService {
     private void load() throws IOException {
         catalog.clear();
         if (!Files.exists(filePath)) {
-            Serializer s = new Serializer(new String[]{"id","name","category","price","quantity","description","supplier"});
+            Serializer s = new Serializer(new String[]{"id","name","category","price","quantity","description","supplier","materials"});
             try { s.save(filePath.toString()); }
             catch (Exception e) { throw new IOException(e); }
             return;
@@ -44,7 +44,9 @@ public class CatalogService {
                 int quantity = s.get("quantity", i, Integer.class);
                 String description = s.get("description", i, String.class);
                 String supplier = s.get("supplier", i, String.class);
-                catalog.add(new Product(id, name, category, price, quantity, description, supplier));
+                String materials = "";
+                try { materials = s.get("materials", i, String.class); } catch (Exception ignored) {}
+                catalog.add(new Product(id, name, category, price, quantity, description, supplier, materials));
             } catch (Exception e) {
                 throw new IOException("Parse error at row " + (i + 1) + ": " + e.getMessage());
             }
@@ -111,7 +113,7 @@ public class CatalogService {
     // ---------------------------------------------------------------- persistence
 
     private void save() throws IOException {
-        Serializer s = new Serializer(new String[]{"id","name","category","price","quantity","description","supplier"});
+        Serializer s = new Serializer(new String[]{"id","name","category","price","quantity","description","supplier","materials"});
         try {
             for (Product p : catalog) {
                 s.push(
@@ -121,7 +123,8 @@ public class CatalogService {
                     String.valueOf(p.getPrice()),
                     String.valueOf(p.getQuantity()),
                     p.getDescription(),
-                    p.getSupplier()
+                    p.getSupplier(),
+                    p.getMaterials()
                 );
             }
             s.save(filePath.toString());
