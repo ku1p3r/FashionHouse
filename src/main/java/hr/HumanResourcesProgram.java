@@ -29,7 +29,7 @@ public class HumanResourcesProgram {
     public static void main(String[] args){
 
         ScreenInput input = ScreenInput.NONE;
-        while(input != ScreenInput.EXIT){
+        do{
 
             currScreen.show();
             input = currScreen.processInput();
@@ -46,10 +46,9 @@ public class HumanResourcesProgram {
                 case TO_VIEW_EMPLOYEES -> { currScreen = employeeListScreen; }
                 case TO_EMPLOYEE -> { currScreen = viewEmployeeScreen; }
                 case NONE -> { /* do nothing */ }
-                case EXIT -> { System.exit(0); }
             }
 
-        }
+        }while(input != ScreenInput.EXIT);
 
     }
 
