@@ -178,6 +178,16 @@ public class HRService {
     public void acceptCandidate() {
         Random r = new Random();
         Application app = applicationList.get(selectedApp);
+        Employee e = new Employee(
+                employeeList.size() + 1,
+                selectedCandidate.getName(),
+                app.getTitle(),
+                app.getDept(),
+                70,
+                app.getCloseDate(),
+                true,
+                String.format("%04d", r.nextInt(0, 10000))
+        );
         try{
             empSerializer.push(
                     employeeList.size() + 1,
@@ -189,9 +199,11 @@ public class HRService {
                     1,
                     String.format("%04d", r.nextInt(0, 10000))
             );
-        } catch(Exception e){
+            empSerializer.save();
+            employeeList.add(e);
+        } catch(Exception err){
             System.out.println("An error occured when adding new employee to database");
-            System.err.println(e);
+            System.err.println(err);
         }
 
     }
