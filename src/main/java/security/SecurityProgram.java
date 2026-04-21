@@ -4,6 +4,8 @@ import java.util.*;
 
 import org.w3c.dom.events.Event;
 
+import events.*;
+
 public class SecurityProgram {
 
     private static Scanner scanner = new Scanner(System.in);
@@ -39,12 +41,10 @@ public class SecurityProgram {
                     running = false;
                 }
                 default -> System.out.print("Invalid option");
-            
-    }
-}
+             }
         }
     }
-
+}
     // ================= MENU =================
 
     private static void printMainMenu() {
@@ -55,6 +55,7 @@ public class SecurityProgram {
         System.out.println("4. Assign Guards to Event");
         System.out.println("5. Assign Guards to Campus");
         System.out.println("6. Save & Exit");
+        System.out.print("Select option: ");
     }
 
     // ================= VIEW METHODS =================
