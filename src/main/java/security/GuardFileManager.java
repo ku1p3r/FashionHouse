@@ -17,7 +17,7 @@ public class GuardFileManager {
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
 
-                String id = parts[0];
+                long id = Long.parseLong(parts[0]);
                 String name = parts[1];
                 int prestige = Integer.parseInt(parts[2]);
 

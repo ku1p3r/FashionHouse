@@ -2,13 +2,15 @@ package security;
 
 import java.util.Set;
 
+import production.Employee;
+
 public class SecurityGuard extends Employee{
     private int prestigeLevel;
     private Set<String> skills;
     private boolean available;
 
     public SecurityGuard(long id, String name, int prestigeLevel, Set<String> skills) {
-        super(id, name, "Security Guard", "SECURITY", 40000, null, true)
+        super(id, name, "Security Guard", "SECURITY", 40000, null, true);
         this.prestigeLevel = prestigeLevel;
         this.skills = skills;
         this.available = true;
@@ -34,11 +36,12 @@ public class SecurityGuard extends Employee{
         this.available = true;
     }
 
+    @Override
     public String getName() {
-        return name;
+        return super.getName();
     }
 
-    public String getId() {
-    return id;
-}
+    public long getId() {
+        return super.getId();
+    }
 }
