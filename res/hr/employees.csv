@@ -1,0 +1,34 @@
+id|name|position|dept|start|salary|active|pin
+1|John Smith|Actuary|LEGAL|2026-4-21T00:00:00|72|1|1234
+2|Patrick Finnegan|Production Manager|PRODUCTION|2025-2-21T00:00:00|88|1|4782
+3|Mary Jane|Advertising Associate|ADVERTISING|2026-3-21T00:00:00|75|1|3391
+4|Ella Stella|Director|ADVERTISING|2020-10-30T00:00:00|134|1|8204
+5|Jake Margin|Advertising Associate|ADVERTISING|2020-12-4T00:00:00|99|1|5517
+6|Willis Brown|Cashier|SALES|2021-10-3T00:00:00|56|1|6639
+7|Alexis Greely|Human Resources Specialist|HR|2020-10-3T00:00:00|66|1|2981
+8|Bob Gates|Security Guard|SECURITY|2019-1-20T00:00:00|80|1|7743
+9|Sandra Cho|Paralegal|LEGAL|2022-5-15T00:00:00|68|1|1456
+10|Marcus Webb|Corporate Counsel|LEGAL|2018-3-10T00:00:00|115|1|9032
+11|Diana Flores|Production Manager|PRODUCTION|2021-7-19T00:00:00|72|1|3874
+12|Trevor Nash|Production Manager|PRODUCTION|2017-11-2T00:00:00|98|1|6128
+13|Ingrid Holme|Production Manager|PRODUCTION|2023-1-8T00:00:00|77|1|4465
+14|Carla Dupont|Sales Representative|SALES|2022-9-14T00:00:00|63|1|7290
+15|Dominic Rua|Account Executive|SALES|2019-6-25T00:00:00|91|1|8853
+16|Yuki Tanaka|Sales Manager|SALES|2016-4-30T00:00:00|118|1|2047
+17|Priya Nair|HR Coordinator|HR|2023-3-17T00:00:00|61|1|5563
+18|Leonard Fox|Recruiter|HR|2020-8-22T00:00:00|70|1|3319
+19|Tamara Osei|Benefits Administrator|HR|2021-2-11T00:00:00|67|1|9701
+20|Nate Burgess|Security Supervisor|SECURITY|2018-10-5T00:00:00|94|1|1188
+21|Fiona Marsh|Loss Prevention Officer|SECURITY|2022-6-3T00:00:00|74|1|6674
+22|Calvin Reyes|Brand Strategist|ADVERTISING|2019-9-18T00:00:00|103|1|4420
+23|Helena Cross|Media Buyer|ADVERTISING|2023-7-1T00:00:00|79|1|7835
+24|Omar Khalid|Production Manager|PRODUCTION|2024-1-13T00:00:00|65|1|2256
+25|Stephanie Lane|Legal Secretary|LEGAL|2015-5-27T00:00:00|60|1|8917
+26|Bryce Dutton|Security Officer|SECURITY|2020-3-9T00:00:00|71|1|3042
+27|Naomi Sutton|Inside Sales Rep|SALES|2024-2-28T00:00:00|58|1|5198
+28|Felix Grant|Copywriter|ADVERTISING|2021-11-16T00:00:00|82|1|6761
+29|Rachel Kim|Data Analyst|ANALYTICS|2023-4-10T00:00:00|85|1|1923
+30|Trevor Olson|Business Intelligence Developer|ANALYTICS|2021-8-3T00:00:00|102|1|4407
+31|Amara Diallo|Analytics Manager|ANALYTICS|2018-6-17T00:00:00|124|1|7516
+32|Steven Park|Reporting Analyst|ANALYTICS|2024-1-22T00:00:00|78|1|8339
+33|Chloe Vance|Quantitative Analyst|ANALYTICS|2022-11-5T00:00:00|97|1|5584

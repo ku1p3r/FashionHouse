@@ -1,0 +1,16 @@
+package hr;
+
+public enum ScreenInput {
+    TO_MAIN,
+    TO_CREATE_APPLICATION,
+    TO_VIEW_APPLICATIONS,
+    TO_EDIT_APPLICATION,
+    TO_VIEW_CANDIDATES,
+    TO_CANDIDATE,
+    TO_SEND_OFFER,
+    TO_SEND_REJECT,
+    TO_VIEW_EMPLOYEES,
+    TO_EMPLOYEE,
+    NONE,
+    EXIT
+}

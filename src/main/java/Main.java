@@ -1,12 +1,13 @@
 
+import advertising.AdvertisingMain;
 import analytics.AnalyticsProgram;
 import catalog.CatalogProgram;
 import common.util.Terminal;
 import common.wrapper.Option;
-import sales.SalesSystem;
-import advertising.AdvertisingMain;
+import hr.HumanResourcesProgram;
 import java.util.List;
-
+import production.ProductionProgram;
+import sales.SalesSystem;
 
 public class Main{
 
@@ -22,19 +23,24 @@ public class Main{
          Option sales = new Option("3", "Sales & Retailer Console", () -> SalesSystem.main(args));
          Option advertising = new Option("4", "Advertising", () -> AdvertisingMain.main(args));
          // TODO add other services once their Main file is added
+         Option production = new Option("5", "Production Management", () -> ProductionProgram.main(args));
+         Option hr = new Option("6", "Human Resources Console", () -> HumanResourcesProgram.main(args));
 
          boolean[] running = {true};
          Option exit = new Option("quit", "Exit program", () -> running[0] = false);
 
          while(running[0]){
-             Terminal.prompt("Select Program", List.of(), List.of(
-                     catalog,
-                     analytics,
-                     sales,
-                     advertising,
-                     /* TODO add other programs */
-                     exit
-             ));
+            Terminal.clearScreen();
+            Terminal.printHeader("Fashion House");
+            Terminal.prompt("Select Program", List.of(), List.of(
+                    catalog,
+                    analytics,
+                    sales,
+                    advertising,
+                    production,
+                    hr,
+                    exit
+            ));
          }
 
          System.out.println(Terminal.YELLOW + "Shutting down." + Terminal.RESET);

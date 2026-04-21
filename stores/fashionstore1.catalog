@@ -1,5 +1,16 @@
-id|name|category|price|quantity|description|supplier
-P-035176|Leather Jacket|Outerwear|120.0|5|Black leather jacket|Nike
-P-791D60|Silk Dress|Dress|300.0|4|Red silk evening dress|Gucci
-P-EE8ABA|Test Item|Accessory|102.0|102|Demo accessory item|Channel
-P-7DCE99|Sneakers|Shoes|1000.0|23|Limited edition sneakers|Adidas
+id|name|category|price|quantity|description|supplier|materials
+P-4A9C21|Silk Evening Dress|Womenswear|249.99|12|Elegant full-length silk dress with flowing silhouette|21|M-001:2.0,M-006:0.5
+P-7F3B88|Tailored Wool Blazer|Menswear|189.5|4|Slim-fit wool blazer with structured shoulders|2|M-004:3.0
+P-2D6E44|Leather Handbag|Accessories|320.0|15|Premium leather handbag with gold-tone hardware|25|M-006:1.0
+P-9B1A77|Cashmere Sweater|Knitwear|145.75|30|Soft cashmere sweater with ribbed cuffs|19|M-004:2.5
+P-5E8D02|Denim Jacket|Outerwear|110.0|28|Classic fit denim jacket with distressed finish|14|M-002:3.0
+P-3C7F66|Pleated Midi Skirt|Womenswear|89.99|40|High-waisted pleated skirt with lightweight fabric|21|M-001:1.5
+P-8A2B39|Slim Fit Dress Shirt|Menswear|69.5|55|Cotton dress shirt with modern slim cut|18|M-001:1.2
+P-6D4E90|Wool Overcoat|Outerwear|275.0|10|Long wool overcoat with tailored fit|17|M-004:4.0
+P-1F9C55|Leather Belt|Accessories|49.99|75|Genuine leather belt with polished buckle|3|M-006:0.3
+P-0A3D28|Chiffon Blouse|Womenswear|74.25|3|Lightweight chiffon blouse with soft drape|21|M-006:0.8
+P-7E6B11|Athleisure Joggers|Activewear|59.99|65|Comfortable joggers with tapered fit|13|M-001:1.6
+P-4B2F73|Designer Sunglasses|Accessories|135.0|22|UV-protected sunglasses with modern frame|25|M-003:1.0,M-006:0.2
+P-9D8C04|Evening Heels|Footwear|180.0|18|High-heel shoes with satin finish|16|M-003:1.0,M-006:0.5
+P-2E5A67|Leather Sneakers|Footwear|150.0|35|Minimalist leather sneakers for everyday wear|16|M-001:2.5
+P-6F1B92|Trench Coat|Outerwear|210.0|14|Classic double-breasted trench coat with belt|17|

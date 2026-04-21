@@ -1,6 +1,7 @@
 package catalog.ui;
 
 import catalog.service.CatalogService;
+import common.base.iScreen;
 import common.model.Product;
 import common.util.Terminal;
 import java.io.IOException;
@@ -10,7 +11,7 @@ import java.util.List;
  * Main search screen with a search bar and results list.
  * Also handles the "no results" flow and the "create new product" flow.
  */
-public class SearchScreen {
+public class SearchScreen implements iScreen {
 
     private CatalogService service;
     private ProductForm    form;
@@ -23,83 +24,64 @@ public class SearchScreen {
     }
 
     /** Entry point — loops until the user quits. */
+    @Override
     public void run() {
+        String query = "";
         while (true) {
-            String query = showSearchBar();
+            List<Product> results = service.search(query);
+            query = handleResults(results, query);
             if (query == null) return;
             if (query.isBlank()) continue;
-
-            if (query.equalsIgnoreCase("new")) {
-                createNew(null);
-                continue;
-            }
-
-            List<Product> results = service.search(query);
-
-            if (results.isEmpty()) {
-                handleNoResults(query);
-            } else {
-                handleResults(results, query);
-            }
         }
     }
 
-    private String showSearchBar() {
-        Terminal.clearScreen();
-        Terminal.printHeader("Merchandise Catalog  —  " + service.getFilePath().getFileName());
-        Terminal.println(Terminal.DIM + "Products in catalog: " + service.size() + Terminal.RESET);
-        Terminal.println();
-        Terminal.printMenuOption("new",  "Create a new product");
-        Terminal.printMenuOption("store", "Change store");
-        Terminal.printMenuOption("back", "Leave Catalog");
-        Terminal.println();
-        Terminal.printLine();
-        String query = Terminal.prompt("Search (ID / keyword) >");
-        if (query.equalsIgnoreCase("back")) return null;
-        if (query.equalsIgnoreCase("store")) {
-            StoreSelectionScreen storeScreen = new StoreSelectionScreen();
-            CatalogService newService = storeScreen.run();
-            if (newService != null) {
-                this.service = newService;
-                // recreate dependent UI components so they reference the new service
-                this.form = new ProductForm(service);
-                this.detail = new DetailScreen(service);
-            }
-            return "";
-        }
-        return query;
-    }
-
-    private void handleResults(List<Product> results, String query) {
+    private String handleResults(List<Product> results, String query) {
         while (true) {
             Terminal.clearScreen();
-            Terminal.printHeader("Search Results");
+            Terminal.printHeader("Merchandise Catalog  —  " + service.getFilePath().getFileName());
             Terminal.println(Terminal.DIM + "Query: \"" + query + "\"  —  " + results.size() + " result(s)" + Terminal.RESET);
             Terminal.println();
-            Terminal.printTableHeader("ID", "Name", "Category", "Price");
+            Terminal.printTableHeader("ID", "Name", "Price", "Quantity");
 
             for (int i = 0; i < results.size(); i++) {
                 Product p = results.get(i);
-                Terminal.printTableRow(
-                    i + 1,
-                    p.getId(),
-                    p.getName(),
-                    p.getCategory(),
-                    String.format("$%.2f", p.getPrice())
+                boolean low = p.getQuantity() < 5;
+                String idVal = p.getId();
+                String nameVal = p.getName();
+                String priceVal = String.format("$%.2f", p.getPrice());
+                String qtyVal = String.valueOf(p.getQuantity());
+                if (low) qtyVal = qtyVal + " (low on stock)";
+
+                Terminal.printTableRowColored(low ? Terminal.RED : Terminal.RESET, i + 1,
+                    idVal,
+                    nameVal,
+                    priceVal,
+                    qtyVal
                 );
             }
 
             Terminal.println();
             Terminal.printLine();
             Terminal.printMenuOption("(1-" + results.size() + ")", "Enter a result number to view details");
+            Terminal.printMenuOption("(ID/Keyword)", "Filter on keyword (press enter to remove filter)");
             Terminal.printMenuOption("new", "Create a new product");
-            Terminal.printMenuOption("back",   "Back to search");
+            Terminal.printMenuOption("back",   "Select different store");
             Terminal.println();
 
             String input = Terminal.prompt("Choice >");
 
-            if (input.equalsIgnoreCase("back") || input.isBlank()) return;
-            if (input.equalsIgnoreCase("new")) { createNew(null); return; }
+            if (input.equalsIgnoreCase("new")) { createNew(null); return ""; }
+            if (input.equalsIgnoreCase("back")) {
+                StoreSelectionScreen storeScreen = new StoreSelectionScreen();
+                CatalogService newService = storeScreen.run();
+                if (newService != null) {
+                    this.service = newService;
+                    // recreate dependent UI components so they reference the new service
+                    this.form = new ProductForm(service);
+                    this.detail = new DetailScreen(service);
+                }
+                return null;
+            }
 
             try {
                 int index = Integer.parseInt(input) - 1;
@@ -109,15 +91,14 @@ public class SearchScreen {
                     DetailScreen.Result result = detail.show(fresh);
                     if (result == DetailScreen.Result.DELETED || result == DetailScreen.Result.UPDATED) {
                         results = service.search(query);
-                        if (results.isEmpty()) return;
+                        if (results.isEmpty()) return "";
                     }
                 } else {
                     Terminal.printError("Invalid selection.");
                     Terminal.pressEnterToContinue();
                 }
             } catch (NumberFormatException e) {
-                Terminal.printError("Please enter a number or a command.");
-                Terminal.pressEnterToContinue();
+                return input;
             }
         }
     }

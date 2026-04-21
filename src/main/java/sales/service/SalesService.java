@@ -1,23 +1,21 @@
 package sales.service;
 
 import common.model.Product;
-import sales.model.Price;
-import sales.model.Sale;
-import sales.model.Receipt;
 import common.util.Serializer;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import sales.model.Price;
+import sales.model.Receipt;
+import sales.model.Sale;
 
 /**
  * @author Mason Hart
  */
 public class SalesService /* implements Service */ {
 
-    private static final String SALES_TABLE_PATH = "res/sales.csv";
+    private static final String SALES_TABLE_PATH = "res/sales/sales.csv";
     private static final String PRODUCT_TABLE_PATH = "stores/fashionstore1.catalog";
-    private static final String RECEIPT_TABLE_PATH = "res/receipt.csv";
+    private static final String RECEIPT_TABLE_PATH = "res/sales/receipt.csv";
 
     private Serializer saleSerializer;
     private Serializer productSerializer;
@@ -48,7 +46,9 @@ public class SalesService /* implements Service */ {
            int quantity = productSerializer.get("quantity", i, Integer.class);
            String description = productSerializer.get("description", i, String.class);
            String supplier = productSerializer.get("supplier", i, String.class);
-           availableProducts.add(new Product(id, name, category, price, quantity, description, supplier));
+           String materials = "";
+           try { materials = productSerializer.get("materials", i, String.class); } catch (Exception ignored) {}
+           availableProducts.add(new Product(id, name, category, price, quantity, description, supplier, materials));
         }
 
         loadPastSales();
@@ -64,7 +64,6 @@ public class SalesService /* implements Service */ {
             String category = saleSerializer.get("total", i, String.class);
             String saleString = String.format("%s|%s|%s", id, name, category);
             pastSales.add(saleString);
-            System.out.println(saleString);
         }
     }
 

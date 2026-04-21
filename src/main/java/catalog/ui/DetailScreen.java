@@ -1,17 +1,21 @@
 package catalog.ui;
 
-import common.model.Product;
 import catalog.service.CatalogService;
+import common.model.Product;
 import common.util.Terminal;
-
+import hr.model.Employee;
 import java.io.IOException;
+import production.AuthService;
+import production.MaterialRepository;
+import production.ProductionModule;
+import production.ProductionRepository;
 
 /**
  * Full product detail view with edit / delete actions.
  * Returns an action signal so the caller (SearchScreen) knows what happened.
  */
 public class DetailScreen {
-
+    private static final String REQUIRED_ROLE = "Production Manager";
     public enum Result { BACK, DELETED, UPDATED }
 
     private final CatalogService service;
@@ -40,16 +44,22 @@ public class DetailScreen {
             // Pricing & Stock block
             Terminal.printSubHeader("Pricing & Stock");
             Terminal.printField("Price",    String.format("$%.2f", product.getPrice()));
-            Terminal.printField("Quantity", String.valueOf(product.getQuantity()));
+            if (product.getQuantity() < 5) {
+                Terminal.printFieldWithError("Quantity", String.valueOf(product.getQuantity()), "(low on stock)");
+            } else {
+                Terminal.printField("Quantity", String.valueOf(product.getQuantity()));
+            }
 
             // Details block
             Terminal.printSubHeader("Details");
             Terminal.printField("Description", product.getDescription());
+            Terminal.printField("Materials", product.getMaterials() == null ? "" : product.getMaterials());
 
             // Actions
             Terminal.println();
             Terminal.printLine();
             Terminal.printMenuOption("edit", "Edit this product");
+            Terminal.printMenuOption("restock", "Restock this product");
             Terminal.printMenuOption("delete", "Delete this product");
             Terminal.printMenuOption("back", "Back to search");
             Terminal.println();
@@ -92,6 +102,18 @@ public class DetailScreen {
                     }
                 }
                 case "back" -> { return Result.BACK; }
+                case "restock" -> {
+                    ProductionRepository prodRepo = new ProductionRepository(service);
+                    MaterialRepository matRepo = new MaterialRepository();
+                    AuthService auth = new AuthService();
+                    Employee user = auth.authenticate(REQUIRED_ROLE);
+                    if (user == null) {
+                        Terminal.printError("Authentication failed. Exiting.");
+                        continue;
+                    }
+                    ProductionModule prodModule = new ProductionModule(prodRepo, matRepo, user);
+                    prodModule.createBatch(product.getId());
+                }
                 default  -> { /* ignore unknown */ }
             }
         }
