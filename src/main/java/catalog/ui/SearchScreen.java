@@ -1,7 +1,7 @@
 package catalog.ui;
 
 import catalog.service.CatalogService;
-import common.base.Screen;
+import common.base.iScreen;
 import common.model.Product;
 import common.util.Terminal;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import java.util.List;
  * Main search screen with a search bar and results list.
  * Also handles the "no results" flow and the "create new product" flow.
  */
-public class SearchScreen implements Screen {
+public class SearchScreen implements iScreen {
 
     private CatalogService service;
     private ProductForm    form;

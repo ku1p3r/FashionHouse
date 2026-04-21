@@ -1,10 +1,10 @@
 package production;
 
-import common.base.Screen;
+import common.base.iScreen;
 import common.util.Terminal;
 import java.util.List;
 
-public class MaterialModule implements Screen {
+public class MaterialModule implements iScreen {
 
     private final MaterialRepository repo;
     private final Employee currentUser;

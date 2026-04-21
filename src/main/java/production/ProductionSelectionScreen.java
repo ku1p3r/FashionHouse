@@ -1,10 +1,10 @@
 package production;
 
 import catalog.service.CatalogService;
-import common.base.Screen;
+import common.base.iScreen;
 import common.util.Terminal;
 
-public class ProductionSelectionScreen implements Screen {
+public class ProductionSelectionScreen implements iScreen {
 
     private final CatalogService service;
     private static final String REQUIRED_ROLE = "MERCHANDISE_MANAGER";

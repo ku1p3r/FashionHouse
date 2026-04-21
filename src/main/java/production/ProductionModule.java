@@ -7,9 +7,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import production.ProductionBatch.Status;
-import common.base.Screen;
+import common.base.iScreen;
 
-public class ProductionModule implements Screen {
+public class ProductionModule implements iScreen {
 
     private final ProductionRepository prodRepo;
     private final MaterialRepository   matRepo;
