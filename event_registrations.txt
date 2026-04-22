@@ -5,3 +5,4 @@
 5|1|testitem|Product
 6|2|Leather Jacket|Product
 7|2|Test Item|Product
+8|1|Wool Overcoat|Product

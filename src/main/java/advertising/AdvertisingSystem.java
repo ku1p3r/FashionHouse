@@ -613,4 +613,5 @@ public void saveRegistrationsToFile() {
         System.out.println("Error saving event registrations to file.");
     }
 }
+
 }
