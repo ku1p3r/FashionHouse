@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /*
  * Fashion House Project
@@ -105,11 +106,12 @@ public void addPartner(Partner partner) {
 
         boolean itemExists = false;
 
-        if (promotedItemType.equalsIgnoreCase("Product")) {
-            itemExists = checkProduct(promotedItemName);
-        } else if (promotedItemType.equalsIgnoreCase("Collection")) {
-            itemExists = checkCollection(promotedItemName);
-        }
+        Map<String, java.util.function.Supplier<Boolean>> itemCheckers = Map.of(
+                "product",    () -> checkProduct(promotedItemName),
+                "collection", () -> checkCollection(promotedItemName)
+        );
+        java.util.function.Supplier<Boolean> checker = itemCheckers.get(promotedItemType.toLowerCase());
+        if (checker != null) itemExists = checker.get();
 
         boolean platformExists = checkPlatform(platformName);
 
@@ -315,13 +317,12 @@ public boolean validateEventRegistration(int eventId,
     if (itemName == null || itemName.isBlank()) return false;
     if (itemType == null || itemType.isBlank()) return false;
 
-    if (itemType.equalsIgnoreCase("Product")) {
-        return checkProduct(itemName);
-    } else if (itemType.equalsIgnoreCase("Collection")) {
-        return checkCollection(itemName);
-    }
-
-    return false;
+    Map<String, java.util.function.Supplier<Boolean>> itemCheckers = Map.of(
+            "product",    () -> checkProduct(itemName),
+            "collection", () -> checkCollection(itemName)
+    );
+    java.util.function.Supplier<Boolean> checker = itemCheckers.get(itemType.toLowerCase());
+    return checker != null && checker.get();
 }
 
 

@@ -3,7 +3,7 @@ package hr.ui;
 import hr.ScreenInput;
 import hr.model.Candidate;
 import hr.service.HRService;
-
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -13,10 +13,15 @@ public class CandidateScreen implements Screen {
 
     private HRService service;
 
+    private static final Map<Integer, ScreenInput> ACTION_MAP = Map.of(
+            0, ScreenInput.TO_VIEW_CANDIDATES,
+            1, ScreenInput.TO_SEND_OFFER,
+            2, ScreenInput.TO_SEND_REJECT
+    );
+
     public CandidateScreen(HRService service){
         this.service = service;
     }
-
 
     @Override
     public void show() {
@@ -30,15 +35,6 @@ public class CandidateScreen implements Screen {
     public ScreenInput processInput() {
         Scanner scn = new Scanner(System.in);
         int choice = scn.nextInt();
-
-        if(choice == 0){
-            return ScreenInput.TO_VIEW_CANDIDATES;
-        } else if(choice == 1){
-            return ScreenInput.TO_SEND_OFFER;
-        } else if(choice == 2){
-            return ScreenInput.TO_SEND_REJECT;
-        } else {
-            return ScreenInput.NONE;
-        }
+        return ACTION_MAP.getOrDefault(choice, ScreenInput.NONE);
     }
 }

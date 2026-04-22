@@ -31,14 +31,16 @@ public class ListApplicationsScreen implements Screen {
         Scanner scn = new Scanner(System.in);
         int choice = scn.nextInt();
 
-        if(choice == 0){
-            return ScreenInput.TO_MAIN;
-        } else if(choice >= 1 && choice <= service.getApplications().size()){
+        // Named shortcut
+        if (choice == 0) return ScreenInput.TO_MAIN;
 
+        // Range-based selection
+        int size = service.getApplications().size();
+        if (choice >= 1 && choice <= size) {
             service.selectApplication(choice);
             return ScreenInput.TO_EDIT_APPLICATION;
-        } else {
-            return ScreenInput.NONE;
         }
+
+        return ScreenInput.NONE;
     }
 }

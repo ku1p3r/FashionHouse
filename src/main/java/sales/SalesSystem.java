@@ -3,6 +3,7 @@ package sales;
 import common.base.Screen;
 import sales.service.SalesService;
 import sales.ui.*;
+import java.util.Map;
 
 
 /**
@@ -20,6 +21,16 @@ public class SalesSystem {
     static Screen productSearchScreen = new ProductSearchScreen(service);
     static Screen viewSalesScreen = new ViewSalesScreen(service);
 
+    /** Maps each navigation signal to the Screen it should activate. */
+    private static final Map<ScreenInput, Screen> SCREEN_MAP = Map.of(
+            ScreenInput.TO_CART,     cartScreen,
+            ScreenInput.TO_CHECKOUT, checkoutScreen,
+            ScreenInput.TO_MAIN,     mainScreen,
+            ScreenInput.TO_REMOVE,   productRemoveScreen,
+            ScreenInput.TO_SEARCH,   productSearchScreen,
+            ScreenInput.TO_SALES,    viewSalesScreen
+    );
+
     static Screen currScreen;
 
     public static void main(String[] args){
@@ -32,29 +43,9 @@ public class SalesSystem {
 
             currScreen.show();
             input = currScreen.processInput();
-
-            switch(input){
-                case TO_CART -> {
-                    currScreen = cartScreen;
-                }
-                case TO_CHECKOUT -> {
-                    currScreen = checkoutScreen;
-                }
-                case TO_MAIN -> {
-                    currScreen = mainScreen;
-                }
-                case TO_REMOVE -> {
-                    currScreen = productRemoveScreen;
-                }
-                case TO_SEARCH -> {
-                    currScreen = productSearchScreen;
-                }
-                case TO_SALES  -> {
-                    currScreen = viewSalesScreen;
-                }
-            }
-
-        } while(input != ScreenInput.EXIT);
+            // Dispatch: look up next screen; NONE and EXIT leave currScreen unchanged
+            currScreen = SCREEN_MAP.getOrDefault(input, currScreen);
+        } while (input != ScreenInput.EXIT);
 
     }
 

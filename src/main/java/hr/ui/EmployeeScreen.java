@@ -3,7 +3,7 @@ package hr.ui;
 import hr.ScreenInput;
 import hr.model.Employee;
 import hr.service.HRService;
-
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -12,6 +12,11 @@ import java.util.Scanner;
 public class EmployeeScreen implements Screen {
 
     private HRService service;
+
+    private static final Map<Integer, ScreenInput> ACTION_MAP = Map.of(
+            0, ScreenInput.TO_MAIN,
+            1, ScreenInput.TO_VIEW_EMPLOYEES
+    );
 
     public EmployeeScreen(HRService service){
         this.service = service;
@@ -33,13 +38,6 @@ public class EmployeeScreen implements Screen {
     public ScreenInput processInput() {
         Scanner scn = new Scanner(System.in);
         int choice = scn.nextInt();
-
-        if(choice == 0){
-            return ScreenInput.TO_MAIN;
-        } else if(choice == 1){
-            return ScreenInput.TO_VIEW_EMPLOYEES;
-        } else {
-            return ScreenInput.NONE;
-        }
+        return ACTION_MAP.getOrDefault(choice, ScreenInput.NONE);
     }
 }

@@ -33,7 +33,7 @@ public class EmployeeListScreen implements Screen {
             for (Employee emp : employeeList) {
                 if (emp.getDept().equals(Employee.DEPARTMENTS[dept])) {
                     index++;
-                    System.out.printf("%d: %s\n", /* index */ emp.getId(), emp);
+                    System.out.printf("%d: %s\n", emp.getId(), emp);
                 }
             }
             System.out.println();
@@ -46,15 +46,15 @@ public class EmployeeListScreen implements Screen {
         Scanner scn = new Scanner(System.in);
         int choice = scn.nextInt();
 
-        if(choice == 0){
-            return ScreenInput.TO_MAIN;
-        } else if(choice >= 1 || choice <= numEmployees){
+        // Named shortcut
+        if (choice == 0) return ScreenInput.TO_MAIN;
 
+        // Range-based selection
+        if (choice >= 1 && choice <= numEmployees) {
             service.selectEmployee(choice);
-
             return ScreenInput.TO_EMPLOYEE;
-        } else {
-            return ScreenInput.NONE;
         }
+
+        return ScreenInput.NONE;
     }
 }

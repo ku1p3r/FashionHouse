@@ -394,18 +394,14 @@ public class ProductionModule implements iScreen {
 
         Terminal.printSubHeader("Update Status");
         ProductionBatch.Status next = current == ProductionBatch.Status.PENDING ? ProductionBatch.Status.IN_PROGRESS : ProductionBatch.Status.COMPLETED;
-        Terminal.printMenuOption("1", "Advance to " + next.name());
-        Terminal.printMenuOption("2", "Cancel this batch");
-        Terminal.printMenuOption("back", "Return");
-        Terminal.println();
 
-        String choice = Terminal.prompt("Choice:");
-        switch (choice) {
-            case "1" -> advanceTo(batch, next);
-            case "2" -> cancelBatch(batch);
-            case "back" -> {}
-            default  -> Terminal.printError("Invalid option.");
-        }
+        MenuInvoker statusMenu = new MenuInvoker();
+        statusMenu.register("1",    "Advance to " + next.name(), () -> advanceTo(batch, next))
+                  .register("2",    "Cancel this batch",         () -> cancelBatch(batch))
+                  .register("back", "Return",                    () -> {});
+        statusMenu.printOptions();
+        Terminal.println();
+        statusMenu.execute(Terminal.prompt("Choice:"));
     }
 
     private void advanceTo(ProductionBatch batch, ProductionBatch.Status next) {
