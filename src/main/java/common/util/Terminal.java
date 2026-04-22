@@ -2,6 +2,8 @@ package common.util;
 
 import common.base.Selectable;
 import common.wrapper.Option;
+import common.wrapper.Period;
+
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -235,5 +237,24 @@ public class Terminal {
             return null;
         }
         return input;
+    }
+
+    public static Period promptPeriod(String label){
+        String[] input;
+        while(true){
+            input = Terminal.getInput(label + " [month/year]").split("/");
+            if(input.length == 2){
+                break;
+            }
+            System.out.println(Terminal.RED + "Invalid input format. Expected 'month/year'." + Terminal.RESET);
+        }
+        int month = Integer.parseInt(input[0]);
+        int year = Integer.parseInt(input[1]);
+
+        return new Period(month, year);
+    }
+
+    public static int promptInt(String label) throws NumberFormatException {
+        return Integer.parseInt(Terminal.prompt(label));
     }
 }

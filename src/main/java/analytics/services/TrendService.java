@@ -40,7 +40,22 @@ public class TrendService {
         for(Period period : periods){
             int total = 0;
             for(Retailer retailer : retailers){
-                total += retailer.getSales(products, period);
+                Iterable<Product> effectiveProducts = products;
+                boolean hasMatch = false;
+                for(Product p : products){
+                    for(Product rp : retailer.getProducts()){
+                        if(p.getId() != null && p.getId().equalsIgnoreCase(rp.getId())
+                                || p.getName() != null && p.getName().equalsIgnoreCase(rp.getName())){
+                            hasMatch = true;
+                            break;
+                        }
+                    }
+                    if(hasMatch) break;
+                }
+                if(!hasMatch){
+                    effectiveProducts = retailer.getProducts();
+                }
+                total += retailer.getSales(effectiveProducts, period);
             }
             periodTotals.add(total);
         }
