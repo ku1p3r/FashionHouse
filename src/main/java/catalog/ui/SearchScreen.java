@@ -3,6 +3,7 @@ package catalog.ui;
 import catalog.service.CatalogService;
 import common.base.iScreen;
 import common.model.Product;
+import common.util.MenuInvoker;
 import common.util.Terminal;
 import java.io.IOException;
 import java.util.List;
@@ -70,17 +71,24 @@ public class SearchScreen implements iScreen {
 
             String input = Terminal.prompt("Choice >");
 
-            if (input.equalsIgnoreCase("new")) { createNew(null); return ""; }
-            if (input.equalsIgnoreCase("back")) {
-                StoreSelectionScreen storeScreen = new StoreSelectionScreen();
-                CatalogService newService = storeScreen.run();
-                if (newService != null) {
-                    this.service = newService;
-                    // recreate dependent UI components so they reference the new service
-                    this.form = new ProductForm(service);
-                    this.detail = new DetailScreen(service);
-                }
-                return null;
+            // Named commands handled via MenuInvoker; numeric/keyword handled below
+            MenuInvoker nav = new MenuInvoker();
+            nav.register("new", "Create a new product", () -> { createNew(null); })
+               .register("back", "Select different store", () -> {
+                   StoreSelectionScreen storeScreen = new StoreSelectionScreen();
+                   CatalogService newService = storeScreen.run();
+                   if (newService != null) {
+                       this.service = newService;
+                       this.form   = new ProductForm(service);
+                       this.detail = new DetailScreen(service);
+                   }
+               });
+
+            if (nav.isRegistered(input)) {
+                nav.execute(input);
+                if (input.equalsIgnoreCase("back")) return null;
+                if (input.equalsIgnoreCase("new"))  return "";
+                continue;
             }
 
             try {
@@ -109,15 +117,15 @@ public class SearchScreen implements iScreen {
         Terminal.println();
         Terminal.printWarning("No products matched: \"" + query + "\"");
         Terminal.println();
-        Terminal.printMenuOption("create", "Create a new product using \"" + query + "\" as the name");
-        Terminal.printMenuOption("back", "Back to search");
-        Terminal.println();
 
-        String choice = Terminal.prompt("Choice >");
-        if (choice.equalsIgnoreCase("create")) {
-            createNew(query);
-        }
-        // 'b' or anything else → back to search (loop in run())
+        MenuInvoker menu = new MenuInvoker();
+        menu.register("create", "Create a new product using \"" + query + "\" as the name",
+                        () -> createNew(query))
+            .register("back",   "Back to search", menu::stop);
+
+        menu.printOptions();
+        Terminal.println();
+        menu.execute(Terminal.prompt("Choice >"));
     }
 
     private void createNew(String prefillName) {

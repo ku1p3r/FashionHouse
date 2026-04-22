@@ -1,6 +1,7 @@
 package production;
 
 import common.base.iScreen;
+import common.util.MenuInvoker;
 import common.util.Terminal;
 import hr.model.Employee;
 import java.time.LocalDate;
@@ -23,33 +24,24 @@ public class ProductionModule implements iScreen {
         this.currentUser = currentUser;
     }
 
-    // Entry point
     @Override
     public void run() {
-        boolean running = true;
-        while (running) {
+        MenuInvoker menu = new MenuInvoker();
+        menu.register("1",    "View All Batches",            this::viewAllBatches)
+            .register("2",    "Create New Production Batch", () -> createBatch(""))
+            .register("3",    "Update Batch Status",         this::updateBatchStatus)
+            .register("back", "Return to Main Menu",         menu::stop);
+
+        while (menu.isRunning()) {
             Terminal.clearScreen();
             Terminal.printHeader("PRODUCTION MANAGEMENT");
             Terminal.printInfo("Logged in as: " + currentUser.getName() + " (" + currentUser.getId() + ")");
             Terminal.println();
-
             printActiveBatchSummary();
-
             Terminal.printSubHeader("Production Menu");
-            Terminal.printMenuOption("1", "View All Batches");
-            Terminal.printMenuOption("2", "Create New Production Batch");
-            Terminal.printMenuOption("3", "Update Batch Status");
-            Terminal.printMenuOption("back", "Return to Main Menu");
+            menu.printOptions();
             Terminal.println();
-
-            String choice = Terminal.prompt("Choice:");
-            switch (choice) {
-                case "1"    -> viewAllBatches();
-                case "2"    -> createBatch("");
-                case "3"    -> updateBatchStatus();
-                case "back" -> running = false;
-                default     -> { Terminal.printError("Invalid option."); Terminal.pressEnterToContinue(); }
-            }
+            menu.execute(Terminal.prompt("Choice:"));
         }
     }
 

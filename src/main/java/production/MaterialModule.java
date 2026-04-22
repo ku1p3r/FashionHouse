@@ -1,6 +1,7 @@
 package production;
 
 import common.base.iScreen;
+import common.util.MenuInvoker;
 import common.util.Terminal;
 import hr.model.Employee;
 import java.util.List;
@@ -15,17 +16,19 @@ public class MaterialModule implements iScreen {
         this.currentUser = currentUser;
     }
 
-    // Entry point: Dashboard
     @Override
     public void run() {
-        boolean running = true;
-        while (running) {
+        MenuInvoker menu = new MenuInvoker();
+        menu.register("new",       "Add New Material",         this::addNewMaterial)
+            .register("suppliers", "View Supplier Directory",  this::viewSuppliers)
+            .register("back",      "Return to Main Menu",      menu::stop);
+
+        while (menu.isRunning()) {
             Terminal.clearScreen();
             Terminal.printHeader("MATERIAL MANAGEMENT");
             Terminal.printInfo("Logged in as: " + currentUser.getName() + " (" + currentUser.getId() + ")");
             Terminal.println();
 
-            // Low-stock warnings (Alternate Flow 3a/3b)
             List<Material> lowStock = repo.getLowStock();
             if (!lowStock.isEmpty()) {
                 Terminal.printWarning("LOW STOCK ALERT: " + lowStock.size() + " material(s) below reorder threshold!");
@@ -40,17 +43,15 @@ public class MaterialModule implements iScreen {
             printDashboard();
             Terminal.printSubHeader("Material Management Menu");
             Terminal.printMenuOption("(ID/Keyword)", "Browse / Search Materials");
-            Terminal.printMenuOption("new", "Add New Material");
-            Terminal.printMenuOption("suppliers", "View Supplier Directory");
-            Terminal.printMenuOption("back", "Return to Main Menu");
+            menu.printOptions();
             Terminal.println();
 
             String choice = Terminal.prompt("Choice:");
-            switch (choice) {
-                case "new" -> addNewMaterial();
-                case "suppliers" -> viewSuppliers();
-                case "back" -> running = false;
-                default  -> { browseMaterials(choice); }
+            // Named commands go through the invoker; anything else is a keyword search
+            if (menu.isRegistered(choice)) {
+                menu.execute(choice);
+            } else {
+                browseMaterials(choice);
             }
         }
     }
@@ -156,8 +157,14 @@ public class MaterialModule implements iScreen {
     // Material Detail + Update
 
     private void viewMaterialDetail(Material m) {
-        boolean detailRunning = true;
-        while (detailRunning) {
+        MenuInvoker detail = new MenuInvoker();
+        detail.register("1",    "Update Stock (restock order)",              () -> new RestockManager(repo).restock(m))
+              .register("2",    "Change Supplier",                           () -> changeSupplier(m))
+              .register("3",    "Edit Details (price, threshold, name, unit)", () -> editMaterialDetails(m))
+              .register("4",    "Toggle Active Status",                      () -> toggleActive(m))
+              .register("back", "Return",                                    detail::stop);
+
+        while (detail.isRunning()) {
             Terminal.clearScreen();
             Terminal.printHeader("MATERIAL DETAIL");
             Terminal.printField("ID",         m.getId());
@@ -171,24 +178,10 @@ public class MaterialModule implements iScreen {
             Terminal.printField("Status",     m.isActive() ? Terminal.GREEN + "Active" + Terminal.RESET
                                                            : Terminal.RED + "Inactive" + Terminal.RESET);
             Terminal.println();
-
             Terminal.printSubHeader("Actions");
-            Terminal.printMenuOption("1", "Update Stock (restock order)");
-            Terminal.printMenuOption("2", "Change Supplier");
-            Terminal.printMenuOption("3", "Edit Details (price, threshold, name, unit)");
-            Terminal.printMenuOption("4", "Toggle Active Status");
-            Terminal.printMenuOption("back", "Return");
+            detail.printOptions();
             Terminal.println();
-
-            String choice = Terminal.prompt("Choice:");
-            switch (choice) {
-                case "1" -> new RestockManager(repo).restock(m);
-                case "2" -> changeSupplier(m);
-                case "3" -> editMaterialDetails(m);
-                case "4" -> toggleActive(m);
-                case "back" -> detailRunning = false;
-                default  -> { Terminal.printError("Invalid option."); Terminal.pressEnterToContinue(); }
-            }
+            detail.execute(Terminal.prompt("Choice:"));
         }
     }
 

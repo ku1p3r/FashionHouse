@@ -1,5 +1,6 @@
 package production;
 
+import common.util.MenuInvoker;
 import common.util.Terminal;
 import java.util.List;
 
@@ -12,28 +13,19 @@ public class SupplierManager {
     }
 
     public void manage() {
-        boolean running = true;
-        while (running) {
+        MenuInvoker menu = new MenuInvoker();
+        menu.register("add",    "Add a new supplier",      this::addSupplier)
+            .register("edit",   "Edit an existing supplier", this::editSupplier)
+            .register("remove", "Remove a supplier",        this::removeSupplier)
+            .register("back",   "Return",                   menu::stop);
+
+        while (menu.isRunning()) {
             Terminal.clearScreen();
             Terminal.printHeader("SUPPLIER DIRECTORY / MANAGEMENT");
-
-            // Always show current suppliers for easy selection
             showSuppliersInline();
-
-            Terminal.printMenuOption("add", "Add a new supplier");
-            Terminal.printMenuOption("edit", "Edit an existing supplier");
-            Terminal.printMenuOption("remove", "Remove a supplier");
-            Terminal.printMenuOption("back", "Return");
+            menu.printOptions();
             Terminal.println();
-
-            String choice = Terminal.prompt("Choice:");
-            switch (choice.toLowerCase()) {
-                case "add"  -> addSupplier();
-                case "edit" -> editSupplier();
-                case "remove" -> removeSupplier();
-                case "back" -> running = false;
-                default -> { Terminal.printError("Invalid option."); Terminal.pressEnterToContinue(); }
-            }
+            menu.execute(Terminal.prompt("Choice:"));
         }
     }
 

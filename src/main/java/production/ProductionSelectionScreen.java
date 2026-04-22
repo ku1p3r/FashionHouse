@@ -2,6 +2,7 @@ package production;
 
 import catalog.service.CatalogService;
 import common.base.iScreen;
+import common.util.MenuInvoker;
 import common.util.Terminal;
 import hr.model.Employee;
 
@@ -28,37 +29,22 @@ public class ProductionSelectionScreen implements iScreen {
             return;
         }
 
-        boolean running = true;
-        while (running) {
+        MenuInvoker menu = new MenuInvoker();
+
+        menu.register("1",    "Material Management  — Inventory, sourcing, and supplier management",
+                () -> new MaterialModule(matRepo, user).run())
+            .register("2",    "Production Management — Batch requests, status tracking, finished goods",
+                () -> new ProductionModule(prodRepo, matRepo, user).run())
+            .register("back", "Back to Catalog", menu::stop);
+
+        while (menu.isRunning()) {
             Terminal.clearScreen();
             Terminal.printHeader("Material and Production Management");
             Terminal.printInfo("Welcome, " + user.getName() + " (" + user.getId() + ")");
             Terminal.println();
-            Terminal.printMenuOption("1", "Material Management",
-                    "Inventory, sourcing, and supplier management");
-            Terminal.printMenuOption("2", "Production Management",
-                    "Batch requests, status tracking, finished goods");
-            Terminal.printMenuOption("back", "Back to Catalog");
+            menu.printOptions();
             Terminal.println();
-
-            String choice = Terminal.prompt("Choice:");
-            switch (choice.toLowerCase()) {
-                case "1" -> {
-                    MaterialModule matModule = new MaterialModule(matRepo, user);
-                    matModule.run();
-                }
-                case "2" -> {
-                    ProductionModule prodModule = new ProductionModule(prodRepo, matRepo, user);
-                    prodModule.run();
-                }
-                case "back" -> {
-                    running = false;
-                }
-                default -> {
-                    Terminal.printError("Invalid option.");
-                    Terminal.pressEnterToContinue();
-                }
-            }
+            menu.execute(Terminal.prompt("Choice:"));
         }
 
         Terminal.println();

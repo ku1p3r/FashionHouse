@@ -1,10 +1,9 @@
 package security.command;
 
 /**
- * Command interface for the Security Management System.
- * Each menu action is encapsulated as a concrete Command.
+ * Security-module alias for {@link common.base.Command}.
+ * Kept for backward compatibility; prefer importing common.base.Command directly.
  */
-public interface Command {
-    void execute();
+public interface Command extends common.base.Command {
+    // inherits execute()
 }
-

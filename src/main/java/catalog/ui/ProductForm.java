@@ -3,6 +3,7 @@ package catalog.ui;
 import catalog.model.ValidationResult;
 import catalog.service.CatalogService;
 import common.model.Product;
+import common.util.MenuInvoker;
 import common.util.Terminal;
 import java.util.UUID;
 
@@ -121,18 +122,24 @@ public class ProductForm {
             printDraftSummary(draft);
             Terminal.printLine();
             Terminal.println();
-            Terminal.printMenuOption("confirm", "Confirm & save");
-            Terminal.printMenuOption("edit", "Edit again");
-            Terminal.printMenuOption("cancel", "Cancel");
-            Terminal.println();
 
-            while (true) {
-                String choice = Terminal.prompt("Choice >");
-                if (choice.equalsIgnoreCase("confirm")) return draft;
-                if (choice.equalsIgnoreCase("cancel")) return null;
-                if (choice.equalsIgnoreCase("edit")) break;
-                Terminal.printError("Invalid option. Please choose 'confirm', 'edit', or 'cancel'.");
+            // Each element of confirmResult: null = keep looping, non-null = exit outer loop
+            Product[] confirmResult = {null};
+            boolean[] editAgain    = {false};
+
+            MenuInvoker confirm = new MenuInvoker();
+            confirm.register("confirm", "Confirm & save", () -> { confirmResult[0] = draft; confirm.stop(); })
+                   .register("edit",    "Edit again",     () -> { editAgain[0] = true;       confirm.stop(); })
+                   .register("cancel",  "Cancel",         () -> { confirmResult[0] = null;   confirm.stop(); });
+
+            while (confirm.isRunning()) {
+                confirm.printOptions();
+                Terminal.println();
+                confirm.execute(Terminal.prompt("Choice >"));
             }
+
+            if (editAgain[0]) continue;        // go back to field entry
+            return confirmResult[0];           // draft on confirm, null on cancel
         }
     }
 
