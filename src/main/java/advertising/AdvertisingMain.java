@@ -340,6 +340,6 @@ for (EventRegistration eventRegistration : eventRegistrations) {
             }
         }
 
-        scanner.close();
+        // scanner.close();
     }
 }
