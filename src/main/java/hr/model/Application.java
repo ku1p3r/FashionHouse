@@ -78,6 +78,11 @@ public class Application {
         return numPositions;
     }
 
+    public int decrementPosition() {
+        numPositions--;
+        return numPositions;
+    }
+
     public boolean isClosed(){
         Timestamp now = new Timestamp();
         return this.closeDate.isBefore(now);
