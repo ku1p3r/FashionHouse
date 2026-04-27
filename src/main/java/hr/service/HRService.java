@@ -35,14 +35,17 @@ public class HRService {
     private Candidate selectedCandidate;
 
     public HRService(){
-        applicationList = new ArrayList<>();
-        employeeList = new ArrayList<>();
-        candidateList = new ArrayList<>();
+        loadApplications();
+        loadEmployees();
+        loadCandidates();
 
         selectedEmp = 0;
         selectedApp = 0;
+        selectedCandidate = candidateList.get(0);
+    }
 
-        // load applications
+    private void loadApplications(){
+        applicationList = new ArrayList<>();
         ArrayList<String> ids = appSerializer.get("id", String.class);
         int rows = ids.size();
         for(int i = 0; i < rows; i++){
@@ -55,14 +58,14 @@ public class HRService {
                     appSerializer.get("openings", i, Integer.class)
             );
 //            System.out.println(a);
-            if(!a.isClosed()){
-                applicationList.add(a);
-            }
+            applicationList.add(a);
         }
+    }
 
-        // load employees
-        ids = empSerializer.get("id", String.class);
-        rows = ids.size();
+    private void loadEmployees(){
+        employeeList = new ArrayList<>();
+        ArrayList<String> ids = empSerializer.get("id", String.class);
+        int rows = ids.size();
         for(int i = 0; i < rows; i++){
             Employee e = new Employee(
                     empSerializer.get("id", i, Long.class),
@@ -76,10 +79,12 @@ public class HRService {
             );
             employeeList.add(e);
         }
+    }
 
-        // load all candidates
-        ids = candSerializer.get("id", String.class);
-        rows = ids.size();
+    private void loadCandidates(){
+        candidateList = new ArrayList<>();
+        ArrayList<String> ids = candSerializer.get("id", String.class);
+        int rows = ids.size();
         for(int i = 0; i < rows; i++){
             Candidate c = new Candidate(
                     candSerializer.get("id", i, Long.class),
@@ -90,6 +95,22 @@ public class HRService {
 //            System.out.println(c);
             candidateList.add(c);
         }
+    }
+
+    public List<CandidateAppRelation> loadKeys(){
+        List<CandidateAppRelation> keys = new ArrayList<>();
+        // load keys
+        List<String> ids = keySerializer.get("cand_id", String.class);
+        int rows = ids.size();
+        for(int i = 0; i < rows; i++){
+            CandidateAppRelation rel = new CandidateAppRelation(
+                    keySerializer.get("cand_id", i, Long.class),
+                    keySerializer.get("app_id", i, Long.class),
+                    keySerializer.get("rejected", i, Integer.class) <= 0
+            );
+            keys.add(rel);
+        }
+        return keys;
     }
 
     public void createApplication(Application app) {
@@ -138,25 +159,14 @@ public class HRService {
 
     public List<Candidate> getCandidates(){
         List<Candidate> candidates = new ArrayList<>();
-        List<CandidateAppRelation> keys = new ArrayList<>();
-
-        // load keys
-        List<String> ids = keySerializer.get("cand_id", String.class);
-        int rows = ids.size();
-        for(int i = 0; i < rows; i++){
-            CandidateAppRelation rel = new CandidateAppRelation(
-                    keySerializer.get("cand_id", i, Long.class),
-                    keySerializer.get("app_id", i, Long.class),
-                    keySerializer.get("rejected", i, Integer.class) < 0
-            );
-            keys.add(rel);
-        }
+        List<CandidateAppRelation> keys = loadKeys();
 
         // see if keys match to add candidates
-        Application curr = applicationList.get(selectedApp);
+        Application app = applicationList.get(selectedApp);
         for (Candidate candidate : candidateList) {
             for (CandidateAppRelation key : keys) {
-                if (candidate.getId() == key.getCandId() && curr.getId() == key.getAppId() && !key.isRejected()) {
+                if (candidate.getId() == key.getCandId() && app.getId() == key.getAppId() && key.isRejected()) {
+                    System.out.println("adding candidate");
                     candidates.add(candidate);
                 }
             }
@@ -172,7 +182,21 @@ public class HRService {
     }
 
     public void rejectCandidate() {
-        keySerializer.set("rejected", (int)selectedCandidate.getId()-1, 0);
+        try {
+            List<CandidateAppRelation> keys = loadKeys();
+            Application curr = applicationList.get(selectedApp);
+
+            for (int i = 0; i < keys.size(); i++) {
+                CandidateAppRelation key = keys.get(i);
+                if (selectedCandidate.getId() == key.getCandId() && curr.getId() == key.getAppId()) {
+                    keySerializer.set("rejected", i, 1);
+                    keySerializer.save();
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        loadCandidates();
     }
 
     public void acceptCandidate() {
@@ -201,6 +225,14 @@ public class HRService {
             );
             empSerializer.save();
             employeeList.add(e);
+            app.decrementPosition();
+
+            // remove the candidate from the list
+            rejectCandidate();
+
+            // save to file
+            appSerializer.set("openings", selectedApp, app.getNumPositions());
+            appSerializer.save();
         } catch(Exception err){
             System.out.println("An error occured when adding new employee to database");
             System.err.println(err);
@@ -209,7 +241,7 @@ public class HRService {
     }
     
     public void selectApplication(int choice) {
-        this.selectedApp = choice-1;
+        this.selectedApp = choice - 1;
     }
     
     public Application getSelectedApplication() {

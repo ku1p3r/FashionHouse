@@ -32,7 +32,7 @@ public class Candidate implements Comparable<Candidate>{
     public String getBio() { return this.bio; }
 
     public String toString(){
-        return String.format("%d | %s | %d yrs | %b",
+        return String.format("%d | %s | %d yrs | %15s",
                 id, name, experience, getBio());
     }
 
