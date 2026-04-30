@@ -2,7 +2,6 @@ package catalog.service;
 
 import catalog.model.ValidationResult;
 import common.model.Product;
-import common.util.Serializer;
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
@@ -11,46 +10,22 @@ import java.util.stream.Collectors;
 public class CatalogService {
 
     private final Path filePath;
+    private final CatalogRepository repository;
     private final List<Product> catalog = new ArrayList<>();
 
     public CatalogService(Path filePath) throws IOException {
+        this(filePath, new SerializerCatalogRepositoryAdapter(filePath));
+    }
+
+    public CatalogService(Path filePath, CatalogRepository repository) throws IOException {
         this.filePath = filePath;
+        this.repository = repository;
         load();
     }
 
     private void load() throws IOException {
         catalog.clear();
-        if (!Files.exists(filePath)) {
-            Serializer s = new Serializer(new String[]{"id","name","category","price","quantity","description","supplier","materials"});
-            try { s.save(filePath.toString()); }
-            catch (Exception e) { throw new IOException(e); }
-            return;
-        }
-
-        Serializer s = new Serializer(filePath.toString());
-        ArrayList<String> ids;
-        try {
-            ids = s.get("id", String.class);
-        } catch (Exception e) {
-            throw new IOException("Failed to load catalog: " + e.getMessage());
-        }
-        int rows = ids.size();
-        for (int i = 0; i < rows; i++) {
-            try {
-                String id = s.get("id", i, String.class);
-                String name = s.get("name", i, String.class);
-                String category = s.get("category", i, String.class);
-                double price = s.get("price", i, Double.class);
-                int quantity = s.get("quantity", i, Integer.class);
-                String description = s.get("description", i, String.class);
-                String supplier = s.get("supplier", i, String.class);
-                String materials = "";
-                try { materials = s.get("materials", i, String.class); } catch (Exception ignored) {}
-                catalog.add(new Product(id, name, category, price, quantity, description, supplier, materials));
-            } catch (Exception e) {
-                throw new IOException("Parse error at row " + (i + 1) + ": " + e.getMessage());
-            }
-        }
+        catalog.addAll(repository.loadAll());
     }
 
     public List<Product> search(String query) {
@@ -113,24 +88,7 @@ public class CatalogService {
     // ---------------------------------------------------------------- persistence
 
     private void save() throws IOException {
-        Serializer s = new Serializer(new String[]{"id","name","category","price","quantity","description","supplier","materials"});
-        try {
-            for (Product p : catalog) {
-                s.push(
-                    p.getId(),
-                    p.getName(),
-                    p.getCategory(),
-                    String.valueOf(p.getPrice()),
-                    String.valueOf(p.getQuantity()),
-                    p.getDescription(),
-                    p.getSupplier(),
-                    p.getMaterials()
-                );
-            }
-            s.save(filePath.toString());
-        } catch (Exception e) {
-            throw new IOException(e);
-        }
+        repository.saveAll(catalog);
     }
 
     public int size() { return catalog.size(); }
