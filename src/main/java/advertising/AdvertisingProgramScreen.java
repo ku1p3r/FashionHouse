@@ -42,6 +42,12 @@ final class AdvertisingProgramScreen extends ScreenProgramTemplate<Void, String>
         System.out.println("5. Register Product in Event");
         System.out.println("6. View Event Registrations");
         System.out.println("7. Exit");
+ //new        
+        System.out.println("8. Sign New Fashion Model");
+        System.out.println("9. Assign Model to Event");
+        System.out.println("10. Assign Model to Advertisement");
+        System.out.println("11. View Models");
+        System.out.println("12. View Models Assigments");
     }
 
     @Override
@@ -300,7 +306,300 @@ final class AdvertisingProgramScreen extends ScreenProgramTemplate<Void, String>
                     }
                 }
             }
-            default -> System.out.println("Invalid option. Please choose 1 through 7.");
+// new 
+
+case "8" -> {
+    signNewFashionModel();
+}
+
+case "9" -> {
+    assignModelToEvent();
+}
+
+case "10" -> {
+    assignModelToAdvertisement();
+}
+case "11"->{
+    viewFashionModels();
+}
+
+case "12"->{
+    viewModelAssignments(); 
+}
+
+
+            default -> System.out.println("Invalid option. Please choose 1 through 12.");
         }
+
+
+
+
+
+
+
     }
+
+
+
+
+    //new
+
+        /*
+ * Signs a new fashion model and saves the profile to models.txt.
+ *  Sign New Fashion Model.
+ */
+private void signNewFashionModel() {
+    System.out.println("\n=== Sign New Fashion Model ===");
+
+    System.out.print("Enter model ID: ");
+    String id = scanner.nextLine();
+
+    System.out.print("Enter model name: ");
+    String name = scanner.nextLine();
+
+    System.out.print("Enter agency: ");
+    String agency = scanner.nextLine();
+
+    System.out.print("Enter category (Runway/Commercial/Editorial): ");
+    String category = scanner.nextLine();
+
+    System.out.print("Enter image path: ");
+    String imagePath = scanner.nextLine();
+
+    FashionModel model = new FashionModel(id, name, agency, category, imagePath, "Active");
+
+    try (java.io.BufferedWriter writer = new java.io.BufferedWriter(new java.io.FileWriter("models.txt", true))) {
+        writer.write(model.serialize());
+        writer.newLine();
+
+        System.out.println("\nModel signed successfully.");
+        System.out.println(model.displayProfile());
+    } catch (java.io.IOException e) {
+        System.out.println("Error saving model: " + e.getMessage());
+    }
+}
+
+/*
+ * Assigns an existing fashion model to an event.
+ * Strategy Pattern by selecting EventAssignmentStrategy.
+ */
+private void assignModelToEvent() {
+    System.out.println("\n=== Assign Model to Event ===");
+
+    viewFashionModels();
+
+    System.out.print("Enter model ID: ");
+    String modelId = scanner.nextLine();
+
+    FashionModel model = findModelById(modelId);
+
+    if ( model == null) {
+        System.out.println("Model not found.");
+        return;
+    }
+System.out.println("\nSelected Model:");
+System.out.println(model.displayProfile());
+
+    System.out.print("Enter event ID: ");
+    String eventId = scanner.nextLine();
+
+    
+
+    /*
+     * Strategy Pattern:
+     *  choose the event assignment behavior here.
+     */
+    AssignmentStrategy strategy = new EventAssignmentStrategy();
+
+    strategy.assign(model, eventId);
+}
+
+/*
+ * Assigns an existing fashion model to an advertisement.
+ * Uses Strategy Pattern with AdvertisementAssignmentStrategy.
+ */
+private void assignModelToAdvertisement() {
+    System.out.println("\n=== Assign Model to Advertisement ===");
+
+    viewFashionModels();
+
+    System.out.print("Enter model ID: ");
+    String modelId = scanner.nextLine();
+
+    FashionModel model = findModelById(modelId);
+    if ( model == null) {
+        System.out.println("Model not found.");
+        return;
+    }
+System.out.println("\nSelected Model:");
+System.out.println(model.displayProfile());
+
+    System.out.print("Enter advertisement ID: ");
+    String advertisementId = scanner.nextLine();
+    /*
+     * Strategy Pattern:
+     * Select advertisement assignment behavior
+     */
+    AssignmentStrategy strategy = new AdvertisementAssignmentStrategy();
+
+    strategy.assign(model, advertisementId);
+}
+
+
+/*
+ * Displays  models  
+ */
+private void viewFashionModels() {
+    System.out.println("\n=== Available Fashion Models ===");
+
+    try (java.io.BufferedReader reader =
+            new java.io.BufferedReader(new java.io.FileReader("models.txt"))) {
+
+        String line;
+        boolean found = false;
+
+        while ((line = reader.readLine()) != null) {
+            if (line.trim().isEmpty()) {
+                continue;
+            }
+
+            FashionModel model = FashionModel.deserialize(line);
+
+            if (model.getStatus().equalsIgnoreCase("Active")) {
+                System.out.println(model.displayProfile());
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("No active fashion models found.");
+        }
+
+    } catch (java.io.IOException e) {
+        System.out.println("No fashion model records found yet.");
+    }
+}
+
+
+
+/*
+ * Displays saved model assignments to events and advertisements
+ */
+private void viewModelAssignments() {
+    System.out.println("\n=== Model Assignments ===");
+
+    System.out.println("\n--- Event Assignments ---");
+    try (java.io.BufferedReader reader =
+            new java.io.BufferedReader(new java.io.FileReader("model_event_assignments.txt"))) {
+
+        String line;
+        boolean found = false;
+
+        while ((line = reader.readLine()) != null) {
+            String[] parts = line.split("\\|");
+            if (parts.length >= 2) {
+
+
+
+
+                // System.out.println("Model ID: " + parts[0] + " | Event ID: " + parts[1]);
+                FashionModel model = findModelById(parts[0]);
+                if (model != null){
+                    System.out.println("Model: "+ model.getName()+ " ("+ model.getId()+ ") | Event ID: " + parts [1] );
+
+                }else {
+                    System.out.println("Model ID: " + parts[0] + " | Event ID: " + parts[1]);
+                }
+
+
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("No event assignments found.");
+        }
+
+    } catch (java.io.IOException e) {
+        System.out.println("No event assignment records found yet.");
+    }
+
+    System.out.println("\n--- Advertisement Assignments ---");
+    try (java.io.BufferedReader reader =
+            new java.io.BufferedReader(new java.io.FileReader("model_ad_assignments.txt"))) {
+
+        String line;
+        boolean found = false;
+
+        while ((line = reader.readLine()) != null) {
+            String[] parts = line.split("\\|");
+            if (parts.length >= 2) {
+                
+                
+               // System.out.println("Model ID: " + parts[0] + " | Advertisement ID: " + parts[1]);
+        FashionModel model = findModelById(parts[0]);
+
+                    if (model != null){
+                    System.out.println("Model: "+ model.getName()+ " ("+ model.getId()+ ") | Advertisement ID: " + parts [1] );
+
+                }else {
+                    System.out.println("Model ID: " + parts[0] + " | Advertisement ID: " + parts[1]);
+                }
+
+
+
+
+
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("No advertisement assignments found.");
+        }
+
+    } catch (java.io.IOException e) {
+        System.out.println("No advertisement assignment records found yet.");
+    }
+}
+
+/*
+ * returns a Model by ID from models.txt
+ */
+private FashionModel findModelById(String modelId) {
+    try (java.io.BufferedReader reader =
+            new java.io.BufferedReader(new java.io.FileReader("models.txt"))) {
+
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            if (line.trim().isEmpty()) continue;
+
+            FashionModel model = FashionModel.deserialize(line);
+
+            if (model.getId().equalsIgnoreCase(modelId)) {
+                return model;
+            }
+        }
+
+    } catch (java.io.IOException e) {
+        System.out.println("Error reading models file.");
+    }
+
+    return null; 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

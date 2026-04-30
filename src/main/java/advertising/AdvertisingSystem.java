@@ -324,15 +324,6 @@ public boolean validateEventRegistration(int eventId,
     return false;
 }
 
-
-
-
-
-
-
-
-
-
 ///
     public Advertisement createAdvertisement(String title,
                                              String description,
@@ -390,6 +381,8 @@ public boolean validateEventRegistration(int eventId,
     }
 
     public List<Advertisement> getAdvertisements() {
+        advertisements.clear();
+        loadAdvertisementsFromFile();
         return advertisements;
     }
 
