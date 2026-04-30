@@ -1,7 +1,9 @@
-package security;
+package security.service;
+
+import security.SecurityAssignment;
+import security.SecurityGuard;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SecurityService {

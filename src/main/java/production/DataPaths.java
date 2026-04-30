@@ -5,5 +5,5 @@ public class DataPaths {
     public static final String MATERIALS  = "suppliers/materials.csv";
     public static final String SUPPLIERS  = "suppliers/suppliers.csv";
     public static final String BATCHES    = "suppliers/batches.csv";
-    public static final String EMPLOYEES  = "res/hr/employees.csv";
+    public static final String EMPLOYEES  = "data/hr/employees.csv";
 }
