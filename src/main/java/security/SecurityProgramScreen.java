@@ -2,6 +2,9 @@ package security;
 
 import advertising.Event;
 import common.base.ScreenProgramTemplate;
+import security.service.CampusRepository;
+import security.service.GuardRepository;
+import security.service.SecurityService;
 
 import java.util.HashSet;
 import java.util.List;

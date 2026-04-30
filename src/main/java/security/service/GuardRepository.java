@@ -1,9 +1,11 @@
-package security;
+package security.service;
+
+import security.SecurityGuard;
 
 import java.util.List;
 
 /**
- * Persistence port for security guards.
+ * @author Mason Hart
  */
 public interface GuardRepository {
 

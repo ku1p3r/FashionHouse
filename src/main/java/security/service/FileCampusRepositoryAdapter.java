@@ -1,9 +1,14 @@
-package security;
+package security.service;
+
+import security.Campus;
+import security.CampusFileManager;
 
 import java.util.List;
 
 /**
  * Adapter that preserves existing campus file manager behavior.
+ *
+ * @author Mason Hart
  */
 public class FileCampusRepositoryAdapter implements CampusRepository {
 

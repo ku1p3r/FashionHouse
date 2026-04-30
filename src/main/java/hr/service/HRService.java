@@ -24,7 +24,7 @@ public class HRService {
     private Candidate selectedCandidate;
 
     public HRService() {
-        this(new SerializerHRDataRepositoryAdapter());
+        this(new HumanResourcesAdapter());
     }
 
     public HRService(HRDataRepository repository){

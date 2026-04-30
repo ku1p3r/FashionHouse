@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Serializer-backed adapter for catalog persistence.
+ * @author Mason Hart
  */
-public class SerializerCatalogRepositoryAdapter implements CatalogRepository {
+public class CatalogAdapter implements CatalogRepository {
 
     private static final String[] HEADER = new String[]{
         "id", "name", "category", "price", "quantity", "description", "supplier", "materials"
@@ -19,7 +19,7 @@ public class SerializerCatalogRepositoryAdapter implements CatalogRepository {
 
     private final Path filePath;
 
-    public SerializerCatalogRepositoryAdapter(Path filePath) {
+    public CatalogAdapter(Path filePath) {
         this.filePath = filePath;
     }
 

@@ -1,9 +1,14 @@
-package security;
+package security.service;
+
+import security.GuardFileManager;
+import security.SecurityGuard;
 
 import java.util.List;
 
 /**
  * Adapter that preserves existing file manager behavior.
+ *
+ * @author Mason Hart
  */
 public class FileGuardRepositoryAdapter implements GuardRepository {
 

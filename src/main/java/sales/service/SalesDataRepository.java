@@ -6,7 +6,7 @@ import sales.model.Receipt;
 import sales.model.Sale;
 
 /**
- * Persistence port for sales data access.
+ * @author Mason Hart
  */
 public interface SalesDataRepository {
 

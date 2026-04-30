@@ -1,9 +1,11 @@
-package security;
+package security.service;
+
+import security.Campus;
 
 import java.util.List;
 
 /**
- * Persistence port for campuses.
+ * @author Mason Hart
  */
 public interface CampusRepository {
 

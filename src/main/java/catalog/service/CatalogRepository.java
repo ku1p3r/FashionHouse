@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Persistence port for catalog products.
+ * @author Mason Hart
  */
 public interface CatalogRepository {
 

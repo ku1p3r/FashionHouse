@@ -10,11 +10,11 @@ import java.util.stream.Collectors;
 public class CatalogService {
 
     private final Path filePath;
-    private final CatalogRepository repository;
+    private final CatalogRepository repository; // before refactor: Serializer serializer;
     private final List<Product> catalog = new ArrayList<>();
 
     public CatalogService(Path filePath) throws IOException {
-        this(filePath, new SerializerCatalogRepositoryAdapter(filePath));
+        this(filePath, new CatalogAdapter(filePath));
     }
 
     public CatalogService(Path filePath, CatalogRepository repository) throws IOException {
@@ -84,8 +84,6 @@ public class CatalogService {
         if (!removed) throw new IllegalArgumentException("Product not found: " + id);
         save();
     }
-
-    // ---------------------------------------------------------------- persistence
 
     private void save() throws IOException {
         repository.saveAll(catalog);

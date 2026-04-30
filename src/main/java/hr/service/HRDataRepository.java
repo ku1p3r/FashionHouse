@@ -8,7 +8,7 @@ import hr.model.Employee;
 import java.util.List;
 
 /**
- * Persistence port for HR data.
+ * @author Mason Hart
  */
 public interface HRDataRepository {
 

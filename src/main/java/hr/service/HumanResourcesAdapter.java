@@ -11,20 +11,22 @@ import java.util.List;
 
 /**
  * Serializer-backed adapter for HR persistence.
+ *
+ * @author Mason Hart
  */
-public class SerializerHRDataRepositoryAdapter implements HRDataRepository {
+public class HumanResourcesAdapter implements HRDataRepository {
 
-    private static final String APPLICATION_CSV = "res/hr/applications.csv";
-    private static final String CANDIDATE_CSV = "res/hr/candidates.csv";
-    private static final String EMPLOYEE_CSV = "res/hr/employees.csv";
-    private static final String CANDIDATE_KEYS_CSV = "res/hr/cand_per_app.csv";
+    private static final String APPLICATION_CSV = "data/hr/applications.csv";
+    private static final String CANDIDATE_CSV = "data/hr/candidates.csv";
+    private static final String EMPLOYEE_CSV = "data/hr/employees.csv";
+    private static final String CANDIDATE_KEYS_CSV = "data/hr/cand_per_app.csv";
 
     private final Serializer appSerializer;
     private final Serializer candSerializer;
     private final Serializer empSerializer;
     private final Serializer keySerializer;
 
-    public SerializerHRDataRepositoryAdapter() {
+    public HumanResourcesAdapter() {
         this.appSerializer = new Serializer(APPLICATION_CSV);
         this.candSerializer = new Serializer(CANDIDATE_CSV);
         this.empSerializer = new Serializer(EMPLOYEE_CSV);
@@ -102,15 +104,20 @@ public class SerializerHRDataRepositoryAdapter implements HRDataRepository {
 
     @Override
     public void saveApplication(Application application) {
-        appSerializer.push(
-            application.getId(),
-            application.getTitle(),
-            application.getDescription(),
-            application.getDept(),
-            application.getCloseDate(),
-            application.getNumPositions()
-        );
-        appSerializer.save();
+        try{
+            appSerializer.push(
+                    application.getId(),
+                    application.getTitle(),
+                    application.getDescription(),
+                    application.getDept(),
+                    application.getCloseDate(),
+                    application.getNumPositions()
+            );
+            appSerializer.save();
+        } catch (Exception e){
+            System.err.println("An error occured while saving the application");
+            System.err.println(e);
+        }
     }
 
     @Override
@@ -119,37 +126,49 @@ public class SerializerHRDataRepositoryAdapter implements HRDataRepository {
         for (int i = 0; i < keys.size(); i++) {
             CandidateAppRelation key = keys.get(i);
             if (candidateId == key.getCandId() && applicationId == key.getAppId()) {
-                keySerializer.set("rejected", i, 1);
-                keySerializer.save();
+                try {
+                    keySerializer.set("rejected", i, 1);
+                    keySerializer.save();
+                } catch (Exception e) {
+                    System.err.println("An error occurred when rejecting a candidate");
+                    System.err.println(e);
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
 
     @Override
-    public void saveAcceptedEmployee(long id,
-                                     String name,
-                                     String title,
-                                     String dept,
-                                     Timestamp startDate,
-                                     int salary,
-                                     boolean active,
-                                     String pin) {
-        empSerializer.push(
-            id,
-            name,
-            title,
-            dept,
-            startDate,
-            salary,
-            active ? 1 : 0,
-            pin
-        );
-        empSerializer.save();
+    public void saveAcceptedEmployee(
+            long id, String name, String title, String dept,
+            Timestamp startDate, int salary, boolean active, String pin) {
+
+        try{
+            empSerializer.push(
+                    id,
+                    name,
+                    title,
+                    dept,
+                    startDate,
+                    salary,
+                    active ? 1 : 0,
+                    pin
+            );
+            empSerializer.save();
+        } catch(Exception e){
+            System.err.println("An error occurred while saving a new employee");
+            System.err.println(e);
+        }
     }
 
     @Override
     public void updateApplicationOpenings(int applicationIndex, int openings) {
-        appSerializer.set("openings", applicationIndex, openings);
-        appSerializer.save();
+        try{
+            appSerializer.set("openings", applicationIndex, openings);
+            appSerializer.save();
+        } catch (Exception e){
+            System.err.println("An error occurred while updating application openings");
+            System.err.println(e);
+        }
     }
 }

@@ -17,7 +17,7 @@ public class SalesService /* implements Service */ {
     private List<String> pastSales;
 
     public SalesService(){
-        this(new SerializerSalesDataRepositoryAdapter());
+        this(new SalesAdapter());
     }
 
     public SalesService(SalesDataRepository repository){

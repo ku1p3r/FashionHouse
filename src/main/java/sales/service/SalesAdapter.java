@@ -10,17 +10,17 @@ import sales.model.Sale;
 /**
  * Serializer-backed adapter for sales persistence.
  */
-public class SerializerSalesDataRepositoryAdapter implements SalesDataRepository {
+public class SalesAdapter implements SalesDataRepository {
 
-    private static final String SALES_TABLE_PATH = "res/sales/sales.csv";
+    private static final String SALES_TABLE_PATH = "data/sales/sales.csv";
     private static final String PRODUCT_TABLE_PATH = "stores/fashionstore1.catalog";
-    private static final String RECEIPT_TABLE_PATH = "res/sales/receipt.csv";
+    private static final String RECEIPT_TABLE_PATH = "data/sales/receipt.csv";
 
     private final Serializer saleSerializer;
     private final Serializer productSerializer;
     private final Serializer receiptSerializer;
 
-    public SerializerSalesDataRepositoryAdapter() {
+    public SalesAdapter() {
         this.saleSerializer = new Serializer(SALES_TABLE_PATH);
         this.productSerializer = new Serializer(PRODUCT_TABLE_PATH);
         this.receiptSerializer = new Serializer(RECEIPT_TABLE_PATH);
@@ -64,20 +64,28 @@ public class SerializerSalesDataRepositoryAdapter implements SalesDataRepository
 
     @Override
     public void saveSale(Sale sale) {
-        saleSerializer.push(
-            sale.getId(),
-            sale.getTimestamp(),
-            sale.getTotal()
-        );
-        saleSerializer.save();
+        try {
+            saleSerializer.push(
+                sale.getId(),
+                sale.getTimestamp(),
+                sale.getTotal()
+            );
+            saleSerializer.save();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void saveReceipt(Receipt receipt) {
-        receiptSerializer.push(
-            receipt.getId(),
-            receipt.getSaleId()
-        );
-        receiptSerializer.save();
+        try {
+            receiptSerializer.push(
+                receipt.getId(),
+                receipt.getSaleId()
+            );
+            receiptSerializer.save();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
