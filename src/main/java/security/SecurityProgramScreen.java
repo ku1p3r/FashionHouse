@@ -2,6 +2,9 @@ package security;
 
 import advertising.Event;
 import common.base.ScreenProgramTemplate;
+import security.service.CampusRepository;
+import security.service.GuardRepository;
+import security.service.SecurityService;
 
 import java.util.HashSet;
 import java.util.List;
@@ -17,15 +20,21 @@ final class SecurityProgramScreen extends ScreenProgramTemplate<Void, Integer> {
     private final List<Campus> campuses;
     private final List<Event> events;
     private final SecurityService service;
+    private final GuardRepository guardRepository;
+    private final CampusRepository campusRepository;
 
     SecurityProgramScreen(List<SecurityGuard> guards,
                           List<Campus> campuses,
                           List<Event> events,
-                          SecurityService service) {
+                          SecurityService service,
+                          GuardRepository guardRepository,
+                          CampusRepository campusRepository) {
         this.guards = guards;
         this.campuses = campuses;
         this.events = events;
         this.service = service;
+        this.guardRepository = guardRepository;
+        this.campusRepository = campusRepository;
     }
 
     @Override
@@ -52,8 +61,8 @@ final class SecurityProgramScreen extends ScreenProgramTemplate<Void, Integer> {
             case 4 -> assignGuardsToEvent(events, guards, service);
             case 5 -> assignGuardsToCampus(campuses, guards, service);
             case 6 -> {
-                GuardFileManager.saveGuards(guards);
-                CampusFileManager.saveCampuses(campuses);
+                guardRepository.saveGuards(guards);
+                campusRepository.saveCampuses(campuses);
                 System.out.println("Saved. Exiting...");
             }
             default -> System.out.println("Invalid option");
