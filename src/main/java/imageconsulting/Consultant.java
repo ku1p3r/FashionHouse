@@ -1,7 +1,7 @@
 package imageconsulting;
 
+import common.model.Timestamp;
 import hr.model.Employee;
-
 import java.util.Random;
 
 public class Consultant extends Employee implements Observer {
