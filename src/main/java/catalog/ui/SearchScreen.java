@@ -26,16 +26,14 @@ public class SearchScreen implements iScreen {
     /** Entry point — loops until the user quits. */
     @Override
     public void run() {
-        String query = "";
-        while (true) {
-            List<Product> results = service.search(query);
-            query = handleResults(results, query);
-            if (query == null) return;
-            if (query.isBlank()) continue;
-        }
+        new SearchOuterScreen(this).run();
     }
 
-    private String handleResults(List<Product> results, String query) {
+    CatalogService getService() {
+        return service;
+    }
+
+    String handleResults(List<Product> results, String query) {
         while (true) {
             Terminal.clearScreen();
             Terminal.printHeader("Merchandise Catalog  —  " + service.getFilePath().getFileName());

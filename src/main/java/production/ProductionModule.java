@@ -26,31 +26,23 @@ public class ProductionModule implements iScreen {
     // Entry point
     @Override
     public void run() {
-        boolean running = true;
-        while (running) {
-            Terminal.clearScreen();
-            Terminal.printHeader("PRODUCTION MANAGEMENT");
-            Terminal.printInfo("Logged in as: " + currentUser.getName() + " (" + currentUser.getId() + ")");
-            Terminal.println();
+        new ProductionMainScreen(this, currentUser).run();
+    }
 
-            printActiveBatchSummary();
+    void drawProductionMainMenu(Employee user) {
+        Terminal.clearScreen();
+        Terminal.printHeader("PRODUCTION MANAGEMENT");
+        Terminal.printInfo("Logged in as: " + user.getName() + " (" + user.getId() + ")");
+        Terminal.println();
 
-            Terminal.printSubHeader("Production Menu");
-            Terminal.printMenuOption("1", "View All Batches");
-            Terminal.printMenuOption("2", "Create New Production Batch");
-            Terminal.printMenuOption("3", "Update Batch Status");
-            Terminal.printMenuOption("back", "Return to Main Menu");
-            Terminal.println();
+        printActiveBatchSummary();
 
-            String choice = Terminal.prompt("Choice:");
-            switch (choice) {
-                case "1"    -> viewAllBatches();
-                case "2"    -> createBatch("");
-                case "3"    -> updateBatchStatus();
-                case "back" -> running = false;
-                default     -> { Terminal.printError("Invalid option."); Terminal.pressEnterToContinue(); }
-            }
-        }
+        Terminal.printSubHeader("Production Menu");
+        Terminal.printMenuOption("1", "View All Batches");
+        Terminal.printMenuOption("2", "Create New Production Batch");
+        Terminal.printMenuOption("3", "Update Batch Status");
+        Terminal.printMenuOption("back", "Return to Main Menu");
+        Terminal.println();
     }
 
     // Active batch summary on dashboard
@@ -75,7 +67,7 @@ public class ProductionModule implements iScreen {
 
     // View all batches
 
-    private void viewAllBatches() {
+    void viewAllBatches() {
         Terminal.clearScreen();
         Terminal.printHeader("ALL PRODUCTION BATCHES");
 
@@ -351,7 +343,7 @@ public class ProductionModule implements iScreen {
     // Update batch status (advance workflow / complete production)
     // =========================================================================
 
-    private void updateBatchStatus() {
+    void updateBatchStatus() {
         Terminal.clearScreen();
         Terminal.printHeader("UPDATE BATCH STATUS");
 

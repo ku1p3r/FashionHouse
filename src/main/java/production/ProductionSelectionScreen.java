@@ -28,38 +28,7 @@ public class ProductionSelectionScreen implements iScreen {
             return;
         }
 
-        boolean running = true;
-        while (running) {
-            Terminal.clearScreen();
-            Terminal.printHeader("Material and Production Management");
-            Terminal.printInfo("Welcome, " + user.getName() + " (" + user.getId() + ")");
-            Terminal.println();
-            Terminal.printMenuOption("1", "Material Management",
-                    "Inventory, sourcing, and supplier management");
-            Terminal.printMenuOption("2", "Production Management",
-                    "Batch requests, status tracking, finished goods");
-            Terminal.printMenuOption("back", "Back to Catalog");
-            Terminal.println();
-
-            String choice = Terminal.prompt("Choice:");
-            switch (choice.toLowerCase()) {
-                case "1" -> {
-                    MaterialModule matModule = new MaterialModule(matRepo, user);
-                    matModule.run();
-                }
-                case "2" -> {
-                    ProductionModule prodModule = new ProductionModule(prodRepo, matRepo, user);
-                    prodModule.run();
-                }
-                case "back" -> {
-                    running = false;
-                }
-                default -> {
-                    Terminal.printError("Invalid option.");
-                    Terminal.pressEnterToContinue();
-                }
-            }
-        }
+        new ProductionHubScreen(matRepo, prodRepo, user).run();
 
         Terminal.println();
         Terminal.printInfo("Goodbye!");

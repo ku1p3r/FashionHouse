@@ -1,6 +1,7 @@
 package production;
 
 import common.util.Terminal;
+
 import java.util.List;
 
 public class SupplierManager {
@@ -12,32 +13,23 @@ public class SupplierManager {
     }
 
     public void manage() {
-        boolean running = true;
-        while (running) {
-            Terminal.clearScreen();
-            Terminal.printHeader("SUPPLIER DIRECTORY / MANAGEMENT");
-
-            // Always show current suppliers for easy selection
-            showSuppliersInline();
-
-            Terminal.printMenuOption("add", "Add a new supplier");
-            Terminal.printMenuOption("edit", "Edit an existing supplier");
-            Terminal.printMenuOption("remove", "Remove a supplier");
-            Terminal.printMenuOption("back", "Return");
-            Terminal.println();
-
-            String choice = Terminal.prompt("Choice:");
-            switch (choice.toLowerCase()) {
-                case "add"  -> addSupplier();
-                case "edit" -> editSupplier();
-                case "remove" -> removeSupplier();
-                case "back" -> running = false;
-                default -> { Terminal.printError("Invalid option."); Terminal.pressEnterToContinue(); }
-            }
-        }
+        new SupplierManagerScreen(this).run();
     }
 
-    private void showSuppliersInline() {
+    void drawSupplierMainMenu() {
+        Terminal.clearScreen();
+        Terminal.printHeader("SUPPLIER DIRECTORY / MANAGEMENT");
+
+        showSuppliersInline();
+
+        Terminal.printMenuOption("add", "Add a new supplier");
+        Terminal.printMenuOption("edit", "Edit an existing supplier");
+        Terminal.printMenuOption("remove", "Remove a supplier");
+        Terminal.printMenuOption("back", "Return");
+        Terminal.println();
+    }
+
+    void showSuppliersInline() {
         List<Supplier> all = repo.getAllSuppliers();
         Terminal.printTableHeader("ID", "Name", "Email", "Phone", "Status");
         int i = 1;
@@ -50,7 +42,7 @@ public class SupplierManager {
 
     
 
-    private void addSupplier() {
+    void addSupplier() {
         Terminal.clearScreen();
         Terminal.printHeader("ADD SUPPLIER");
         String name = Terminal.prompt("Supplier name:");
@@ -66,7 +58,7 @@ public class SupplierManager {
         Terminal.pressEnterToContinue();
     }
 
-    private void editSupplier() {
+    void editSupplier() {
         Terminal.printHeader("EDIT SUPPLIER");
         String id = Terminal.prompt("Supplier ID to edit:");
         Supplier s = repo.findSupplierById(id);
@@ -83,7 +75,7 @@ public class SupplierManager {
         Terminal.pressEnterToContinue();
     }
 
-    private void removeSupplier() {
+    void removeSupplier() {
         Terminal.printHeader("REMOVE SUPPLIER");
         String id = Terminal.prompt("Supplier ID to remove:");
         Supplier s = repo.findSupplierById(id);
