@@ -1,0 +1,2 @@
+C-001;Nina Wilson;Emma;In Progress;true;Develop a polished high-fashion personal style;P-4A9C21|P-3C7F66|P-9D8C04
+C-002;TheRealReal;Marcus;Rebranding;false;Shift brand image toward modern luxury minimalism;P-7F3B88|P-6D4E90|P-4B2F73
