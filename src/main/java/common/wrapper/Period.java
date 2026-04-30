@@ -23,6 +23,16 @@ public class Period {
         return month + "-" + year;
     }
 
+    public Period minusMonths(int months) {
+        int m = this.month - months;
+        int y = this.year;
+        while(m <= 0){
+            m += 12;
+            y -= 1;
+        }
+        return new Period(m, y);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
