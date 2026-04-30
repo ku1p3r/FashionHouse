@@ -1,5 +1,6 @@
 package analytics.services;
 
+import analytics.base.*;
 import analytics.wrappers.TrendDirection;
 import analytics.wrappers.TrendResult;
 import common.model.Product;
@@ -20,61 +21,11 @@ public class TrendService {
             Period start,
             Period end
     ) {
-        List<Period> periods = new ArrayList<>();
-        int month = start.getMonth();
-        int year = start.getYear();
-        while(year < end.getYear() || (year == end.getYear() && month <= end.getMonth())){
-            periods.add(new Period(month, year));
-            month++;
-            if(month > 12){
-                month = 1;
-                year++;
-            }
-        }
-
-        if(periods.isEmpty()){
-            return new TrendResult(metricName, TrendDirection.STABLE, 0.0);
-        }
-
-        List<Integer> periodTotals = new ArrayList<>();
-        for(Period period : periods){
-            int total = 0;
-            for(Retailer retailer : retailers){
-                Iterable<Product> effectiveProducts = products;
-                boolean hasMatch = false;
-                for(Product p : products){
-                    for(Product rp : retailer.getProducts()){
-                        if(p.getId() != null && p.getId().equalsIgnoreCase(rp.getId())
-                                || p.getName() != null && p.getName().equalsIgnoreCase(rp.getName())){
-                            hasMatch = true;
-                            break;
-                        }
-                    }
-                    if(hasMatch) break;
-                }
-                if(!hasMatch){
-                    effectiveProducts = retailer.getProducts();
-                }
-                total += retailer.getSales(effectiveProducts, period);
-            }
-            periodTotals.add(total);
-        }
-
-        List<Integer> nonZeroPeriods = new ArrayList<>();
-        for(Integer total : periodTotals){
-            if (total > 0) {
-                nonZeroPeriods.add(total);
-            }
-        }
-
-        if(nonZeroPeriods.isEmpty()){
-            return new TrendResult(metricName, TrendDirection.STABLE, 0.0);
-        }
-
-        double firstPeriod = nonZeroPeriods.get(0);
-        double lastPeriod = nonZeroPeriods.get(nonZeroPeriods.size() - 1);
-        double percentageChange = ((lastPeriod - firstPeriod) / firstPeriod) * 100;
-        percentageChange = Math.round(percentageChange * 100.0) / 100.0;
+        double percentageChange = new PercentChange(
+                new SumOverRetailers(new RawSales(), retailers),
+                start,
+                end
+        ).evaluate(null, products, null);
 
         TrendDirection direction;
         if(percentageChange > 0){
@@ -89,100 +40,45 @@ public class TrendService {
     }
 
     public static float getTotalMeanAnnualSales(Retailer retailer, Period period) {
-        HashMap<Product, Integer> result = getMeanAnnualSales(retailer, period);
-        float total = 0f;
-        for(Product product : result.keySet()){
-            total += result.get(product);
-        }
-        return total;
+        Metric mean = new MeanOverPeriods(
+                new RawSales(),
+                period.minusMonths(11),
+                period
+        );
+
+        return (float)mean.evaluate(retailer, retailer.getProducts(), null);
     }
 
     public static Set<Product> getTopProducts(Retailer retailer, Period period, int n) {
-        HashMap<Product, Integer> sales = new HashMap<>();
-        for (Product product : retailer.getProducts()) {
-            sales.put(product, retailer.getSales(List.of(product), period));
-        }
-
-        List<Map.Entry<Product, Integer>> entries = new ArrayList<>(sales.entrySet());
-        entries.sort((a, b) -> b.getValue() - a.getValue());
-
-        Set<Product> result = new LinkedHashSet<>();
-        for (int i = 0; i < Math.min(n, entries.size()); i++) {
-            result.add(entries.get(i).getKey());
-        }
-        return result;
+        return new LinkedHashSet<>(
+                TopProducts.rank(retailer, new RawSales(), period, n)
+        );
     }
 
     public static HashMap<Product, Integer> getMeanAnnualSales(Retailer retailer, Period period) {
+        Metric mean = new MeanOverPeriods(
+                new RawSales(),
+                period.minusMonths(11),
+                period
+        );
+
         HashMap<Product, Integer> result = new HashMap<>();
-        int month = period.getMonth();
-        int year = period.getYear() - 1;
-        for(int i = 0; i < 12; i++){
-            month += 1;
-            if(month > 12){
-                month = 1;
-                year += 1;
-            }
-            Period current = new Period(month, year);
-
-            for(Product product : retailer.getProducts()){
-                int num = retailer.getSales(List.of(product), current);
-
-                if(result.containsKey(product)){
-                    result.replace(product, result.get(product) + num);
-                }else{
-                    result.put(product, num);
-                }
-            }
-        }
-
-        for(Product product : result.keySet()){
-            result.replace(product, (int)Math.ceil(result.get(product) / 12.0f));
+        for(Product product : retailer.getProducts()){
+            double avg = mean.evaluate(retailer, List.of(product), null);
+            result.put(product, (int)Math.ceil(avg));
         }
 
         return result;
     }
 
-    public static float getSalesVolatility(
+    public static double getSalesVolatility(
             Retailer retailer,
             Iterable<Product> products,
             Period start,
             Period end
     ){
-        List<Integer> sales = new ArrayList<>();
-        int month = start.getMonth();
-        int year = start.getYear();
-        while(year < end.getYear() || (year == end.getYear() && month <= end.getMonth())){
-            Period current = new Period(month, year);
-            sales.add(retailer.getSales(products, current));
-            month++;
-            if(month > 12){
-                month = 1;
-                year++;
-            }
-        }
-        int size = sales.size();
-        if(size == 0){
-            System.out.println("No sales data available for the given period.");
-            return 0f;
-        }
-
-        double mean = 0.0;
-        for(Integer sale : sales){
-            mean += (double)sale;
-        }
-        mean /= size;
-        if(mean == 0.0){
-            return 0f;
-        }
-
-        double sum = 0.0;
-        for(Integer sale : sales){
-            sum += Math.pow(sale - mean, 2);
-        }
-        double dev = Math.sqrt(sum / size);
-
-        return (float)(dev / mean);
+        Metric volatility = new CoefficientOfVariation(new RawSales(), start, end);
+        return volatility.evaluate(retailer, products, null);
     }
 
     public static HashMap<Integer, Float> getSeasonalIndexes(
@@ -191,61 +87,26 @@ public class TrendService {
             int startYear,
             int endYear
     ) {
-        HashMap<Integer, Integer> monthlySums = new HashMap<>();
-        HashMap<Integer, Integer> monthCounts = new HashMap<>();
-
-        for(int year = startYear; year <= endYear; year++){
-            for(int month = 1; month <= 12; month++){
-                int sales = retailer.getSales(products, new Period(month, year));
-                if(sales > 0){
-                    monthlySums.merge(month, sales, Integer::sum);
-                    monthCounts.merge(month, 1, Integer::sum);
-                }
-            }
-        }
-
-        HashMap<Integer, Float> monthlyAverages = new HashMap<>();
-        float overallSum = 0.0f;
-        for(int month = 1; month <= 12; month++){
-            int count = monthCounts.getOrDefault(month, 0);
-            float avg = count == 0 ? 0.0f : monthlySums.getOrDefault(month, 0) / (float) count;
-            monthlyAverages.put(month, avg);
-            overallSum += avg;
-        }
-
-        float grandAverage = overallSum / 12.0f;
         HashMap<Integer, Float> indexes = new HashMap<>();
         for(int month = 1; month <= 12; month++){
-            indexes.put(month, grandAverage == 0.0f ? 1.0f : monthlyAverages.get(month) / grandAverage);
+            Metric index = new SeasonalIndex(new RawSales(), month, startYear, endYear);
+            indexes.put(month, (float)index.evaluate(retailer, products, null));
         }
         return indexes;
     }
 
     public static HashMap<Product, Integer> anticipateStock(Retailer retailer, Period period) {
-        HashMap<Product, Integer> result = new HashMap<>();
-
-        HashMap<Product, Integer> MAS = getMeanAnnualSales(
-                retailer,
-                new Period(period.getMonth() - 1, period.getYear())
-        );
-        HashMap<Product, Integer> lastMAS = getMeanAnnualSales(
-                retailer,
-                new Period(period.getMonth() - 1, period.getYear() - 1)
-        );
-
         int endYear = period.getYear() - 1;
-        HashMap<Integer, Float> seasonalIndexes = getSeasonalIndexes(
-                retailer,
-                retailer.getProducts(),
-                endYear - 2,
-                endYear
-        );
-        float seasonalIndex = seasonalIndexes.getOrDefault(period.getMonth(), 1.0f);
 
+        Metric anticipated = new ProductOf(
+                new MeanOverPeriods(new RawSales(), period.minusMonths(12), period.minusMonths(1)),
+                new SeasonalIndex(new RawSales(), period.getMonth(), endYear - 2, endYear)
+        );
+
+        HashMap<Product, Integer> result = new HashMap<>();
         for(Product product : retailer.getProducts()){
-            int mas = MAS.getOrDefault(product, 0);
-            int anticipated = (int)Math.ceil(seasonalIndex * mas);
-            result.put(product, anticipated);
+            double v = anticipated.evaluate(retailer, List.of(product), null);
+            result.put(product, (int)Math.ceil(v));
         }
 
         return result;

@@ -70,7 +70,7 @@ final class TrendMenuScreen extends ScreenProgramTemplate<Void, Void> {
                     Product product = promptProduct();
                     Period start = Terminal.promptPeriod("Start date");
                     Period end = Terminal.promptPeriod("End date");
-                    float result = TrendService.getSalesVolatility(retailer, List.of(product), start, end);
+                    double result = TrendService.getSalesVolatility(retailer, List.of(product), start, end);
                     Terminal.println("Volatility: " + result);
                 }),
                 new Option("top", "Observe top.", () -> {
