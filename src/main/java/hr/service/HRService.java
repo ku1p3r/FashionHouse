@@ -1,7 +1,5 @@
 package hr.service;
 
-import common.model.Timestamp;
-import common.util.Serializer;
 import hr.model.Application;
 import hr.model.Candidate;
 import hr.model.CandidateAppRelation;
@@ -15,16 +13,7 @@ import java.util.Random;
  * @author Mason Hart
  */
 public class HRService {
-
-    private static final String applicationCSV = "res/hr/applications.csv";
-    private static final String candidateCSV = "res/hr/candidates.csv";
-    private static final String employeeCSV = "res/hr/employees.csv";
-    private static final String candidateKeysCSV = "res/hr/cand_per_app.csv";
-
-    private Serializer appSerializer = new Serializer(applicationCSV);
-    private Serializer candSerializer = new Serializer(candidateCSV);
-    private Serializer empSerializer = new Serializer(employeeCSV);
-    private Serializer keySerializer = new Serializer(candidateKeysCSV);
+    private final HRDataRepository repository;
 
     private List<Application> applicationList;
     private List<Employee> employeeList;
@@ -34,7 +23,12 @@ public class HRService {
     private int selectedApp;
     private Candidate selectedCandidate;
 
-    public HRService(){
+    public HRService() {
+        this(new HumanResourcesAdapter());
+    }
+
+    public HRService(HRDataRepository repository){
+        this.repository = repository;
         loadApplications();
         loadEmployees();
         loadCandidates();
@@ -45,85 +39,24 @@ public class HRService {
     }
 
     private void loadApplications(){
-        applicationList = new ArrayList<>();
-        ArrayList<String> ids = appSerializer.get("id", String.class);
-        int rows = ids.size();
-        for(int i = 0; i < rows; i++){
-            Application a = new Application(
-                    appSerializer.get("id", i, Long.class),
-                    appSerializer.get("title", i, String.class),
-                    appSerializer.get("desc", i, String.class),
-                    appSerializer.get("dept", i, String.class),
-                    new Timestamp(appSerializer.get("close_date", i, String.class)),
-                    appSerializer.get("openings", i, Integer.class)
-            );
-//            System.out.println(a);
-            applicationList.add(a);
-        }
+        applicationList = new ArrayList<>(repository.loadApplications());
     }
 
     private void loadEmployees(){
-        employeeList = new ArrayList<>();
-        ArrayList<String> ids = empSerializer.get("id", String.class);
-        int rows = ids.size();
-        for(int i = 0; i < rows; i++){
-            Employee e = new Employee(
-                    empSerializer.get("id", i, Long.class),
-                    empSerializer.get("name", i, String.class),
-                    empSerializer.get("position", i, String.class),
-                    empSerializer.get("dept", i, String.class),
-                    empSerializer.get("salary", i, Integer.class),
-                    new Timestamp(empSerializer.get("start", i, String.class)),
-                    empSerializer.get("active", i, Integer.class) > 0,
-                    empSerializer.get("pin", i, String.class)
-            );
-            employeeList.add(e);
-        }
+        employeeList = new ArrayList<>(repository.loadEmployees());
     }
 
     private void loadCandidates(){
-        candidateList = new ArrayList<>();
-        ArrayList<String> ids = candSerializer.get("id", String.class);
-        int rows = ids.size();
-        for(int i = 0; i < rows; i++){
-            Candidate c = new Candidate(
-                    candSerializer.get("id", i, Long.class),
-                    candSerializer.get("name", i, String.class),
-                    candSerializer.get("experience", i, Integer.class),
-                    candSerializer.get("bio", i, String.class)
-            );
-//            System.out.println(c);
-            candidateList.add(c);
-        }
+        candidateList = new ArrayList<>(repository.loadCandidates());
     }
 
     public List<CandidateAppRelation> loadKeys(){
-        List<CandidateAppRelation> keys = new ArrayList<>();
-        // load keys
-        List<String> ids = keySerializer.get("cand_id", String.class);
-        int rows = ids.size();
-        for(int i = 0; i < rows; i++){
-            CandidateAppRelation rel = new CandidateAppRelation(
-                    keySerializer.get("cand_id", i, Long.class),
-                    keySerializer.get("app_id", i, Long.class),
-                    keySerializer.get("rejected", i, Integer.class) <= 0
-            );
-            keys.add(rel);
-        }
-        return keys;
+        return repository.loadCandidateRelations();
     }
 
     public void createApplication(Application app) {
         try {
-            appSerializer.push(
-                    app.getId(),
-                    app.getTitle(),
-                    app.getDescription(),
-                    app.getDept(),
-                    app.getCloseDate(),
-                    app.getNumPositions()
-            );
-            appSerializer.save();
+            repository.saveApplication(app);
 
             // Important: add the application to the loaded list of applications
             applicationList.add(app);
@@ -189,8 +122,8 @@ public class HRService {
             for (int i = 0; i < keys.size(); i++) {
                 CandidateAppRelation key = keys.get(i);
                 if (selectedCandidate.getId() == key.getCandId() && curr.getId() == key.getAppId()) {
-                    keySerializer.set("rejected", i, 1);
-                    keySerializer.save();
+                    repository.markCandidateRejected(selectedCandidate.getId(), curr.getId());
+                    break;
                 }
             }
         } catch (Exception e) {
@@ -202,6 +135,7 @@ public class HRService {
     public void acceptCandidate() {
         Random r = new Random();
         Application app = applicationList.get(selectedApp);
+        String pin = String.format("%04d", r.nextInt(0, 10000));
         Employee e = new Employee(
                 employeeList.size() + 1,
                 selectedCandidate.getName(),
@@ -210,20 +144,19 @@ public class HRService {
                 70,
                 app.getCloseDate(),
                 true,
-                String.format("%04d", r.nextInt(0, 10000))
+                pin
         );
         try{
-            empSerializer.push(
-                    employeeList.size() + 1,
-                    selectedCandidate.getName(),
-                    app.getTitle(),
-                    app.getDept(),
-                    app.getCloseDate(),
-                    70,
-                    1,
-                    String.format("%04d", r.nextInt(0, 10000))
+            repository.saveAcceptedEmployee(
+                employeeList.size() + 1,
+                selectedCandidate.getName(),
+                app.getTitle(),
+                app.getDept(),
+                app.getCloseDate(),
+                70,
+                true,
+                pin
             );
-            empSerializer.save();
             employeeList.add(e);
             app.decrementPosition();
 
@@ -231,8 +164,7 @@ public class HRService {
             rejectCandidate();
 
             // save to file
-            appSerializer.set("openings", selectedApp, app.getNumPositions());
-            appSerializer.save();
+            repository.updateApplicationOpenings(selectedApp, app.getNumPositions());
         } catch(Exception err){
             System.out.println("An error occured when adding new employee to database");
             System.err.println(err);

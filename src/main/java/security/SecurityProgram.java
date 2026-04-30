@@ -2,15 +2,17 @@ package security;
 
 import advertising.AdvertisingSystem;
 import advertising.Event;
+import security.service.*;
 
 import java.util.List;
 
 public class SecurityProgram {
 
     public static void main(String[] args) {
-
-        List<SecurityGuard> guards = GuardFileManager.loadGuards();
-        List<Campus> campuses = CampusFileManager.loadCampuses();
+        GuardRepository guardRepository = new FileGuardRepositoryAdapter();
+        CampusRepository campusRepository = new FileCampusRepositoryAdapter();
+        List<SecurityGuard> guards = guardRepository.loadGuards();
+        List<Campus> campuses = campusRepository.loadCampuses();
 
         AdvertisingSystem advertisingSystem = new AdvertisingSystem();
         advertisingSystem.loadEventsFromFile();
@@ -18,6 +20,6 @@ public class SecurityProgram {
 
         SecurityService service = new SecurityService();
 
-        new SecurityProgramScreen(guards, campuses, events, service).run();
+        new SecurityProgramScreen(guards, campuses, events, service, guardRepository, campusRepository).run();
     }
 }
