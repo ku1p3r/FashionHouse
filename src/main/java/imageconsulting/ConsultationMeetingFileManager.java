@@ -5,7 +5,7 @@ import java.util.*;
 
 public class ConsultationMeetingFileManager {
 
-    private static final String FILE_NAME = "data/imageconsulting/meetings.txt";
+    private static final String FILE_NAME = "data/imageconsulting/meeting.txt";
 
     public static List<ConsultationMeeting> loadMeetings() {
         List<ConsultationMeeting> meetings = new ArrayList<>();
